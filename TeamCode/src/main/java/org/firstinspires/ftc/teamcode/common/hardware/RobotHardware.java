@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.common.hardware;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -13,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -27,12 +32,16 @@ import java.util.List;
 public class RobotHardware {
     private static double p = 0.0, i = 0.0, d = 0.0;
     private double errorTolerance = 0.0;
+    private ElapsedTime voltageTimer = new ElapsedTime();
+    private double voltage = 12.0;
     public DcMotorEx frontLeftMotor;
     public DcMotorEx frontRightMotor;
     public DcMotorEx backLeftMotor;
     public DcMotorEx backRightMotor;
     public DcMotorEx extensionMotor;
     public DcMotorEx intakeMotor;
+    public ServoEx airplaneLaunch;
+    public ServoEx airplaneHold;
     public ServoEx clawServo;
     public WEncoder extensionEncoder;
     public WActuatorGroup extensionActuator;
@@ -56,7 +65,13 @@ public class RobotHardware {
     public void init(final HardwareMap hardwareMap, final Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         // Add an if else detecting whether dashboard is running for telemetry
-        this.telemetry = telemetry;
+        if (Globals.USING_DASHBOARD) {
+            this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
+        }
+        else {
+            this.telemetry = telemetry;
+        }
+        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
         this.subsystems = new ArrayList<>();
 
         modules = hardwareMap.getAll(LynxModule.class);
@@ -87,17 +102,21 @@ public class RobotHardware {
         imu.resetYaw();
 
         // Extension
-        extensionMotor = hardwareMap.get(DcMotorEx.class, "extension_motor");
+        /*extensionMotor = hardwareMap.get(DcMotorEx.class, "extension_motor");
         extensionEncoder = new WEncoder(new MotorEx(hardwareMap, "front_left_drive").encoder);
         this.extensionActuator = new WActuatorGroup(extensionMotor, extensionEncoder)
                 .setPIDController(new PIDController(p, i, d))
-                .setErrorTolerance(errorTolerance);
+                .setErrorTolerance(errorTolerance);*/
 
         // Intake
-        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake_motor");
+        //intakeMotor = hardwareMap.get(DcMotorEx.class, "intake_motor");
 
         // Outtake
-        clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
+        //clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
+
+        // Airplane Launch
+        airplaneLaunch = new SimpleServo(hardwareMap, "airplane_launch", 0, 270);
+        airplaneHold = new SimpleServo(hardwareMap, "airplane_hold", 0, 270);
 
     }
 
@@ -114,6 +133,10 @@ public class RobotHardware {
     }
 
     public void periodic() {
+        if (voltageTimer.seconds() > 5) {
+            voltageTimer.reset();
+            voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
+        }
         for (WSubsystem subsystem : subsystems) {
             subsystem.periodic();
         }
@@ -134,15 +157,8 @@ public class RobotHardware {
         this.subsystems.addAll(Arrays.asList(subsystems));
     }
 
-    public void fieldCentricDrive(Gamepad gamepad1) {
-        double x, y, power, rx, theta, botHeading, rotX, rotY, speedModifier;
-
-        y = -gamepad1.left_stick_y;
-        x = gamepad1.left_stick_x;
-        rx = gamepad1.right_stick_x;
-        if (gamepad1.options) {
-            imu.resetYaw();
-        }
+    public void fieldCentricDrive(double x, double y, double rx) {
+        double power, theta, botHeading, rotX, rotY;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
@@ -154,12 +170,9 @@ public class RobotHardware {
         double backRightPower = (rotY + rotX - rx) / denominator;
 
         // This speed modifier is for true racers
-        speedModifier = 0.8 + (0.8 * gamepad1.right_trigger) - (.4 * gamepad1.left_trigger);
+        //speedModifier = 0.8 + (0.8 * gamepad1.right_trigger) - (.4 * gamepad1.left_trigger);
 
-        this.backLeftMotor.setPower(backLeftPower);
-        this.frontLeftMotor.setPower(frontLeftPower);
-        this.frontRightMotor.setPower(frontRightPower);
-        this.backRightMotor.setPower(backRightPower);
+        setDrivePowers(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
         telemetry.addData("backLeft: ", backLeftPower);
         telemetry.addData("backRight: ", backRightPower);
         telemetry.addData("frontLeft: ", frontLeftPower);
@@ -168,12 +181,16 @@ public class RobotHardware {
         telemetry.update();
     }
 
-    public void robotCentric(Gamepad gamepad1) {
-        double x, y, power, turn, theta, backLeftPower, backRightPower, frontLeftPower, frontRightPower;
-        x = gamepad1.left_stick_x;
-        y = -gamepad1.left_stick_y;
+    public void setDrivePowers(double backLeft, double backRight, double frontLeft, double frontRight) {
+        this.backLeftMotor.setPower(backLeft);
+        this.backRightMotor.setPower(backRight);
+        this.frontLeftMotor.setPower(frontLeft);
+        this.frontRightMotor.setPower(frontRight);
+    }
+
+    public void robotCentric(double x, double y, double turn) {
+        double power, theta, backLeftPower, backRightPower, frontLeftPower, frontRightPower;
         power = Math.hypot(x, y);
-        turn = gamepad1.right_stick_x;
         theta = Math.atan2(y, x);
 
         double sin = Math.sin(theta - Math.PI/4);
@@ -191,15 +208,20 @@ public class RobotHardware {
             backLeftPower /= power + Math.abs(turn);
             backRightPower /= power + Math.abs(turn);
         }
-        this.backLeftMotor.setPower(backLeftPower);
-        this.frontLeftMotor.setPower(frontLeftPower);
-        this.frontRightMotor.setPower(frontRightPower);
-        this.backRightMotor.setPower(backRightPower);
+        setDrivePowers(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
         telemetry.addData("backLeft: ", backLeftPower);
         telemetry.addData("backRight: ", backRightPower);
         telemetry.addData("frontLeft: ", frontLeftPower);
         telemetry.addData("frontRight", frontRightPower);
         telemetry.update();
+    }
+
+    public void stopDrive() {
+        setDrivePowers(0, 0, 0, 0);
+    }
+
+    public double getVoltage() {
+        return voltage;
     }
 
     public void log(String data) {

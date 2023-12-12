@@ -39,12 +39,24 @@ public class ExtensionSubsystem extends WSubsystem {
 
     }
 
+    public void setBackdropHeight(int amount) {
+        this.backdropHeight = (int) MathUtils.clamp(amount, 0, 11);
+        updated = false;
+    }
     public int getBackdropHeight() {
         return backdropHeight;
     }
 
+    public void setScoring(boolean scoring) {
+        this.scoring = scoring;
+    }
+
     public boolean getScoring() {
         return this.scoring;
+    }
+
+    public void setUpdated(boolean updated) {
+        this.updated = updated;
     }
 
     public void incrementBackdropHeight(int amount) {

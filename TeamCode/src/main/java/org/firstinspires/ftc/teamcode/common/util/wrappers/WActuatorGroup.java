@@ -24,6 +24,7 @@ public class WActuatorGroup {
     private double currentFeedForward = 0.0;
     private double offset = 0.0;
     private double tolerance = 0.0;
+    private boolean reached = false;
     public WActuatorGroup(HardwareDevice... devices) {
         int i = 0;
         for (HardwareDevice device : devices) {
@@ -52,6 +53,7 @@ public class WActuatorGroup {
             this.power += currentFeedForward * Math.signum((targetPosition + targetPositionOffset) - position);
             this.power = MathUtils.clamp(power, -1, 1);
         }
+        this.reached = Math.abs((targetPosition + targetPositionOffset) - position) < tolerance;
     }
 
     public void write() {
@@ -66,14 +68,45 @@ public class WActuatorGroup {
         }
     }
 
+    public void setTargetPosition(double targetPosition) {
+        this.targetPosition = targetPosition;
+    }
+
+    public void setOffset(double offset) {
+        this.offset = offset;
+    }
+
+
     public WActuatorGroup setPIDController(PIDController controller) {
         this.controller = controller;
+        return this;
+    }
+
+    public WActuatorGroup setPID(double p, double i, double d) {
+        if (controller == null) {
+            this.controller = new PIDController(p, i, d);
+        }
+        else {
+            this.controller.setPID(p, i, d);
+        }
         return this;
     }
 
     public WActuatorGroup setErrorTolerance(double tolerance) {
         this.tolerance = tolerance;
         return this;
+    }
+
+    public void updatePID(double p, double i, double d) {
+        this.controller.setPID(p, i, d);
+    }
+
+    public double getTargetPosition() {
+        return targetPosition;
+    }
+
+    public double getPower() {
+        return power;
     }
 
     public double getPosition() {
