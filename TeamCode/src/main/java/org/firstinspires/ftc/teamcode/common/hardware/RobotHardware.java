@@ -85,7 +85,7 @@ public class RobotHardware {
 
         this.backRightMotor = hardwareMap.get(DcMotorEx.class, "back_right_drive");
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front_left_drive");
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -115,8 +115,10 @@ public class RobotHardware {
         //clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
 
         // Airplane Launch
-        airplaneLaunch = new SimpleServo(hardwareMap, "airplane_launch", 0, 270);
-        airplaneHold = new SimpleServo(hardwareMap, "airplane_hold", 0, 270);
+        //airplaneLaunch = new SimpleServo(hardwareMap, "airplane_launch", 0, 270);
+        //airplaneHold = new SimpleServo(hardwareMap, "airplane_hold", 0, 270);
+
+        // Hang
 
     }
 
@@ -170,7 +172,6 @@ public class RobotHardware {
         double backRightPower = (rotY + rotX - rx) / denominator;
 
         // This speed modifier is for true racers
-        //speedModifier = 0.8 + (0.8 * gamepad1.right_trigger) - (.4 * gamepad1.left_trigger);
 
         setDrivePowers(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
         telemetry.addData("backLeft: ", backLeftPower);
@@ -188,10 +189,11 @@ public class RobotHardware {
         this.frontRightMotor.setPower(frontRight);
     }
 
-    public void robotCentric(double x, double y, double turn) {
+    public void robotCentric(double x, double y, double turn, double speedModifier) {
         double power, theta, backLeftPower, backRightPower, frontLeftPower, frontRightPower;
         power = Math.hypot(x, y);
         theta = Math.atan2(y, x);
+
 
         double sin = Math.sin(theta - Math.PI/4);
         double cos = Math.cos(theta - Math.PI/4);
@@ -208,7 +210,7 @@ public class RobotHardware {
             backLeftPower /= power + Math.abs(turn);
             backRightPower /= power + Math.abs(turn);
         }
-        setDrivePowers(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
+        setDrivePowers(backLeftPower * speedModifier, backRightPower * speedModifier, frontLeftPower * speedModifier, frontRightPower * speedModifier);
         telemetry.addData("backLeft: ", backLeftPower);
         telemetry.addData("backRight: ", backRightPower);
         telemetry.addData("frontLeft: ", frontLeftPower);

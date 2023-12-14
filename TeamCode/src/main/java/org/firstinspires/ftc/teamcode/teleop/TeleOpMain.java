@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 
+import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -26,10 +28,17 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             robot.read();
-            robot.robotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
-
+            //robot.fieldCentricDrive(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
+            robot.robotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), 1);
             robot.periodic();
             robot.write();
+            /*if (gamepadEx.wasJustPressed(GamepadKeys.Button.A)) {
+                robot.airplaneHold.setPosition(0.5);
+                robot.airplaneLaunch.setPosition(1);
+            }
+            if (gamepadEx.isDown(GamepadKeys.Button.B)) {
+
+            }*/
             robot.clearBulkCache();
         }
     }

@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.onbotjavafiles;
 
 //import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 //import com.arcrobotics.ftclib.controller.PIDController;
+@Disabled
 @TeleOp(name="LinearSlideTest")
 public class LinearSlideTest extends LinearOpMode {
     public static double p = 0, i = 0, d = 0;

@@ -55,7 +55,7 @@ import java.util.Locale;
  *
  * In OnBot Java, use "Add File" to add this OpMode from the list of Samples.
  */
-
+@Disabled
 @TeleOp(name = "Utility: Camera Frame Capture", group = "Utility")
 //gets screenshots for camera, ask andrew
 public class Camera extends LinearOpMode

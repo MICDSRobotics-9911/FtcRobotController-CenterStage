@@ -74,7 +74,7 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-
+@Disabled
 @TeleOp (name = "Teleop")
 public class Teleop extends LinearOpMode {
     //Tensor flow processor
