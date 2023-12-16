@@ -22,7 +22,7 @@ public class BlueAuto extends LinearOpMode {
     private PropPipeline bluePropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
-    private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
+    private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private String output = "";
 
     @Override
