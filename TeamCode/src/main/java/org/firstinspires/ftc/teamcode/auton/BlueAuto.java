@@ -1,49 +1,61 @@
 package org.firstinspires.ftc.teamcode.auton;
 
+import android.util.Size;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
+import org.firstinspires.ftc.teamcode.common.hardware.Globals;
+import org.firstinspires.ftc.vision.VisionPortal;
+
+import java.util.Locale;
+
 
 @Autonomous(name="BlueAuto", group="Auto")
 public class BlueAuto extends LinearOpMode {
-    public int element_zone = 1;
-    private TeamElementSubsystem teamElementDetection;
-    boolean togglePreview = true;
+    private PropPipeline bluePropThreshold;
+    private VisionPortal portal;
+    private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
+    private static final int CAMERA_HEIGHT = 360; // height of wanted camera resolution
+    private String output = "";
 
-    public void hardwareStart() {
-        telemetry.addData("Object Creation", "Start");
-        telemetry.update();
-        teamElementDetection = new TeamElementSubsystem(hardwareMap);
-
-        telemetry.addData("Object Creation", "Done");
-        telemetry.update();
-    }
     @Override
     public void runOpMode() throws InterruptedException {
-        hardwareStart();
-        Side curAlliance = Side.BLUE;
-        while (opModeIsActive() && !isStopRequested()) {
-            teamElementDetection.setAlliance(curAlliance);
-            int zone = teamElementDetection.elementDetection(telemetry);
-            switch (zone) {
-                case 1:
-                    // Put trajectory to case 1 here
-                    telemetry.addData("Case: ", 1);
-                    break;
-                case 2:
-                    // Put trajectory to case 2 here
-                    telemetry.addData("Case: ", 2);
-                    break;
-                default:
-                    // Put trajectory to case 3 here
-                    telemetry.addData("Case: ", 3);
-                    break;
-            }
-            telemetry.addData("Current Alliance Selected : ", "blue");
+        Globals.IS_AUTO = true;
+        Globals.IS_USING_IMU = false;
+        Globals.USING_DASHBOARD = true;
+        Globals.COLOR = Side.BLUE;
+        // robot.init(hardwareMap, telemetry);
+        // robot.enabled = true;
+        bluePropThreshold = new PropPipeline();
+        portal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
+                .setCamera(BuiltinCameraDirection.BACK)
+                .addProcessor(bluePropThreshold)
+                .enableLiveView(true)
+                .setAutoStopLiveView(true)
+                .build();
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
+        if (bluePropThreshold.getPropPosition() == Side.LEFT) {
+            output = "left";
+        } else if (bluePropThreshold.getPropPosition() == Side.CENTER) {
+            output = "center";
+        } else {
+            output = "right";
+        }
+        while (!isStarted()) {
+            telemetry.addData("Prop Position", output);
             telemetry.update();
         }
-        telemetry.addData("Object", "Passed waitForStart");
-        telemetry.update();
+        Side side = bluePropThreshold.getPropPosition();
+        portal.close();
     }
 }

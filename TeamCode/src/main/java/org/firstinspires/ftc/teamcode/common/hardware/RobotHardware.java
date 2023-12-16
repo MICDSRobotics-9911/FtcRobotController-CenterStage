@@ -65,12 +65,9 @@ public class RobotHardware {
     public void init(final HardwareMap hardwareMap, final Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         // Add an if else detecting whether dashboard is running for telemetry
-        if (Globals.USING_DASHBOARD) {
-            this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
-        }
-        else {
-            this.telemetry = telemetry;
-        }
+        this.telemetry = (Globals.USING_DASHBOARD) ? new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry()) : telemetry;
+
+
         voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
         this.subsystems = new ArrayList<>();
 
@@ -152,7 +149,7 @@ public class RobotHardware {
 
     public void clearBulkCache() {
         modules.get(0).clearBulkCache();
-        modules.get(1).clearBulkCache();
+        //modules.get(1).clearBulkCache();
     }
 
     public void addSubsystem(WSubsystem... subsystems) {
