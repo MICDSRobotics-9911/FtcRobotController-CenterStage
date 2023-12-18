@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -23,6 +24,7 @@ public class RedAuto extends LinearOpMode {
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private String output = "";
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,20 +49,21 @@ public class RedAuto extends LinearOpMode {
                 .setAutoStopLiveView(true)
                 .build();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
-        if (redPropThreshold.getPropPosition() == Side.LEFT) {
+        //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
+        Side side = redPropThreshold.getPropPosition();
+        if (side == Side.LEFT) {
             output = "left";
-        } else if (redPropThreshold.getPropPosition() == Side.CENTER) {
+        } else if (side == Side.CENTER) {
             output = "center";
         } else {
             output = "right";
         }
         while (!isStarted()) {
-            telemetry.addData("Prop Position", output);
+            telemetry.addData("Prop Position: ", output);
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        Side side = redPropThreshold.getPropPosition();
-        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 0);
+        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 10);
         waitForStart();
 
         while (opModeIsActive()) {

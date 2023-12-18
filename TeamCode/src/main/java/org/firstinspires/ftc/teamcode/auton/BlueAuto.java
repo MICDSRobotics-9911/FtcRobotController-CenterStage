@@ -45,7 +45,7 @@ public class BlueAuto extends LinearOpMode {
                 .setAutoStopLiveView(true)
                 .build();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
+        //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         if (bluePropThreshold.getPropPosition() == Side.LEFT) {
             output = "left";
         } else if (bluePropThreshold.getPropPosition() == Side.CENTER) {
