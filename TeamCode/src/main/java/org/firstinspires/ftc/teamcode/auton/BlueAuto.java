@@ -31,11 +31,13 @@ public class BlueAuto extends LinearOpMode {
         Globals.IS_USING_IMU = false;
         Globals.USING_DASHBOARD = true;
         Globals.COLOR = Side.BLUE;
+        WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
+        FtcDashboard.getInstance();
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
-        bluePropThreshold = new PropPipeline();
+        bluePropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCamera(camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .setCamera(BuiltinCameraDirection.BACK)
                 .addProcessor(bluePropThreshold)

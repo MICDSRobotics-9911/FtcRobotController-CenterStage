@@ -1,12 +1,18 @@
 package org.firstinspires.ftc.teamcode.common.centerstage;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Color;
 
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Continuation;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.vision.VisionProcessor;
+import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -17,7 +23,9 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PropPipeline implements VisionProcessor {
+public class PropPipeline implements VisionProcessor, CameraStreamSource {
+    private final AtomicReference<Bitmap> lastFrame =
+            new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
     private Mat testMat = new Mat();
     private Mat highMat = new Mat();
     private Mat lowMat = new Mat();
@@ -39,19 +47,19 @@ public class PropPipeline implements VisionProcessor {
 
 
 
-    static final Rect LEFT_RECTANGLE = new Rect(
-            new Point(20, 20),
-            new Point(50, 50)
-    );
+    static final Rect LEFT_RECTANGLE = new Rect(0, 161, 190, 169);
 
-    static final Rect RIGHT_RECTANGLE = new Rect(
-            new Point(100, 100),
-            new Point(100, 100)
-    );
+    static final Rect CENTER_RECTANGLE = new Rect(441, 175, 144, 144);
+
+    Telemetry telemetry;
+    public PropPipeline(Telemetry telemetry) {
+        this.telemetry = telemetry;
+    }
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
         threshold = (Globals.COLOR == Side.RED) ? redThreshold : blueThreshold;
+        lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
     }
 
     @Override
@@ -75,10 +83,10 @@ public class PropPipeline implements VisionProcessor {
         highMat.release();
 
         double leftBox = Core.sumElems(finalMat.submat(LEFT_RECTANGLE)).val[0];
-        double rightBox = Core.sumElems(finalMat.submat(RIGHT_RECTANGLE)).val[0];
+        double rightBox = Core.sumElems(finalMat.submat(CENTER_RECTANGLE)).val[0];
 
         double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
-        double averagedRightBox = rightBox / RIGHT_RECTANGLE.area() / 255; //Makes value [0,1]
+        double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
 
 
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
@@ -92,6 +100,9 @@ public class PropPipeline implements VisionProcessor {
         finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
                                   on the driver station stream, do not use this permanently in your code as
                                   you use the "frame" mat for all of your pipelines, such as April Tags*/
+        Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);
+        Utils.matToBitmap(frame, b);
+        lastFrame.set(b);
         return null;            //You do not return the original mat anymore, instead return null
 
     }
@@ -113,11 +124,16 @@ public class PropPipeline implements VisionProcessor {
         rectPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
         canvas.drawRect(makeGraphicsRect(LEFT_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
-        canvas.drawRect(makeGraphicsRect(RIGHT_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
+        canvas.drawRect(makeGraphicsRect(CENTER_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
     }
 
 
     public Side getPropPosition() {
         return this.location;
+    }
+
+    @Override
+    public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
+        continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
     }
 }
