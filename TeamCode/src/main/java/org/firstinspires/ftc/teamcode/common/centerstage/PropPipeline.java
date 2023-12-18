@@ -42,8 +42,8 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar highHSVRedLower = new Scalar(160, 100, 20); //Wraps around Color Wheel
     private final Scalar highHSVRedUpper = new Scalar(180, 255, 255);
 
-    private final Scalar lowHSVBlueLower = new Scalar(110, 50, 50);
-    private final Scalar highHSVBlueUpper = new Scalar(130, 255, 255);
+    private final Scalar lowHSVBlueLower = new Scalar(110, 60, 50);
+    private final Scalar highHSVBlueUpper = new Scalar(120, 255, 255);
 
 
 
