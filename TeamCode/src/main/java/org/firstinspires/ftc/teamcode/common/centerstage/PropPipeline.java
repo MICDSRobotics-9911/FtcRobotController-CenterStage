@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.common.centerstage;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Color;
+
 
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
@@ -21,19 +24,29 @@ public class PropPipeline implements VisionProcessor {
     private Mat finalMat = new Mat();
     // TODO: Tune these threshold values
     double redThreshold = 0.5;
-    double blueThreshold = 0.2;
+    double blueThreshold = 0.5;
     double threshold = 0;
-    private Side location = Side.RIGHT;
+    private Side location = Side.LEFT;
+
+    private final Scalar lowHSVRedLower = new Scalar(0, 100, 20);  //Beginning of Color Wheel
+    private final Scalar lowHSVRedUpper = new Scalar(10, 255, 255);
+
+    private final Scalar highHSVRedLower = new Scalar(160, 100, 20); //Wraps around Color Wheel
+    private final Scalar highHSVRedUpper = new Scalar(180, 255, 255);
+
+    private final Scalar lowHSVBlueLower = new Scalar(110, 50, 50);
+    private final Scalar highHSVBlueUpper = new Scalar(130, 255, 255);
+
 
 
     static final Rect LEFT_RECTANGLE = new Rect(
-            new Point(0, 0),
-            new Point(0, 0)
+            new Point(20, 20),
+            new Point(50, 50)
     );
 
     static final Rect RIGHT_RECTANGLE = new Rect(
-            new Point(0, 0),
-            new Point(0, 0)
+            new Point(100, 100),
+            new Point(100, 100)
     );
 
     @Override
@@ -45,15 +58,14 @@ public class PropPipeline implements VisionProcessor {
     public Object processFrame(Mat frame, long captureTimeNanos) {
         Imgproc.cvtColor(frame, testMat, Imgproc.COLOR_RGB2HSV);
 
-
-        Scalar lowHSVRedLower = new Scalar(0, 100, 20);  //Beginning of Color Wheel
-        Scalar lowHSVRedUpper = new Scalar(10, 255, 255);
-
-        Scalar redHSVRedLower = new Scalar(160, 100, 20); //Wraps around Color Wheel
-        Scalar highHSVRedUpper = new Scalar(180, 255, 255);
-
-        Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
-        Core.inRange(testMat, redHSVRedLower, highHSVRedUpper, highMat);
+        if (Globals.COLOR == Side.RED) {
+            Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
+            Core.inRange(testMat, highHSVRedLower, highHSVRedUpper, highMat);
+        }
+        else {
+            Core.inRange(testMat, lowHSVBlueLower, lowHSVBlueLower, lowMat);
+            Core.inRange(testMat, highHSVBlueUpper, highHSVBlueUpper, highMat);
+        }
 
         testMat.release();
 
@@ -69,9 +81,9 @@ public class PropPipeline implements VisionProcessor {
         double averagedRightBox = rightBox / RIGHT_RECTANGLE.area() / 255; //Makes value [0,1]
 
 
-        if (averagedLeftBox > redThreshold) {        //Must Tune Red Threshold
+        if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
-        } else if (averagedRightBox > redThreshold) {
+        } else if (averagedRightBox > threshold) {
             location = Side.CENTER;
         } else {
             location = Side.RIGHT;
@@ -84,10 +96,26 @@ public class PropPipeline implements VisionProcessor {
 
     }
 
+    private android.graphics.Rect makeGraphicsRect(Rect rect, float scaleBmpPxToCanvasPx) {
+        int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
+        int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
+        int right = left + Math.round(rect.width * scaleBmpPxToCanvasPx);
+        int bottom = top + Math.round(rect.height * scaleBmpPxToCanvasPx);
+
+        return new android.graphics.Rect(left, top, right, bottom);
+    }
+
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
+        Paint rectPaint = new Paint();
+        rectPaint.setColor(Color.RED);
+        rectPaint.setStyle(Paint.Style.STROKE);
+        rectPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
+        canvas.drawRect(makeGraphicsRect(LEFT_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
+        canvas.drawRect(makeGraphicsRect(RIGHT_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
     }
+
 
     public Side getPropPosition() {
         return this.location;
