@@ -48,7 +48,7 @@ public class RedAuto extends LinearOpMode {
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 // Check BuiltinCameraDirection as it might be wrong
                 .setCamera(BuiltinCameraDirection.BACK)
-                .addProcessor(dashboardProcessor)
+                .addProcessor(redPropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
@@ -63,10 +63,10 @@ public class RedAuto extends LinearOpMode {
         }
         while (!isStarted()) {
             telemetry.addData("Prop Position: ", output);
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            //telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 10);
+        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {

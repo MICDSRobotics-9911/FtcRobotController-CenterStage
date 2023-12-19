@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.common.centerstage.FtcDashboardProcessor;
 import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
@@ -24,6 +25,7 @@ public class BlueAuto extends LinearOpMode {
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private String output = "";
+    FtcDashboardProcessor dashboardProcessor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -32,32 +34,43 @@ public class BlueAuto extends LinearOpMode {
         Globals.USING_DASHBOARD = true;
         Globals.COLOR = Side.BLUE;
         WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
-        FtcDashboard.getInstance();
+
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         bluePropThreshold = new PropPipeline(telemetry);
+        dashboardProcessor = new FtcDashboardProcessor(telemetry);
+        telemetry.addData("Dashboard processor: ", "initialized");
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
+                // Check BuiltinCameraDirection as it might be wrong
                 .setCamera(BuiltinCameraDirection.BACK)
                 .addProcessor(bluePropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
-        if (bluePropThreshold.getPropPosition() == Side.LEFT) {
+        Side side = bluePropThreshold.getPropPosition();
+        if (side == Side.LEFT) {
             output = "left";
-        } else if (bluePropThreshold.getPropPosition() == Side.CENTER) {
+        } else if (side == Side.CENTER) {
             output = "center";
         } else {
             output = "right";
         }
         while (!isStarted()) {
-            telemetry.addData("Prop Position", output);
+            telemetry.addData("Prop Position: ", output);
+            //telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        Side side = bluePropThreshold.getPropPosition();
+        FtcDashboard.getInstance().startCameraStream(bluePropThreshold, 30);
+        waitForStart();
+
+        while (opModeIsActive()) {
+            sleep(100L);
+        }
         portal.close();
     }
 }

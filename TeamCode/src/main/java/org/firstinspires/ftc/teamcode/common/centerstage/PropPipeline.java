@@ -61,10 +61,12 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     public void init(int width, int height, CameraCalibration calibration) {
         if (Globals.COLOR == Side.RED) {
             // RED
+            threshold = redThreshold;
             color = Imgproc.COLOR_RGB2HSV;
         }
         else {
             // Blue
+            threshold = blueThreshold;
             color = Imgproc.COLOR_RGB2HSV_FULL;
         }
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
@@ -73,6 +75,7 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
         Imgproc.cvtColor(frame, testMat, color);
+
 
         Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
         Core.inRange(testMat, highHSVRedLower, highHSVRedUpper, highMat);
@@ -89,10 +92,11 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
         double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
         double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
-
-        telemetry.addData("averagedLeftBox: ", averagedLeftBox);
-        telemetry.addData("averagedRightBox: ", averagedRightBox);
-        telemetry.addData("threshold: ", threshold);
+        String color = (Globals.COLOR == Side.RED) ? "red" : "blue";
+        telemetry.addData("Color", color);
+        telemetry.addData("averagedLeftBox", averagedLeftBox);
+        telemetry.addData("averagedRightBox", averagedRightBox);
+        telemetry.addData("threshold", threshold);
         telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
