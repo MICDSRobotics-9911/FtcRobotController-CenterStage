@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.common.centerstage.FtcDashboardProcessor;
 import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
@@ -20,6 +21,7 @@ import java.util.Locale;
 @Autonomous(name="RedAuto", group="Auto")
 public class RedAuto extends LinearOpMode {
     private PropPipeline redPropThreshold;
+    private FtcDashboardProcessor dashboardProcessor;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
@@ -39,12 +41,14 @@ public class RedAuto extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         redPropThreshold = new PropPipeline(telemetry);
+        dashboardProcessor = new FtcDashboardProcessor(telemetry);
+        telemetry.addData("Dashboard processor: ", "initialized");
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 // Check BuiltinCameraDirection as it might be wrong
                 .setCamera(BuiltinCameraDirection.BACK)
-                .addProcessor(redPropThreshold)
+                .addProcessor(dashboardProcessor)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
