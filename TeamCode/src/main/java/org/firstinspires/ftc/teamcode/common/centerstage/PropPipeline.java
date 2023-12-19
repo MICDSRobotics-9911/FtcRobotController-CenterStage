@@ -52,28 +52,30 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     static final Rect CENTER_RECTANGLE = new Rect(441, 175, 144, 144);
 
     Telemetry telemetry;
+    int color;
     public PropPipeline(Telemetry telemetry) {
         this.telemetry = telemetry;
     }
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
-        threshold = (Globals.COLOR == Side.RED) ? redThreshold : blueThreshold;
+        if (Globals.COLOR == Side.RED) {
+            // RED
+            color = Imgproc.COLOR_RGB2HSV;
+        }
+        else {
+            // Blue
+            color = Imgproc.COLOR_RGB2HSV_FULL;
+        }
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
     }
 
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
-        Imgproc.cvtColor(frame, testMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(frame, testMat, color);
 
-        if (Globals.COLOR == Side.RED) {
-            Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
-            Core.inRange(testMat, highHSVRedLower, highHSVRedUpper, highMat);
-        }
-        else {
-            Core.inRange(testMat, lowHSVBlueLower, lowHSVBlueLower, lowMat);
-            Core.inRange(testMat, highHSVBlueUpper, highHSVBlueUpper, highMat);
-        }
+        Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
+        Core.inRange(testMat, highHSVRedLower, highHSVRedUpper, highMat);
 
         testMat.release();
 
@@ -94,11 +96,17 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
         } else if (averagedRightBox > threshold) {
             location = Side.CENTER;
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 255, 255));
         } else {
             location = Side.RIGHT;
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
         }
+
+        Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+        Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
 
         finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
                                   on the driver station stream, do not use this permanently in your code as
@@ -110,24 +118,24 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
     }
 
-    private android.graphics.Rect makeGraphicsRect(Rect rect, float scaleBmpPxToCanvasPx) {
+    /*private android.graphics.Rect makeGraphicsRect(Rect rect, float scaleBmpPxToCanvasPx) {
         int left = Math.round(rect.x * scaleBmpPxToCanvasPx);
         int top = Math.round(rect.y * scaleBmpPxToCanvasPx);
         int right = left + Math.round(rect.width * scaleBmpPxToCanvasPx);
         int bottom = top + Math.round(rect.height * scaleBmpPxToCanvasPx);
 
         return new android.graphics.Rect(left, top, right, bottom);
-    }
+    }*/
 
     @Override
     public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext) {
-        Paint rectPaint = new Paint();
+        /*Paint rectPaint = new Paint();
         rectPaint.setColor(Color.RED);
         rectPaint.setStyle(Paint.Style.STROKE);
         rectPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
         canvas.drawRect(makeGraphicsRect(LEFT_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
-        canvas.drawRect(makeGraphicsRect(CENTER_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);
+        canvas.drawRect(makeGraphicsRect(CENTER_RECTANGLE, scaleBmpPxToCanvasPx), rectPaint);*/
     }
 
 

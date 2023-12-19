@@ -48,7 +48,6 @@ public class RedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         Side side = redPropThreshold.getPropPosition();
         if (side == Side.LEFT) {
