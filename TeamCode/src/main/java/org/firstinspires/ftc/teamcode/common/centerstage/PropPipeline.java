@@ -5,6 +5,8 @@ import android.graphics.Paint;
 import android.graphics.Color;
 
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
@@ -22,7 +24,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.concurrent.atomic.AtomicReference;
-
+@Config
 public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private final AtomicReference<Bitmap> lastFrame =
             new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
