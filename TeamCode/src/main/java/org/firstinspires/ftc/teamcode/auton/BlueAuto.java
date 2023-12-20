@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -25,7 +26,8 @@ public class BlueAuto extends LinearOpMode {
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private String output = "";
-    FtcDashboardProcessor dashboardProcessor;
+    private FtcDashboardProcessor dashboardProcessor;
+    private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,11 +39,9 @@ public class BlueAuto extends LinearOpMode {
 
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         bluePropThreshold = new PropPipeline(telemetry);
-        dashboardProcessor = new FtcDashboardProcessor(telemetry);
-        telemetry.addData("Dashboard processor: ", "initialized");
+        /*dashboardProcessor = new FtcDashboardProcessor(telemetry);
+        telemetry.addData("Dashboard processor: ", "initialized");*/
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
@@ -52,6 +52,8 @@ public class BlueAuto extends LinearOpMode {
                 .setAutoStopLiveView(true)
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         Side side = bluePropThreshold.getPropPosition();
         if (side == Side.LEFT) {
             output = "left";
@@ -62,10 +64,10 @@ public class BlueAuto extends LinearOpMode {
         }
         while (!isStarted()) {
             telemetry.addData("Prop Position: ", output);
-            //telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        FtcDashboard.getInstance().startCameraStream(bluePropThreshold, 30);
+        dashboard.startCameraStream(bluePropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {

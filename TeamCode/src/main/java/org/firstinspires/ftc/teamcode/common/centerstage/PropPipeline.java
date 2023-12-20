@@ -46,10 +46,11 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar highHSVBlueUpper = new Scalar(120, 255, 255);
 
 
+    // TODO: Tune these rectangles and create threshold using test field
+    static final Rect LEFT_RECTANGLE = new Rect(0, 161, 180, 169);
 
-    static final Rect LEFT_RECTANGLE = new Rect(0, 161, 190, 169);
+    static final Rect CENTER_RECTANGLE = new Rect(200, 165, 250, 150);
 
-    static final Rect CENTER_RECTANGLE = new Rect(441, 175, 144, 144);
 
     Telemetry telemetry;
     int color;
@@ -100,13 +101,13 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
         } else if (averagedRightBox > threshold) {
             location = Side.CENTER;
-            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 255, 255));
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
         } else {
             location = Side.RIGHT;
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
         }
 
         Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
