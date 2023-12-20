@@ -38,8 +38,6 @@ public class RedAuto extends LinearOpMode {
 
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         redPropThreshold = new PropPipeline(telemetry);
         dashboardProcessor = new FtcDashboardProcessor(telemetry);
         telemetry.addData("Dashboard processor: ", "initialized");
@@ -48,28 +46,31 @@ public class RedAuto extends LinearOpMode {
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 // Check BuiltinCameraDirection as it might be wrong
                 .setCamera(BuiltinCameraDirection.BACK)
-                .addProcessor(dashboardProcessor)
+                .addProcessor(redPropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
-        Side side = redPropThreshold.getPropPosition();
-        if (side == Side.LEFT) {
-            output = "left";
-        } else if (side == Side.CENTER) {
-            output = "center";
-        } else {
-            output = "right";
-        }
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         while (!isStarted()) {
-            telemetry.addData("Prop Position: ", output);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
-        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 10);
+        dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {
+            Side side = redPropThreshold.getPropPosition();
+            if (side == Side.LEFT) {
+                output = "left";
+            } else if (side == Side.CENTER) {
+                output = "center";
+            } else {
+                output = "right";
+            }
+            telemetry.addData("Prop Position: ", output);
+            telemetry.update();
             sleep(100L);
         }
         portal.close();
