@@ -33,41 +33,42 @@ public class RedAuto extends LinearOpMode {
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
         Globals.USING_DASHBOARD = true;
-        Globals.COLOR = Side.RED;
+        Globals.COLOR = Side.BLUE;
         WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
         redPropThreshold = new PropPipeline(telemetry);
-        dashboardProcessor = new FtcDashboardProcessor(telemetry);
-        telemetry.addData("Dashboard processor: ", "initialized");
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
-                // Check BuiltinCameraDirection as it might be wrong
                 .setCamera(BuiltinCameraDirection.BACK)
                 .addProcessor(redPropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         while (!isStarted()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
         }
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {
             Side side = redPropThreshold.getPropPosition();
-            if (side == Side.LEFT) {
-                output = "left";
-            } else if (side == Side.CENTER) {
-                output = "center";
-            } else {
-                output = "right";
+            switch (side) {
+                case LEFT:
+                    output = "left";
+                    break;
+                case CENTER:
+                    output = "center";
+                    break;
+                case RIGHT:
+                    output = "right";
+                    break;
+                default:
             }
             telemetry.addData("Prop Position: ", output);
             telemetry.update();

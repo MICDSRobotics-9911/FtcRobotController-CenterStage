@@ -28,8 +28,8 @@ public class TeleOpMain extends LinearOpMode {
         waitForStart();
         while (opModeIsActive() && !isStopRequested()) {
             robot.read();
-            //robot.fieldCentricDrive(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
-            robot.robotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), 1);
+            //robot.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
+            robot.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), 1);
             robot.periodic();
             robot.write();
             /*if (gamepadEx.wasJustPressed(GamepadKeys.Button.A)) {

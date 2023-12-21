@@ -65,7 +65,7 @@ public class RobotHardware {
     public void init(final HardwareMap hardwareMap, final Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         // Add an if else detecting whether dashboard is running for telemetry
-        this.telemetry = (Globals.USING_DASHBOARD) ? new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry()) : telemetry;
+        this.telemetry = telemetry;
 
 
         voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
@@ -156,7 +156,7 @@ public class RobotHardware {
         this.subsystems.addAll(Arrays.asList(subsystems));
     }
 
-    public void fieldCentricDrive(double x, double y, double rx) {
+    public void driveFieldCentric(double x, double y, double rx) {
         double power, theta, botHeading, rotX, rotY;
         botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -186,7 +186,7 @@ public class RobotHardware {
         this.frontRightMotor.setPower(frontRight);
     }
 
-    public void robotCentric(double x, double y, double turn, double speedModifier) {
+    public void driveRobotCentric(double x, double y, double turn, double speedModifier) {
         double power, theta, backLeftPower, backRightPower, frontLeftPower, frontRightPower;
         power = Math.hypot(x, y);
         theta = Math.atan2(y, x);

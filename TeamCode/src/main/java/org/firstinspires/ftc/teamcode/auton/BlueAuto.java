@@ -26,7 +26,6 @@ public class BlueAuto extends LinearOpMode {
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private String output = "";
-    private FtcDashboardProcessor dashboardProcessor;
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -40,37 +39,39 @@ public class BlueAuto extends LinearOpMode {
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
         bluePropThreshold = new PropPipeline(telemetry);
-        /*dashboardProcessor = new FtcDashboardProcessor(telemetry);
-        telemetry.addData("Dashboard processor: ", "initialized");*/
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
-                // Check BuiltinCameraDirection as it might be wrong
                 .setCamera(BuiltinCameraDirection.BACK)
                 .addProcessor(bluePropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
+        while (!isStarted()) {
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+        }
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-        Side side = bluePropThreshold.getPropPosition();
-        if (side == Side.LEFT) {
-            output = "left";
-        } else if (side == Side.CENTER) {
-            output = "center";
-        } else {
-            output = "right";
-        }
-        while (!isStarted()) {
-            telemetry.addData("Prop Position: ", output);
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
-        }
         dashboard.startCameraStream(bluePropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {
+            Side side = bluePropThreshold.getPropPosition();
+            switch (side) {
+                case LEFT:
+                    output = "left";
+                    break;
+                case CENTER:
+                    output = "center";
+                    break;
+                case RIGHT:
+                    output = "right";
+                    break;
+                default:
+            }
+            telemetry.addData("Prop Position: ", output);
+            telemetry.update();
             sleep(100L);
         }
         portal.close();
