@@ -39,7 +39,6 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar lowHSVBlueLower = new Scalar(80, 100, 100);
     private final Scalar highHSVBlueUpper = new Scalar(120, 255, 255);
     static final Rect LEFT_RECTANGLE = new Rect(0, 151, 180, 179);
-
     static final Rect CENTER_RECTANGLE = new Rect(200, 120, 340, 240);
     Telemetry telemetry;
     public PropPipeline(Telemetry telemetry) {
@@ -84,7 +83,6 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         telemetry.addData("averagedLeftBox", averagedLeftBox);
         telemetry.addData("averagedRightBox", averagedRightBox);
         telemetry.addData("threshold", threshold);
-        telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
             Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));

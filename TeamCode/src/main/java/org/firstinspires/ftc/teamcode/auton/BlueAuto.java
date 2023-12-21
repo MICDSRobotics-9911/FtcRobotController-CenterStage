@@ -38,6 +38,8 @@ public class BlueAuto extends LinearOpMode {
 
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         bluePropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
@@ -49,10 +51,10 @@ public class BlueAuto extends LinearOpMode {
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         while (!isStarted()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("camera: ", portal.getCameraState());
+            //telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
         }
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         dashboard.startCameraStream(bluePropThreshold, 30);
         waitForStart();
 

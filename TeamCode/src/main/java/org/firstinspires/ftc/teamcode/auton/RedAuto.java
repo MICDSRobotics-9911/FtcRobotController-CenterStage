@@ -33,11 +33,13 @@ public class RedAuto extends LinearOpMode {
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
         Globals.USING_DASHBOARD = true;
-        Globals.COLOR = Side.BLUE;
+        Globals.COLOR = Side.RED;
         WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         // robot.init(hardwareMap, telemetry);
         // robot.enabled = true;
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         redPropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(camera)
@@ -49,10 +51,10 @@ public class RedAuto extends LinearOpMode {
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         while (!isStarted()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("camera: ", portal.getCameraState());
+            //telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
         }
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
 
