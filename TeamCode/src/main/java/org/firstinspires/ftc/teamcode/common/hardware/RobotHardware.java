@@ -93,8 +93,8 @@ public class RobotHardware {
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
-        imu = hardwareMap.get(IMU.class, "imu");
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
+        imu = hardwareMap.get(IMU.class, "imu 1");
         imu.initialize(parameters);
         imu.resetYaw();
 
@@ -167,8 +167,6 @@ public class RobotHardware {
         double backLeftPower = (rotY - rotX + rx) / denominator;
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
-
-        // This speed modifier is for true racers
 
         setDrivePowers(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
         telemetry.addData("backLeft: ", backLeftPower);

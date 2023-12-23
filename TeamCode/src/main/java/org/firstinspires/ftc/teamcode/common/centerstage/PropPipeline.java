@@ -13,10 +13,13 @@ import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 @Config
 public class PropPipeline implements VisionProcessor, CameraStreamSource {
@@ -80,22 +83,21 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
         double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
         double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
-        telemetry.addData("averagedLeftBox", averagedLeftBox);
-        telemetry.addData("averagedRightBox", averagedRightBox);
-        telemetry.addData("threshold", threshold);
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(0, 255, 0));
         } else if (averagedRightBox > threshold) {
             location = Side.CENTER;
-            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(0, 255, 0));
         } else {
             location = Side.RIGHT;
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(75, 0, 130));
         }
 
-        Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
-        Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
+
+        // These lines are for tuning the rectangles
+        //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+        //Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
 
         finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
                                   on the driver station stream, do not use this permanently in your code as

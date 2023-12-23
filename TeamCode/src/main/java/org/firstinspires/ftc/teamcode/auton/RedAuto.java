@@ -51,14 +51,18 @@ public class RedAuto extends LinearOpMode {
                 .build();
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         while (!isStarted()) {
+            telemetry.addLine("auto in init");
             telemetry.addData("camera: ", portal.getCameraState());
-            //telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
         }
         dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {
+            //robot.read();
+            //robot.periodic();
+            //robot.write();
+            //robot.clearBulkCache();
             Side side = redPropThreshold.getPropPosition();
             switch (side) {
                 case LEFT:
@@ -77,5 +81,10 @@ public class RedAuto extends LinearOpMode {
             sleep(100L);
         }
         portal.close();
+    }
+
+
+    private void turnRobot(double thetaInRads) {
+        // robot.driveRobotCentric(0, 0, thetaInRads);
     }
 }
