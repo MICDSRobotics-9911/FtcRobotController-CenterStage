@@ -94,7 +94,6 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
             Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(75, 0, 130));
         }
 
-
         // These lines are for tuning the rectangles
         //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
         //Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));

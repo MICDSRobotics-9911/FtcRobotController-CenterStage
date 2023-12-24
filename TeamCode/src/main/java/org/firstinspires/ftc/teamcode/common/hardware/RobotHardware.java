@@ -32,6 +32,7 @@ import java.util.List;
 public class RobotHardware {
     private static double p = 0.0, i = 0.0, d = 0.0;
     private double errorTolerance = 0.0;
+    private int drivePosTolerance = 50;
     private ElapsedTime voltageTimer = new ElapsedTime();
     private double voltage = 12.0;
     public DcMotorEx frontLeftMotor;
@@ -92,6 +93,18 @@ public class RobotHardware {
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        if (Globals.IS_AUTO) {
+            backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
         imu = hardwareMap.get(IMU.class, "imu 1");
@@ -149,7 +162,7 @@ public class RobotHardware {
 
     public void clearBulkCache() {
         modules.get(0).clearBulkCache();
-        //modules.get(1).clearBulkCache();
+        modules.get(1).clearBulkCache();
     }
 
     public void addSubsystem(WSubsystem... subsystems) {
@@ -211,6 +224,19 @@ public class RobotHardware {
         telemetry.addData("frontLeft: ", frontLeftPower);
         telemetry.addData("frontRight", frontRightPower);
         telemetry.update();
+    }
+
+    public int setDriveTrainTarget(int target) {
+        backLeftMotor.setTargetPosition(target);
+        backRightMotor.setTargetPosition(target);
+        frontLeftMotor.setTargetPosition(target);
+        frontRightMotor.setTargetPosition(target);
+
+        backLeftMotor.setTargetPositionTolerance(drivePosTolerance);
+        backRightMotor.setTargetPositionTolerance(drivePosTolerance);
+        frontLeftMotor.setTargetPositionTolerance(drivePosTolerance);
+        frontRightMotor.setTargetPositionTolerance(drivePosTolerance);
+        return drivePosTolerance;
     }
 
     public void stopDrive() {

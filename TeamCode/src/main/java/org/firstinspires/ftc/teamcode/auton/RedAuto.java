@@ -85,6 +85,6 @@ public class RedAuto extends LinearOpMode {
 
 
     private void turnRobot(double thetaInRads) {
-        // robot.driveRobotCentric(0, 0, thetaInRads);
+        // robot.driveRobotCentric(0, 0, 1);
     }
 }
