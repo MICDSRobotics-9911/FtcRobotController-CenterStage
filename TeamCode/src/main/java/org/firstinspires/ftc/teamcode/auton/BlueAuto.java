@@ -52,28 +52,13 @@ public class BlueAuto extends LinearOpMode {
         //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         while (!isStarted()) {
             telemetry.addData("camera: ", portal.getCameraState());
-            //telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addLine("auto in init");
             telemetry.update();
         }
         dashboard.startCameraStream(bluePropThreshold, 30);
         waitForStart();
 
         while (opModeIsActive()) {
-            Side side = bluePropThreshold.getPropPosition();
-            switch (side) {
-                case LEFT:
-                    output = "left";
-                    break;
-                case CENTER:
-                    output = "center";
-                    break;
-                case RIGHT:
-                    output = "right";
-                    break;
-                default:
-            }
-            telemetry.addData("Prop Position: ", output);
-            telemetry.update();
             sleep(100L);
         }
         portal.close();

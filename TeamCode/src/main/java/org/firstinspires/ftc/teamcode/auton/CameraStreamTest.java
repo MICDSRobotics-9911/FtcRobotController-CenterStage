@@ -31,11 +31,13 @@ public class CameraStreamTest extends LinearOpMode {
             Globals.IS_AUTO = true;
             Globals.IS_USING_IMU = false;
             Globals.USING_DASHBOARD = true;
-            Globals.COLOR = Side.BLUE;
+            Globals.COLOR = Side.RED;
             WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
             // robot.init(hardwareMap, telemetry);
             // robot.enabled = true;
+            FtcDashboard dashboard = FtcDashboard.getInstance();
+            telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
             dashboardProcessor = new FtcDashboardProcessor(telemetry);
             portal = new VisionPortal.Builder()
                     .setCamera(camera)
@@ -47,10 +49,10 @@ public class CameraStreamTest extends LinearOpMode {
                     .build();
             //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
             while (!isStarted()) {
-                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                /*telemetry.addLine("camera test in init");
+                telemetry.addData("camera: ", portal.getCameraState());
+                telemetry.update();*/
             }
-            FtcDashboard dashboard = FtcDashboard.getInstance();
-            telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
             dashboard.startCameraStream(dashboardProcessor, 30);
             waitForStart();
 

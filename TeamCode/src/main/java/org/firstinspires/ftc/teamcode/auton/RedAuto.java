@@ -59,25 +59,12 @@ public class RedAuto extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            Side location = redPropThreshold.getPropPosition();
+
             //robot.read();
             //robot.periodic();
             //robot.write();
             //robot.clearBulkCache();
-            Side side = redPropThreshold.getPropPosition();
-            switch (side) {
-                case LEFT:
-                    output = "left";
-                    break;
-                case CENTER:
-                    output = "center";
-                    break;
-                case RIGHT:
-                    output = "right";
-                    break;
-                default:
-            }
-            telemetry.addData("Prop Position: ", output);
-            telemetry.update();
             sleep(100L);
         }
         portal.close();

@@ -83,22 +83,28 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
         double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
         double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
+        telemetry.addData("Left Box: ", averagedLeftBox);
+        telemetry.addData("Right Box: ", averagedRightBox);
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
+            telemetry.addData("Location: ", "left");
             location = Side.LEFT;
             Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(0, 255, 0));
         } else if (averagedRightBox > threshold) {
+            telemetry.addData("Location: ", "center");
             location = Side.CENTER;
             Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(0, 255, 0));
         } else {
+            telemetry.addData("Location: ", "right");
             location = Side.RIGHT;
             Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(75, 0, 130));
         }
+        telemetry.update();
 
         // These lines are for tuning the rectangles
         //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
         //Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
 
-        finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
+        /*finalMat.copyTo(frame); This line should only be added in when you want to see your custom pipeline
                                   on the driver station stream, do not use this permanently in your code as
                                   you use the "frame" mat for all of your pipelines, such as April Tags*/
         Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);
