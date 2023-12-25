@@ -20,6 +20,7 @@ public class TeleOpMain extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        double speedModifier = 1;
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
         robot.init(hardwareMap, telemetry);
@@ -31,8 +32,12 @@ public class TeleOpMain extends LinearOpMode {
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
             robot.read();
-            //robot.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
-            robot.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), 1);
+            //robot.drivetrain.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
+            if (gamepadEx.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
+                speedModifier = 0.3;
+            }
+            robot.drivetrain.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
+            telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
             /*if (gamepadEx.wasJustPressed(GamepadKeys.Button.A)) {
                 robot.airplaneHold.setPosition(0.5);

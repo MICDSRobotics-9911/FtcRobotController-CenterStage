@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.common.drive.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WActuatorGroup;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WEncoder;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WSubsystem;
@@ -52,7 +53,9 @@ public class RobotHardware {
     public boolean enabled;
     public List<LynxModule> modules;
     private ArrayList<WSubsystem> subsystems;
-    IMU imu;
+    public MecanumDrivetrain drivetrain;
+    public IMU imu;
+    private double imuAngle = 0;
 
 
     public static RobotHardware getInstance() {
@@ -67,14 +70,6 @@ public class RobotHardware {
         this.hardwareMap = hardwareMap;
         // Add an if else detecting whether dashboard is running for telemetry
         this.telemetry = telemetry;
-
-
-        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
-        this.subsystems = new ArrayList<>();
-
-        modules = hardwareMap.getAll(LynxModule.class);
-        modules.get(0).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
         // DRIVETRAIN
         this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
@@ -129,12 +124,28 @@ public class RobotHardware {
         //airplaneHold = new SimpleServo(hardwareMap, "airplane_hold", 0, 270);
 
         // Hang
+        modules = hardwareMap.getAll(LynxModule.class);
+        modules.get(0).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
+        this.subsystems = new ArrayList<>();
+        drivetrain = new MecanumDrivetrain(this.telemetry);
+        if (Globals.IS_AUTO) {
+            // some sort of localizer init
+        } else {
+            // drone = new DroneSubsystem();
+            // hang = new HangSubsystem();
+        }
+
+        voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
     }
 
     public void read() {
         for (WSubsystem subsystem : subsystems) {
             subsystem.read();
+        }
+        if (Globals.IS_USING_IMU) {
+            imuAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         }
     }
 
@@ -169,82 +180,12 @@ public class RobotHardware {
         this.subsystems.addAll(Arrays.asList(subsystems));
     }
 
-    public void driveFieldCentric(double x, double y, double rx) {
-        double power, theta, botHeading, rotX, rotY;
-        botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-        rotX = rotX * 0.8; // Counteract imperfect strafing
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
-
-        setDrivePowers(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
-        telemetry.addData("backLeft: ", backLeftPower);
-        telemetry.addData("backRight: ", backRightPower);
-        telemetry.addData("frontLeft: ", frontLeftPower);
-        telemetry.addData("frontRight: ", frontRightPower);
-        telemetry.addData("robotHeading: ", botHeading);
-        telemetry.update();
-    }
-
-    public void setDrivePowers(double backLeft, double backRight, double frontLeft, double frontRight) {
-        this.backLeftMotor.setPower(backLeft);
-        this.backRightMotor.setPower(backRight);
-        this.frontLeftMotor.setPower(frontLeft);
-        this.frontRightMotor.setPower(frontRight);
-    }
-
-    public void driveRobotCentric(double x, double y, double turn, double speedModifier) {
-        double power, theta, backLeftPower, backRightPower, frontLeftPower, frontRightPower;
-        power = Math.hypot(x, y);
-        theta = Math.atan2(y, x);
-
-
-        double sin = Math.sin(theta - Math.PI/4);
-        double cos = Math.cos(theta - Math.PI/4);
-        double max = Math.max(Math.abs(sin), Math.abs(cos));
-
-        backLeftPower = power * sin/max + turn;
-        backRightPower = power * cos/max - turn;
-        frontLeftPower = power * cos/max + turn;
-        frontRightPower = power * sin/max - turn;
-
-        if ((power + Math.abs(turn)) > 1) {
-            frontLeftPower /= power + Math.abs(turn);
-            frontRightPower /= power + Math.abs(turn);
-            backLeftPower /= power + Math.abs(turn);
-            backRightPower /= power + Math.abs(turn);
-        }
-        setDrivePowers(backLeftPower * speedModifier, backRightPower * speedModifier, frontLeftPower * speedModifier, frontRightPower * speedModifier);
-        telemetry.addData("backLeft: ", backLeftPower);
-        telemetry.addData("backRight: ", backRightPower);
-        telemetry.addData("frontLeft: ", frontLeftPower);
-        telemetry.addData("frontRight", frontRightPower);
-        telemetry.update();
-    }
-
-    public int setDriveTrainTarget(int target) {
-        backLeftMotor.setTargetPosition(target);
-        backRightMotor.setTargetPosition(target);
-        frontLeftMotor.setTargetPosition(target);
-        frontRightMotor.setTargetPosition(target);
-
-        backLeftMotor.setTargetPositionTolerance(drivePosTolerance);
-        backRightMotor.setTargetPositionTolerance(drivePosTolerance);
-        frontLeftMotor.setTargetPositionTolerance(drivePosTolerance);
-        frontRightMotor.setTargetPositionTolerance(drivePosTolerance);
-        return drivePosTolerance;
-    }
-
-    public void stopDrive() {
-        setDrivePowers(0, 0, 0, 0);
-    }
-
     public double getVoltage() {
         return voltage;
+    }
+
+    public double getAngle() {
+        return imuAngle;
     }
 
     public void log(String data) {

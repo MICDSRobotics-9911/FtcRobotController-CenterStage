@@ -25,7 +25,6 @@ public class BlueAuto extends LinearOpMode {
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
-    private String output = "";
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -49,7 +48,6 @@ public class BlueAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         while (!isStarted()) {
             telemetry.addData("camera: ", portal.getCameraState());
             telemetry.addLine("auto in init");
@@ -59,6 +57,10 @@ public class BlueAuto extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            //robot.read();
+            //robot.periodic();
+            //robot.write();
+            //robot.clearBulkCache();
             sleep(100L);
         }
         portal.close();

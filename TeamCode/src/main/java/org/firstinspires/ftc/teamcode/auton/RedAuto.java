@@ -25,7 +25,6 @@ public class RedAuto extends LinearOpMode {
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
-    private String output = "";
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -49,7 +48,6 @@ public class RedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
         while (!isStarted()) {
             telemetry.addLine("auto in init");
             telemetry.addData("camera: ", portal.getCameraState());
@@ -68,10 +66,5 @@ public class RedAuto extends LinearOpMode {
             sleep(100L);
         }
         portal.close();
-    }
-
-
-    private void turnRobot(double thetaInRads) {
-        // robot.driveRobotCentric(0, 0, 1);
     }
 }
