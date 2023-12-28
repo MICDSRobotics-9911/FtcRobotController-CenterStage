@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.common.drive.MecanumDrivetrain;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WActuatorGroup;
@@ -45,6 +46,7 @@ public class RobotHardware {
     public ServoEx airplaneLaunch;
     public ServoEx airplaneHold;
     public ServoEx clawServo;
+    public WebcamName camera;
     public WEncoder extensionEncoder;
     public WActuatorGroup extensionActuator;
     private HardwareMap hardwareMap;
@@ -73,27 +75,26 @@ public class RobotHardware {
 
         // DRIVETRAIN
         this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
+        backLeftMotor.resetDeviceConfigurationForOpMode();
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.backRightMotor = hardwareMap.get(DcMotorEx.class, "back_right_drive");
+        backRightMotor.resetDeviceConfigurationForOpMode();
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front_left_drive");
+        frontLeftMotor.resetDeviceConfigurationForOpMode();
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.frontRightMotor = hardwareMap.get(DcMotorEx.class, "front_right_drive");
+        frontRightMotor.resetDeviceConfigurationForOpMode();
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         if (Globals.IS_AUTO) {
-            backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
             backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -102,7 +103,7 @@ public class RobotHardware {
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
-        imu = hardwareMap.get(IMU.class, "imu 1");
+        imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(parameters);
         imu.resetYaw();
 
@@ -136,6 +137,7 @@ public class RobotHardware {
             // drone = new DroneSubsystem();
             // hang = new HangSubsystem();
         }
+        camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
     }

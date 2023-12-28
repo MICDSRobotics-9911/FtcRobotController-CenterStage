@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.common.centerstage.FtcDashboardProcessor;
 import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
+import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import java.util.Locale;
@@ -27,21 +28,29 @@ public class RedAuto extends LinearOpMode {
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private ElapsedTime runtime = new ElapsedTime();
 
+    // TODO: Encoder Ticks needs to be tuned
+    private int target = 0;
+
+
+    // TODO: This tolerance also needs to be empirically tuned
+    private int tolerance = 100;
+    private RobotHardware robot;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
         Globals.USING_DASHBOARD = true;
         Globals.COLOR = Side.RED;
-        WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        // robot.init(hardwareMap, telemetry);
-        // robot.enabled = true;
+        robot = RobotHardware.getInstance();
+        robot.init(hardwareMap, telemetry);
+        robot.enabled = true;
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         redPropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
-                .setCamera(camera)
+                .setCamera(robot.camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .setCamera(BuiltinCameraDirection.BACK)
                 .addProcessor(redPropThreshold)
@@ -55,15 +64,29 @@ public class RedAuto extends LinearOpMode {
         }
         dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
-
+        robot.drivetrain.setDriveTrainTarget(target, tolerance);
         while (opModeIsActive()) {
             Side location = redPropThreshold.getPropPosition();
-
-            //robot.read();
-            //robot.periodic();
-            //robot.write();
-            //robot.clearBulkCache();
-            sleep(100L);
+            switch (location) {
+                case LEFT:
+                    telemetry.addLine("Left");
+                    break;
+                case CENTER:
+                    telemetry.addLine("center");
+                    break;
+                case RIGHT:
+                    telemetry.addLine("right");
+                    break;
+                default:
+            }
+            while (robot.drivetrain.isBusy()) {
+                robot.drivetrain.driveForward(0.5);
+            }
+            robot.read();
+            robot.periodic();
+            robot.write();
+            telemetry.update();
+            robot.clearBulkCache();
         }
         portal.close();
     }
