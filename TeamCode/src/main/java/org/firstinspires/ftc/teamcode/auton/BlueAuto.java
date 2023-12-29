@@ -62,18 +62,7 @@ public class BlueAuto extends LinearOpMode {
         robot.drivetrain.setDriveTrainTarget(target, tolerance);
         while (opModeIsActive()) {
             Side location = bluePropThreshold.getPropPosition();
-            switch (location) {
-                case LEFT:
-                    telemetry.addLine("Left");
-                    break;
-                case CENTER:
-                    telemetry.addLine("center");
-                    break;
-                case RIGHT:
-                    telemetry.addLine("right");
-                    break;
-                default:
-            }
+            telemetry.addData("Prop Location: ", location.toString());
             while (robot.drivetrain.isBusy()) {
                 robot.drivetrain.driveForward(0.5);
             }

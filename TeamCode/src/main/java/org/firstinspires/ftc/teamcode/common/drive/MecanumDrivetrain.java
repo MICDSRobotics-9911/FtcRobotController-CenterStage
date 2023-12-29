@@ -143,11 +143,21 @@ public class MecanumDrivetrain extends WSubsystem {
 
     public void driveForward(double speed) {
         driveRobotCentric(0, 1, 0, speed);
-        telemetry.addData("backLeftPos: ", backLeftPos);
-        telemetry.addData("backrightPos: ", backRightPos);
-        telemetry.addData("frontLeftPos: ", frontLeftPos);
-        telemetry.addData("frontRightPos: ", frontRightPos);
     }
+
+    public void strafeRight(double speed) {
+        driveRobotCentric(1, 0, 0, speed);
+    }
+
+    public void strafeLeft(double speed) {
+        driveRobotCentric(-1, 0, 0, speed);
+    }
+
+    public void driveBackwards(double speed) {
+        driveRobotCentric(0, -1, 0, speed);
+    }
+
+
     public void resetEncoders() {
         robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -174,6 +184,10 @@ public class MecanumDrivetrain extends WSubsystem {
     @Override
     public void write() {
         setDrivePowers(ws[0], ws[1], ws[2], ws[3]);
+        telemetry.addData("backLeftPos: ", backLeftPos);
+        telemetry.addData("backrightPos: ", backRightPos);
+        telemetry.addData("frontLeftPos: ", frontLeftPos);
+        telemetry.addData("frontRightPos: ", frontRightPos);
     }
 
     @Override

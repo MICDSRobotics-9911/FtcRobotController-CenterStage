@@ -4,6 +4,7 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -57,28 +58,19 @@ public class RedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
+        Side location = redPropThreshold.getPropPosition();
         while (!isStarted()) {
             telemetry.addLine("auto in init");
             telemetry.addData("camera: ", portal.getCameraState());
+            telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
         dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
         robot.drivetrain.setDriveTrainTarget(target, tolerance);
         while (opModeIsActive()) {
-            Side location = redPropThreshold.getPropPosition();
-            switch (location) {
-                case LEFT:
-                    telemetry.addLine("Left");
-                    break;
-                case CENTER:
-                    telemetry.addLine("center");
-                    break;
-                case RIGHT:
-                    telemetry.addLine("right");
-                    break;
-                default:
-            }
+            location = redPropThreshold.getPropPosition();
+            telemetry.addData("Prop Location: ", location.toString());
             while (robot.drivetrain.isBusy()) {
                 robot.drivetrain.driveForward(0.5);
             }
