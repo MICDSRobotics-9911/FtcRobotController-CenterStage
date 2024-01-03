@@ -53,6 +53,9 @@ public class MecanumDrivetrain extends WSubsystem {
 
     public void driveRobotCentric(double x, double y, double turn, double speedModifier) {
         double power, theta, backLeftPower, backRightPower, frontLeftPower, frontRightPower;
+        if (speedModifier < 0) {
+            speedModifier *= -1;
+        }
         x *= speedModifier;
         y *= speedModifier;
         turn *= speedModifier;
@@ -85,6 +88,9 @@ public class MecanumDrivetrain extends WSubsystem {
 
     public void driveFieldCentric(double x, double y, double rx, double speedModifier) {
         double power, theta, botHeading, rotX, rotY;
+        if (speedModifier < 0) {
+            speedModifier *= -1;
+        }
         x *= speedModifier;
         y *= speedModifier;
         rx *= speedModifier;
@@ -155,6 +161,14 @@ public class MecanumDrivetrain extends WSubsystem {
 
     public void driveBackwards(double speed) {
         driveRobotCentric(0, -1, 0, speed);
+    }
+
+    public void turnRight(double speed) {
+        driveRobotCentric(0, 0, 1, speed);
+    }
+
+    public void turnLeft(double speed) {
+        driveRobotCentric(0, 0, -1, speed);
     }
 
 

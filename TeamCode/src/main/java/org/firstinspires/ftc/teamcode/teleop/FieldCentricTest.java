@@ -61,8 +61,8 @@ public class FieldCentricTest extends LinearOpMode {
             telemetry.addData("Runtime: ", runtime.toString());
             telemetry.addData("Heading: ", robot.getAngle());
             loopTime = loop;
-            telemetry.update();
             robot.write();
+            telemetry.update();
             robot.clearBulkCache();
         }
     }
