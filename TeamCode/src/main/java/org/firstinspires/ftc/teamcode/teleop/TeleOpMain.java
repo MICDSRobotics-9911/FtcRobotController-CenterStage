@@ -54,7 +54,6 @@ public class TeleOpMain extends LinearOpMode {
                 robot.airplaneLaunch.setPosition(1);
             }
             if (gamepadEx.isDown(GamepadKeys.Button.B)) {
-
             }*/
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));

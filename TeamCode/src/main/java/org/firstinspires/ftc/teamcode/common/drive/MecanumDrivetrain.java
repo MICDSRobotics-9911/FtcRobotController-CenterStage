@@ -22,6 +22,11 @@ public class MecanumDrivetrain extends WSubsystem {
     private double backRightPos = 0.0;
     private double frontLeftPos = 0.0;
     private double frontRightPos = 0.0;
+    private int backLeftTarget = 0;
+    private int backRightTarget = 0;
+    private int frontLeftTarget = 0;
+    private int frontRightTarget = 0;
+
     private PIDController controller;
     private Telemetry telemetry;
     public static double p = 0, i = 0, d = 0;
@@ -112,12 +117,20 @@ public class MecanumDrivetrain extends WSubsystem {
         setDrivePowers();
     }
 
-    public void setDriveTrainTarget(int target, int drivePosTolerance) {
+    public void setDriveTrainTarget(int backLeftTarget, int backRightTarget, int frontLeftTarget, int frontRightTarget) {
         robot.drivetrain.resetEncoders();
-        robot.backLeftMotor.setTargetPosition(target);
-        robot.backRightMotor.setTargetPosition(target);
-        robot.frontLeftMotor.setTargetPosition(target);
-        robot.frontRightMotor.setTargetPosition(target);
+        this.backLeftTarget = backLeftTarget;
+        this.backRightTarget = backRightTarget;
+        this.frontLeftTarget = frontLeftTarget;
+        this.frontRightTarget = frontRightTarget;
+    }
+
+    public void setDriveToPosition(int drivePosTolerance) {
+        robot.drivetrain.resetEncoders();
+        robot.backLeftMotor.setTargetPosition(backLeftTarget);
+        robot.backRightMotor.setTargetPosition(backRightTarget);
+        robot.frontLeftMotor.setTargetPosition(frontLeftTarget);
+        robot.frontRightMotor.setTargetPosition(frontRightTarget);
 
         robot.backLeftMotor.setTargetPositionTolerance(drivePosTolerance);
         robot.backRightMotor.setTargetPositionTolerance(drivePosTolerance);
