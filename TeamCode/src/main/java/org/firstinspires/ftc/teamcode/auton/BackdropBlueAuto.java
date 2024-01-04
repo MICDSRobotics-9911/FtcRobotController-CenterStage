@@ -25,10 +25,10 @@ public class BackdropBlueAuto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     // TODO: Encoder Ticks needs to be tuned for driving forward to spike mark
-    private int backLeftTarget = 0;
-    private int backRightTarget = 0;
-    private int frontLeftTarget = 0;
-    private int frontRightTarget = 0;
+    private int backLeftTarget = 2000;
+    private int backRightTarget = -2000;
+    private int frontLeftTarget = 2000;
+    private int frontRightTarget = -2000;
 
 
     // TODO: This tolerance also needs to be empirically tuned
@@ -40,13 +40,11 @@ public class BackdropBlueAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
-        Globals.USING_DASHBOARD = true;
+        Globals.USING_DASHBOARD = false;
         Globals.COLOR = Side.BLUE;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
         robot.enabled = true;
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         bluePropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
@@ -63,17 +61,23 @@ public class BackdropBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        dashboard.startCameraStream(bluePropThreshold, 30);
         waitForStart();
-        robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
-        robot.drivetrain.setDriveToPosition(tolerance);
+        //robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
+        //robot.drivetrain.setDriveToPosition(tolerance);
+        runtime.reset();
         while (opModeIsActive()) {
             location = bluePropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
+
             while (robot.drivetrain.isBusy()) {
                 robot.drivetrain.driveForward(0.5);
+                telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
+                telemetry.addData("backrightPos: ", robot.backRightMotor.getCurrentPosition());
+                telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
+                telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
+                telemetry.update();
             }
-            switch (location) {
+            /*switch (location) {
                 case LEFT:
                     // TODO: Tune strafe encoder values
                     backLeftTarget = 0;
@@ -150,6 +154,7 @@ public class BackdropBlueAuto extends LinearOpMode {
             // Drop pixel based on randomization
 
 
+             */
             robot.read();
             robot.periodic();
             robot.write();

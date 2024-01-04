@@ -86,19 +86,15 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         telemetry.addData("Left Box: ", averagedLeftBox);
         telemetry.addData("Right Box: ", averagedRightBox);
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
-            telemetry.addData("Location: ", "left");
             location = Side.LEFT;
             Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(0, 255, 0));
         } else if (averagedRightBox > threshold) {
-            telemetry.addData("Location: ", "center");
             location = Side.CENTER;
             Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(0, 255, 0));
         } else {
-            telemetry.addData("Location: ", "right");
             location = Side.RIGHT;
             Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(75, 0, 130));
         }
-        telemetry.update();
 
         // These lines are for tuning the rectangles
         //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));

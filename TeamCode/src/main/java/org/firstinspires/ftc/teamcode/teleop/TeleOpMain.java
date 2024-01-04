@@ -40,12 +40,16 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             robot.read();
             //robot.drivetrain.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
+            if (gamepadEx.getButton(GamepadKeys.Button.DPAD_UP)) {
+                robot.drivetrain.resetEncoders();
+            }
             if (gamepadEx.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
                 speedModifier = 0.3;
             } else {
                 speedModifier = 1;
             }
             robot.drivetrain.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
+            robot.drivetrain.setDrivePowers();
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
             /*if (gamepadEx.wasJustPressed(GamepadKeys.Button.A)) {
@@ -59,6 +63,10 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
             telemetry.addData("Runtime: ", runtime.toString());
             telemetry.addData("Heading: ", robot.getAngle());
+            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
+            telemetry.addData("backrightPos: ", robot.backRightMotor.getCurrentPosition());
+            telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
+            telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
             loopTime = loop;
             robot.write();
             telemetry.update();

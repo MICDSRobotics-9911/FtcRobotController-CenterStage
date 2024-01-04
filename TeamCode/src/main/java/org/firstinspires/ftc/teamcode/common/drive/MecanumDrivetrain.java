@@ -18,10 +18,10 @@ public class MecanumDrivetrain extends WSubsystem {
     private final double ticksPerInch = 0.0;
 
     double[] ws = new double[4];
-    private double backLeftPos = 0.0;
-    private double backRightPos = 0.0;
-    private double frontLeftPos = 0.0;
-    private double frontRightPos = 0.0;
+    public double backLeftPos = 0.0;
+    public double backRightPos = 0.0;
+    public double frontLeftPos = 0.0;
+    public double frontRightPos = 0.0;
     private int backLeftTarget = 0;
     private int backRightTarget = 0;
     private int frontLeftTarget = 0;
@@ -152,11 +152,6 @@ public class MecanumDrivetrain extends WSubsystem {
         ws[3] = controller.calculate(frontRightPos, target);
 
         setDrivePowers();
-
-        telemetry.addData("backLeftPos: ", backLeftPos);
-        telemetry.addData("backrightPos: ", backRightPos);
-        telemetry.addData("frontLeftPos: ", frontLeftPos);
-        telemetry.addData("frontRightPos: ", frontRightPos);
     }
 
 
@@ -193,7 +188,7 @@ public class MecanumDrivetrain extends WSubsystem {
     }
 
     public boolean isBusy() {
-        return robot.backLeftMotor.isBusy() && robot.backRightMotor.isBusy() && robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy();
+        return robot.backLeftMotor.isBusy() || robot.backRightMotor.isBusy() || robot.frontLeftMotor.isBusy() || robot.frontRightMotor.isBusy();
     }
     @Override
     public void periodic() {
@@ -211,10 +206,6 @@ public class MecanumDrivetrain extends WSubsystem {
     @Override
     public void write() {
         setDrivePowers(ws[0], ws[1], ws[2], ws[3]);
-        telemetry.addData("backLeftPos: ", backLeftPos);
-        telemetry.addData("backrightPos: ", backRightPos);
-        telemetry.addData("frontLeftPos: ", frontLeftPos);
-        telemetry.addData("frontRightPos: ", frontRightPos);
     }
 
     @Override
@@ -225,7 +216,7 @@ public class MecanumDrivetrain extends WSubsystem {
     }
 
     public String toString() {
-        return "WS0: " + ws[0] + "WS1: " + ws[1] + "WS2: " + ws[2] + "WS3: " + ws[3];
+        return "backLeftPower: " + robot.backLeftMotor.getPower() + "\nbackRightPower: " + robot.backRightMotor.getPower() + "\nfrontLeftPower: " + robot.frontLeftMotor.getPower() + "\nfrontRightPower: " + robot.frontRightMotor.getPower();
     }
 
 }

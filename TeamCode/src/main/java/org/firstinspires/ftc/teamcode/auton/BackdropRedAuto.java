@@ -34,18 +34,17 @@ public class BackdropRedAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
-        Globals.USING_DASHBOARD = true;
+        Globals.USING_DASHBOARD = false;
         Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
         robot.enabled = true;
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        /*FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());*/
         redPropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
@@ -62,7 +61,7 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        dashboard.startCameraStream(redPropThreshold, 30);
+        //dashboard.startCameraStream(redPropThreshold, 30);
         waitForStart();
         robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
         robot.drivetrain.setDriveToPosition(tolerance);
@@ -72,6 +71,7 @@ public class BackdropRedAuto extends LinearOpMode {
             while (robot.drivetrain.isBusy()) {
                 robot.drivetrain.driveForward(0.5);
             }
+            /*
             switch (location) {
                 case LEFT:
                     // TODO: Tune strafe encoder values
@@ -149,7 +149,12 @@ public class BackdropRedAuto extends LinearOpMode {
             // Drop pixel based on randomization
 
 
+             */
             robot.read();
+            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
+            telemetry.addData("backrightPos: ", robot.drivetrain.backRightPos);
+            telemetry.addData("frontLeftPos: ", robot.drivetrain.frontLeftPos);
+            telemetry.addData("frontRightPos: ", robot.drivetrain.frontRightPos);
             robot.periodic();
             robot.write();
             telemetry.update();

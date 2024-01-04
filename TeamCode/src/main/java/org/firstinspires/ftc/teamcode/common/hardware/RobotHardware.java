@@ -75,22 +75,22 @@ public class RobotHardware {
 
         // DRIVETRAIN
         this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
-        backLeftMotor.resetDeviceConfigurationForOpMode();
+        //backLeftMotor.resetDeviceConfigurationForOpMode();
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.backRightMotor = hardwareMap.get(DcMotorEx.class, "back_right_drive");
-        backRightMotor.resetDeviceConfigurationForOpMode();
+        //backRightMotor.resetDeviceConfigurationForOpMode();
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front_left_drive");
-        frontLeftMotor.resetDeviceConfigurationForOpMode();
+        //frontLeftMotor.resetDeviceConfigurationForOpMode();
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         this.frontRightMotor = hardwareMap.get(DcMotorEx.class, "front_right_drive");
-        frontRightMotor.resetDeviceConfigurationForOpMode();
+        //frontRightMotor.resetDeviceConfigurationForOpMode();
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
