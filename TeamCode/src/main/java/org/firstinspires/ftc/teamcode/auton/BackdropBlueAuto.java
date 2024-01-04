@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -61,96 +62,43 @@ public class BackdropBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
+        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         waitForStart();
-        //robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
-        //robot.drivetrain.setDriveToPosition(tolerance);
         runtime.reset();
         while (opModeIsActive()) {
             location = bluePropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
-
-            while (robot.drivetrain.isBusy()) {
-                robot.drivetrain.driveForward(0.5);
-                telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
-                telemetry.addData("backrightPos: ", robot.backRightMotor.getCurrentPosition());
-                telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
-                telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
-                telemetry.update();
-            }
+            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
+            telemetry.addData("backRightPos: ", robot.backRightMotor.getCurrentPosition());
+            telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
+            telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
+            robot.drivetrain.driveForward(0.5, 10);
             /*switch (location) {
                 case LEFT:
-                    // TODO: Tune strafe encoder values
-                    backLeftTarget = 0;
-                    backRightTarget = 0;
-                    frontLeftTarget = 0;
-                    frontRightTarget = 0;
-                    robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
-                    robot.drivetrain.setDriveToPosition(tolerance);
-                    // Strafe Left to the spike mark
-                    while (robot.drivetrain.isBusy()) {
-                        robot.drivetrain.strafeLeft(0.3);
-                    }
-                    // Set encoder values for the next trajectory of going forward to the backdrop
-                    backLeftTarget = 0;
-                    backRightTarget = 0;
-                    frontLeftTarget = 0;
-                    frontRightTarget = 0;
+                    robot.drivetrain.strafeLeft(0.3, 10);
+                    robot.drivetrain.driveForward(0.5, 10);
+                    robot.drivetrain.turnLeft(0.3);
+                    robot.drivetrain.driveForward(0.5, 10);
+
                     break;
                 case CENTER:
+
                     // TODO: Tune forward encoder values
-                    backLeftTarget = 0;
-                    backRightTarget = 0;
-                    frontLeftTarget = 0;
-                    frontRightTarget = 0;
-                    robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
-                    robot.drivetrain.setDriveToPosition(tolerance);
-                    // Drive a little more forward to the spike mark
-                    while (robot.drivetrain.isBusy()) {
-                        robot.drivetrain.driveForward(0.3);
-                    }
-                    // Set encoder values for the next trajectory of going forward to the backdrop
-                    backLeftTarget = 0;
-                    backRightTarget = 0;
-                    frontLeftTarget = 0;
-                    frontRightTarget = 0;
+                    robot.drivetrain.driveForward(0.5, 10);
+                    robot.drivetrain.turnLeft(0.3);
+                    robot.drivetrain.driveForward(0.5, 10);
                     break;
                 default:
                     // TODO: Tune strafe encoder values
-                    backLeftTarget = 0;
-                    backRightTarget = 0;
-                    frontLeftTarget = 0;
-                    frontRightTarget = 0;
-                    robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
-                    robot.drivetrain.setDriveToPosition(tolerance);
-                    // Strafe Right to the spike mark
-                    while (robot.drivetrain.isBusy()) {
-                        robot.drivetrain.strafeRight(0.3);
-                    }
-                    // TODO: Tune forward encoder values
-                    // Set encoder values for the next trajectory of going forward to the backdrop
-                    backLeftTarget = 0;
-                    backRightTarget = 0;
-                    frontLeftTarget = 0;
-                    frontRightTarget = 0;
+                    robot.drivetrain.driveForward(0.5, 10);
+                    robot.drivetrain.strafeRight(0.3, 10);
+                    robot.drivetrain.turnLeft(0.3);
+                    robot.drivetrain.driveForward(0.5, 10);
                     break;
             }
 
             // TODO: Tune turn encoder values
-            robot.drivetrain.setDriveTrainTarget(0, 0, 0, 0);
-            robot.drivetrain.setDriveToPosition(tolerance);
-            // Turning to face the backdrop
-            while (robot.drivetrain.isBusy()) {
-                robot.drivetrain.turnRight(0.3);
-            }
-
-            // TODO: Tune forward encoder values
-            robot.drivetrain.setDriveTrainTarget(backLeftTarget, backRightTarget, frontLeftTarget, frontRightTarget);
-            robot.drivetrain.setDriveToPosition(tolerance);
-            // Drive to Backdrop
-            while (robot.drivetrain.isBusy()) {
-                robot.drivetrain.driveForward(0.5);
-            }
-
             // Drop pixel based on randomization
 
 

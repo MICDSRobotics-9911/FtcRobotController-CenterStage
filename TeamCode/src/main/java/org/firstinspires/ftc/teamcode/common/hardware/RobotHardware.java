@@ -95,15 +95,13 @@ public class RobotHardware {
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         if (Globals.IS_AUTO) {
-            backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            drivetrain.setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         }
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.DOWN));
-        imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu 1");
         imu.initialize(parameters);
         imu.resetYaw();
 

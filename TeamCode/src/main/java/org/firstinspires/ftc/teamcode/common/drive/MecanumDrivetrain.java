@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.common.drive;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WSubsystem;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
+
 @Config
 public class MecanumDrivetrain extends WSubsystem {
     private final RobotHardware robot = RobotHardware.getInstance();
@@ -117,79 +116,87 @@ public class MecanumDrivetrain extends WSubsystem {
         setDrivePowers();
     }
 
-    public void setDriveTrainTarget(int backLeftTarget, int backRightTarget, int frontLeftTarget, int frontRightTarget) {
-        robot.drivetrain.resetEncoders();
-        this.backLeftTarget = backLeftTarget;
-        this.backRightTarget = backRightTarget;
-        this.frontLeftTarget = frontLeftTarget;
-        this.frontRightTarget = frontRightTarget;
-    }
-
-    public void setDriveToPosition(int drivePosTolerance) {
-        robot.drivetrain.resetEncoders();
+    public void setDrivetrainTarget(int backLeftTarget, int backRightTarget, int frontLeftTarget, int frontRightTarget) {
         robot.backLeftMotor.setTargetPosition(backLeftTarget);
         robot.backRightMotor.setTargetPosition(backRightTarget);
         robot.frontLeftMotor.setTargetPosition(frontLeftTarget);
         robot.frontRightMotor.setTargetPosition(frontRightTarget);
-
-        robot.backLeftMotor.setTargetPositionTolerance(drivePosTolerance);
-        robot.backRightMotor.setTargetPositionTolerance(drivePosTolerance);
-        robot.frontLeftMotor.setTargetPositionTolerance(drivePosTolerance);
-        robot.frontRightMotor.setTargetPositionTolerance(drivePosTolerance);
-
-        robot.backLeftMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        robot.backRightMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        robot.frontLeftMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        robot.frontRightMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
     }
 
-    public void driveStraightToTarget(int target, int current) {
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        ws[0] = controller.calculate(backLeftPos, target);
-        ws[1] = controller.calculate(backRightPos, target);
-        ws[2] = controller.calculate(frontLeftPos, target);
-        ws[3] = controller.calculate(frontRightPos, target);
-
-        setDrivePowers();
-    }
-
-
-    public void driveForward(double speed) {
-        driveRobotCentric(0, 1, 0, speed);
-    }
-
-    public void strafeRight(double speed) {
-        driveRobotCentric(1, 0, 0, speed);
-    }
-
-    public void strafeLeft(double speed) {
-        driveRobotCentric(-1, 0, 0, speed);
-    }
-
-    public void driveBackwards(double speed) {
-        driveRobotCentric(0, -1, 0, speed);
-    }
-
-    public void turnRight(double speed) {
-        driveRobotCentric(0, 0, 1, speed);
-    }
-
-    public void turnLeft(double speed) {
-        driveRobotCentric(0, 0, -1, speed);
-    }
-
-
-    public void resetEncoders() {
-        robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    public void setDrivetrainMode(DcMotor.RunMode mode) {
+        robot.backLeftMotor.setMode(mode);
+        robot.backRightMotor.setMode(mode);
+        robot.frontLeftMotor.setMode(mode);
+        robot.frontRightMotor.setMode(mode);
     }
 
     public boolean isBusy() {
-        return robot.backLeftMotor.isBusy() || robot.backRightMotor.isBusy() || robot.frontLeftMotor.isBusy() || robot.frontRightMotor.isBusy();
+        return robot.backLeftMotor.isBusy() && robot.backRightMotor.isBusy() && robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy();
     }
+
+    public void driveForward(double speed, double inches) {
+        encoderDrive(speed, inches, inches, inches, inches);
+    }
+    public void driveBackwards(double speed, double inches) {
+        encoderDrive(speed, -inches, -inches, -inches, -inches);
+    }
+    public void strafeRight(double speed, double inches) {
+        encoderDrive(speed, inches, -inches, -inches, inches);
+    }
+
+    public void strafeLeft(double speed, double inches) {
+        encoderDrive(speed, -inches, inches, inches, -inches);
+    }
+
+    public void turnRight(double speed) {
+        // TODO: NEED TO TUNE TURN VALUES
+        encoderDrive(speed, 10, -10, 10, -10);
+    }
+
+    public void turnLeft(double speed) {
+        encoderDrive(speed, -10, 10, -10, 10);
+    }
+    public void encoderDrive(double speed,
+                             double leftFrontInches, double rightFrontInches, double leftBackInches, double rightBackInches) {
+        int newLFTarget;
+        int newRFTarget;
+        int newLBTarget;
+        int newRBTarget;
+
+        // Ensure that the opmode is still active
+
+        // Determine new target position, and pass to motor controller
+        newLFTarget = robot.frontLeftMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(leftFrontInches));
+        newRFTarget = robot.frontRightMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(rightFrontInches));
+        newLBTarget = robot.backLeftMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(leftBackInches));
+        newRBTarget = robot.backRightMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(rightBackInches));
+
+        robot.drivetrain.setDrivetrainTarget(newLBTarget, newRBTarget, newLFTarget, newRFTarget);
+
+        // Turn On RUN_TO_POSITION
+        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+        // reset the timeout time and start motion.
+        robot.drivetrain.setDrivePowers(Math.abs(speed), Math.abs(speed), Math.abs(speed), Math.abs(speed));
+
+        // keep looping while we are still active, and there is time left, and both motors are running.
+        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+        // its target position, the motion will stop.  This is "safer" in the event that the robot will
+        // always end the motion as soon as possible.
+        // However, if you require that BOTH motors have finished their moves before the robot continues
+        // onto the next step, use (isBusy() || isBusy()) in the loop test.
+        while (isBusy()) {
+        }
+
+        // Stop all motion;
+        robot.drivetrain.stopDrive();
+
+        // Turn off RUN_TO_POSITION
+        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+    }
+
+
     @Override
     public void periodic() {
 
@@ -211,7 +218,7 @@ public class MecanumDrivetrain extends WSubsystem {
     @Override
     public void reset() {
         robot.imu.resetYaw();
-        resetEncoders();
+        setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         stopDrive();
     }
 
