@@ -11,21 +11,18 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(800);
+        Pose2d startPose = new Pose2d(-34, 60, Math.toRadians(-90));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(DriveConstants.MAX_VEL, DriveConstants.MAX_ACCEL, DriveConstants.MAX_ANG_VEL, DriveConstants.MAX_ANG_ACCEL, DriveConstants.TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                            .forward(30)
-                            .turn(Math.toRadians(90))
-                            .forward(30)
+                        drive.trajectorySequenceBuilder(startPose)
+                            .forward(25)
+                            .strafeLeft(10)
                             .addDisplacementMarker(() -> {
-
+                                // Drop Yellow pixel on backboard
                             })
-                            .turn(Math.toRadians(90))
-                            .splineTo(new Vector2d(10, 15), 0)
-                            .turn(Math.toRadians(90))
                             .build()
                 );
 

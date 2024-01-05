@@ -93,6 +93,7 @@ public class RobotHardware {
         //frontRightMotor.resetDeviceConfigurationForOpMode();
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        drivetrain = new MecanumDrivetrain(this.telemetry);
 
         /*if (Globals.IS_AUTO) {
             drivetrain.setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -128,7 +129,6 @@ public class RobotHardware {
         modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
         this.subsystems = new ArrayList<>();
-        drivetrain = new MecanumDrivetrain(this.telemetry);
         if (Globals.IS_AUTO) {
             // some sort of localizer init
         } else {

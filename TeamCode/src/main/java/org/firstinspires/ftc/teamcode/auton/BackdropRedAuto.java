@@ -72,58 +72,54 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.update();
         }
         //dashboard.startCameraStream(redPropThreshold, 30);
-        Trajectory center = drive.trajectoryBuilder(new Pose2d())
-                .forward(DISTANCE)
-                        .build();
+        Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
+        drive.setPoseEstimate(startPose);
+        TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
+                .forward(32)
+                /*.back(10)
+                .turn(Math.toRadians(-90))
+                .forward(40)
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeRight(20)
+                .forward(5)*/
+                .build();
+        TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
+                .strafeRight(11)
+                /*.forward(32)
+                .back(10)
+                .turn(Math.toRadians(-90))
+                .forward(28)
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeRight(20)
+                .forward(5)*/
+                .build();
+        TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
+                .forward(29)
+                /*.strafeLeft(11)
+                .strafeRight(14)
+                .turn(Math.toRadians(-90))
+                .forward(35)
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeRight(30)
+                .forward(5)*/
+                .build();
         waitForStart();
-        while (opModeIsActive()) {
-            location = redPropThreshold.getPropPosition();
-            telemetry.addData("Prop Location: ", location.toString());
-            //drive.followTrajectorySequence(center);
-            /*
-            switch (location) {
-                case LEFT:
-                    // TODO: Tune strafe encoder values
-                    robot.drivetrain.driveForward(0.5, 10);
-                    robot.drivetrain.strafeLeft(0.3, 10);
-                    robot.drivetrain.turnRight(0.3);
-                    robot.drivetrain.driveForward(0.5, 10);
-
-                    break;
-                case CENTER:
-                    // TODO: Tune forward encoder values
-                    robot.drivetrain.driveForward(0.5, 10);
-                    robot.drivetrain.turnRight(0.3);
-                    robot.drivetrain.driveForward(0.5, 10);
-                    break;
-                default:
-                    // TODO: Tune strafe encoder values
-                    robot.drivetrain.strafeRight(0.3, 10);
-                    robot.drivetrain.driveForward(0.5, 10);
-                    robot.drivetrain.turnRight(0.3);
-                    robot.drivetrain.driveForward(0.5, 10);
-                    break;
-            }
-
-            // TODO: Tune turn encoder values
-            // Drop pixel based on randomization
-
-
-             */
-            robot.read();
-            robot.periodic();
-            robot.write();
-            telemetry.update();
-            robot.clearBulkCache();
+        location = redPropThreshold.getPropPosition();
+        telemetry.addData("Prop Location: ", location.toString());
+        telemetry.update();
+        if (!isStopRequested() && opModeIsActive()) {
+            drive.followTrajectorySequence(centerTraj);
         }
+        robot.read();
+        robot.periodic();
+        robot.write();
+        robot.clearBulkCache();
         portal.close();
     }
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
 }

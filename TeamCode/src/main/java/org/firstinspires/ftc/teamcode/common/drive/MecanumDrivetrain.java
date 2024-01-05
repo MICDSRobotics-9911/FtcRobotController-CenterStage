@@ -227,5 +227,4 @@ public class MecanumDrivetrain extends WSubsystem {
     public String toString() {
         return "backLeftPower: " + robot.backLeftMotor.getPower() + "\nbackRightPower: " + robot.backRightMotor.getPower() + "\nfrontLeftPower: " + robot.frontLeftMotor.getPower() + "\nfrontRightPower: " + robot.frontRightMotor.getPower();
     }
-
 }

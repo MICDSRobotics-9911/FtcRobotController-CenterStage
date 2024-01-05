@@ -41,8 +41,8 @@ public class BackdropBlueAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     SampleMecanumDrive drive;
-    public static double DISTANCE = 3; // in
-    public static double SECOND_DISTANCE = 0.5;
+    public static double DISTANCE = 32; // in
+    public static double SECOND_DISTANCE = 10;
 
 
     @Override
@@ -70,61 +70,56 @@ public class BackdropBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        drive.setPoseEstimate(new Pose2d());
-        Trajectory center = drive.trajectoryBuilder(new Pose2d())
+        Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
+        drive.setPoseEstimate(startPose);
+        TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(-90)))
                 .forward(DISTANCE)
+                /*.back(SECOND_DISTANCE)
+                .turn(Math.toRadians(90))
+                .forward(40)
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeLeft(20)
+                .forward(5)*/
                 .build();
-        Trajectory center1 = drive.trajectoryBuilder(center.end())
-                .forward(DISTANCE)
+        TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(-90)))
+                .strafeLeft(8)
+                /*.forward(30)
+                .back(10)
+                .turn(Math.toRadians(90))
+                .forward(30)
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeLeft(20)
+                .forward(5)*/
                 .build();
-
-        //TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d()).forward(DISTANCE - 2).waitSeconds(2).strafeRight(0.3).waitSeconds(2).strafeLeft(0.3).turn(Math.toRadians(-90)).forward()
+        TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(-90)))
+                .forward(25)
+                /*.strafeRight(14)
+                .strafeLeft(11)
+                .turn(Math.toRadians(90))
+                .forward(40)
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeLeft(25)
+                .forward(5)*/
+                .build();
         waitForStart();
-        runtime.reset();
-        while (opModeIsActive()) {
-            location = bluePropThreshold.getPropPosition();
-            telemetry.addData("Prop Location: ", location.toString());
-            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
-            telemetry.addData("backRightPos: ", robot.backRightMotor.getCurrentPosition());
-            telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
-            telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
-            drive.followTrajectory(center);
-            //drive.turn(Math.toRadians(-90));
-            /*switch (location) {
-                case LEFT:
-                    robot.drivetrain.strafeLeft(0.3, 10);
-                    robot.drivetrain.driveForward(0.5, 10);
-                    robot.drivetrain.turnLeft(0.3);
-                    robot.drivetrain.driveForward(0.5, 10);
+        location = bluePropThreshold.getPropPosition();
+        telemetry.addData("Prop Location: ", location.toString());
+        telemetry.update();
+        if (!isStopRequested() && opModeIsActive()) {
+            drive.followTrajectorySequence(centerTraj);
 
-                    break;
-                case CENTER:
-
-                    // TODO: Tune forward encoder values
-                    robot.drivetrain.driveForward(0.5, 10);
-                    robot.drivetrain.turnLeft(0.3);
-                    robot.drivetrain.driveForward(0.5, 10);
-                    break;
-                default:
-                    // TODO: Tune strafe encoder values
-                    robot.drivetrain.driveForward(0.5, 10);
-                    robot.drivetrain.strafeRight(0.3, 10);
-                    robot.drivetrain.turnLeft(0.3);
-                    robot.drivetrain.driveForward(0.5, 10);
-                    break;
-            }
-
-            // TODO: Tune turn encoder values
-            // Drop pixel based on randomization
-
-
-             */
-            robot.read();
-            robot.periodic();
-            robot.write();
-            telemetry.update();
-            robot.clearBulkCache();
         }
+        robot.read();
+        robot.periodic();
+        robot.write();
+        robot.clearBulkCache();
+        runtime.reset();
         portal.close();
     }
 }
