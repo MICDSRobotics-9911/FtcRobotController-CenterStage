@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -12,6 +14,9 @@ import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
@@ -34,9 +39,13 @@ public class BackdropRedAuto extends LinearOpMode {
     // TODO: This tolerance also needs to be empirically tuned
     private int tolerance = 5;
     private RobotHardware robot;
+    private SampleMecanumDrive drive;
+    public static double DISTANCE = 3; // in
+    public static double SECOND_DISTANCE = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        drive = new SampleMecanumDrive(hardwareMap);
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
         Globals.USING_DASHBOARD = false;
@@ -63,19 +72,14 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.update();
         }
         //dashboard.startCameraStream(redPropThreshold, 30);
-        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        Trajectory center = drive.trajectoryBuilder(new Pose2d())
+                .forward(DISTANCE)
+                        .build();
         waitForStart();
         while (opModeIsActive()) {
             location = redPropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
-            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
-            telemetry.addData("backrightPos: ", robot.backRightMotor.getCurrentPosition());
-            telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
-            telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
-            robot.drivetrain.driveForward(0.5, 10);
-
-
+            //drive.followTrajectorySequence(center);
             /*
             switch (location) {
                 case LEFT:
@@ -107,10 +111,6 @@ public class BackdropRedAuto extends LinearOpMode {
 
              */
             robot.read();
-            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
-            telemetry.addData("backrightPos: ", robot.backRightMotor.getCurrentPosition());
-            telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
-            telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
             robot.periodic();
             robot.write();
             telemetry.update();

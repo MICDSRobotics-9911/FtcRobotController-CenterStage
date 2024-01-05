@@ -1,7 +1,4 @@
-package org.firstinspires.ftc.teamcode.roadrunner.drive;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+package com.example.meepmeeptesting;
 
 /*
  * Constants shared between multiple drive types.
@@ -16,7 +13,6 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
-@Config
 public class DriveConstants {
 
     /*
@@ -34,7 +30,7 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = false;
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0, getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
+    //public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0, getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
      * These are physical constants that can be determined from your robot (including the track

@@ -25,6 +25,8 @@ public class MecanumDrivetrain extends WSubsystem {
     private int backRightTarget = 0;
     private int frontLeftTarget = 0;
     private int frontRightTarget = 0;
+    private int multiplier = 20;
+
 
     private PIDController controller;
     private Telemetry telemetry;
@@ -123,7 +125,7 @@ public class MecanumDrivetrain extends WSubsystem {
         robot.frontRightMotor.setTargetPosition(frontRightTarget);
     }
 
-    public void setDrivetrainMode(DcMotor.RunMode mode) {
+    public void setDrivetrainMode(DcMotorEx.RunMode mode) {
         robot.backLeftMotor.setMode(mode);
         robot.backRightMotor.setMode(mode);
         robot.frontLeftMotor.setMode(mode);
@@ -166,12 +168,12 @@ public class MecanumDrivetrain extends WSubsystem {
         // Ensure that the opmode is still active
 
         // Determine new target position, and pass to motor controller
-        newLFTarget = robot.frontLeftMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(leftFrontInches));
-        newRFTarget = robot.frontRightMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(rightFrontInches));
-        newLBTarget = robot.backLeftMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(leftBackInches));
-        newRBTarget = robot.backRightMotor.getCurrentPosition() + (int) (DriveConstants.encoderTicksToInches(rightBackInches));
+        newLFTarget = robot.frontLeftMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(leftFrontInches));
+        newRFTarget = robot.frontRightMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(rightFrontInches));
+        newLBTarget = robot.backLeftMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(leftBackInches));
+        newRBTarget = robot.backRightMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(rightBackInches));
 
-        robot.drivetrain.setDrivetrainTarget(newLBTarget, newRBTarget, newLFTarget, newRFTarget);
+        robot.drivetrain.setDrivetrainTarget(newLBTarget * 20, newRBTarget, newLFTarget * 20, newRFTarget);
 
         // Turn On RUN_TO_POSITION
         robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_TO_POSITION);

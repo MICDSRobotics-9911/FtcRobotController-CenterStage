@@ -15,11 +15,10 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 /*
  * This is a simple routine to test translational drive capabilities.
  */
-@Disabled
 @Config
 @Autonomous(group = "drive")
 public class StrafeTest extends LinearOpMode {
-    public static double DISTANCE = 60; // in
+    public static double DISTANCE = 15; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -29,6 +28,7 @@ public class StrafeTest extends LinearOpMode {
 
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(DISTANCE)
+
                 .build();
 
         waitForStart();

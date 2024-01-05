@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
@@ -41,7 +42,7 @@ public class TeleOpMain extends LinearOpMode {
             robot.read();
             //robot.drivetrain.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
             if (gamepadEx.getButton(GamepadKeys.Button.DPAD_UP)) {
-                robot.drivetrain.resetEncoders();
+                robot.drivetrain.setDrivetrainMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
             if (gamepadEx.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
                 speedModifier = 0.3;

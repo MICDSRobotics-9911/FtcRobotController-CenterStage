@@ -4,8 +4,11 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,6 +17,8 @@ import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 
@@ -35,6 +40,9 @@ public class BackdropBlueAuto extends LinearOpMode {
     // TODO: This tolerance also needs to be empirically tuned
     private int tolerance = 5;
     private RobotHardware robot;
+    SampleMecanumDrive drive;
+    public static double DISTANCE = 3; // in
+    public static double SECOND_DISTANCE = 0.5;
 
 
     @Override
@@ -62,8 +70,15 @@ public class BackdropBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        drive.setPoseEstimate(new Pose2d());
+        Trajectory center = drive.trajectoryBuilder(new Pose2d())
+                .forward(DISTANCE)
+                .build();
+        Trajectory center1 = drive.trajectoryBuilder(center.end())
+                .forward(DISTANCE)
+                .build();
+
+        //TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d()).forward(DISTANCE - 2).waitSeconds(2).strafeRight(0.3).waitSeconds(2).strafeLeft(0.3).turn(Math.toRadians(-90)).forward()
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
@@ -73,7 +88,8 @@ public class BackdropBlueAuto extends LinearOpMode {
             telemetry.addData("backRightPos: ", robot.backRightMotor.getCurrentPosition());
             telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
             telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
-            robot.drivetrain.driveForward(0.5, 10);
+            drive.followTrajectory(center);
+            //drive.turn(Math.toRadians(-90));
             /*switch (location) {
                 case LEFT:
                     robot.drivetrain.strafeLeft(0.3, 10);
