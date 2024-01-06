@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auton;
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 
-
+@Config
 @Autonomous(name="BackdropBlueAuto", group="Auto")
 public class BackdropBlueAuto extends LinearOpMode {
     private PropPipeline bluePropThreshold;
@@ -41,12 +42,13 @@ public class BackdropBlueAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     SampleMecanumDrive drive;
-    public static double DISTANCE = 32; // in
-    public static double SECOND_DISTANCE = 10;
+    public static double DISTANCE = 0.385; // in
+    public static double SECOND_DISTANCE = 0.1;
 
 
     @Override
     public void runOpMode() throws InterruptedException {
+        drive = new SampleMecanumDrive(hardwareMap);
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = false;
         Globals.USING_DASHBOARD = false;
@@ -84,9 +86,10 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .forward(5)*/
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(-90)))
-                .strafeLeft(8)
-                /*.forward(30)
-                .back(10)
+                .strafeLeft(DISTANCE)
+                .waitSeconds(1)
+                .forward(SECOND_DISTANCE)
+                /*.back(10)
                 .turn(Math.toRadians(90))
                 .forward(30)
                 .addDisplacementMarker(() -> {
@@ -97,8 +100,9 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(-90)))
                 .forward(25)
-                /*.strafeRight(14)
-                .strafeLeft(11)
+                .waitSeconds(1)
+                .strafeRight(14)
+                /*.strafeLeft(11)
                 .turn(Math.toRadians(90))
                 .forward(40)
                 .addDisplacementMarker(() -> {
@@ -112,7 +116,7 @@ public class BackdropBlueAuto extends LinearOpMode {
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            drive.followTrajectorySequence(centerTraj);
+            drive.followTrajectorySequence(leftTraj);
 
         }
         robot.read();

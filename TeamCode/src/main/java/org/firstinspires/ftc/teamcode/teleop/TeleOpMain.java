@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -11,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
-
+@Config
 @TeleOp(name="MainTeleOp", group="LinearOpMode")
 public class TeleOpMain extends LinearOpMode {
 
@@ -21,6 +22,11 @@ public class TeleOpMain extends LinearOpMode {
     private double loopTime = 0.0;
     ElapsedTime runtime = new ElapsedTime();
     private double speedModifier = 1;
+
+    public static double holdPosition = 0.1;
+    public static double launchPosition = 1;
+    public static double hangPosition = 1;
+    public static double secondHangPosition = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -36,14 +42,13 @@ public class TeleOpMain extends LinearOpMode {
         telemetry.update();
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
+        // Manual reset
+        //robot.airplaneHold.setPosition(1);
         waitForStart();
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
             robot.read();
             //robot.drivetrain.driveFieldCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
-            if (gamepadEx.getButton(GamepadKeys.Button.DPAD_UP)) {
-                robot.drivetrain.setDrivetrainMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            }
             if (gamepadEx.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
                 speedModifier = 0.3;
             } else {
@@ -53,13 +58,19 @@ public class TeleOpMain extends LinearOpMode {
             robot.drivetrain.setDrivePowers();
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
-            /*if (gamepadEx.wasJustPressed(GamepadKeys.Button.A)) {
-                robot.airplaneHold.setPosition(0.5);
-                sleep(1000);
+            if (gamepad1.a) {
+                telemetry.addLine("A button has been pressed");
+                robot.airplaneHold.setPosition(holdPosition);
+                telemetry.addData("Servo Pos: ", robot.airplaneHold.getPosition());
+            }
+            if (gamepad1.b) {
                 robot.airplaneLaunch.setPosition(1);
             }
+            if (gamepad1.y) {
+                robot.airplaneLaunch.setPosition(0);
+            }
             if (gamepadEx.isDown(GamepadKeys.Button.B)) {
-            }*/
+            }
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
             telemetry.addData("Runtime: ", runtime.toString());

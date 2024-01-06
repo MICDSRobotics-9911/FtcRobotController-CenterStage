@@ -86,9 +86,10 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(5)*/
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(11)
-                /*.forward(32)
-                .back(10)
+                .strafeRight(0.4)
+                .waitSeconds(1)
+                .strafeLeft(0.01)
+                /*.back(10)
                 .turn(Math.toRadians(-90))
                 .forward(28)
                 .addDisplacementMarker(() -> {
@@ -114,7 +115,7 @@ public class BackdropRedAuto extends LinearOpMode {
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            drive.followTrajectorySequence(centerTraj);
+            drive.followTrajectorySequence(rightTraj);
         }
         robot.read();
         robot.periodic();

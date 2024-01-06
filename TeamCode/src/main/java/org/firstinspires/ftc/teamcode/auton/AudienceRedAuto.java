@@ -70,7 +70,9 @@ public class AudienceRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-36, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(33)
+                .forward(0.385)
+                .waitSeconds(1)
+                .back(0.3)
                 /*.addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })*/

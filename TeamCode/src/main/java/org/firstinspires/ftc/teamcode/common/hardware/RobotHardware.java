@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -43,8 +44,8 @@ public class RobotHardware {
     public DcMotorEx backRightMotor;
     public DcMotorEx extensionMotor;
     public DcMotorEx intakeMotor;
-    public ServoEx airplaneLaunch;
-    public ServoEx airplaneHold;
+    public Servo airplaneLaunch;
+    public Servo airplaneHold;
     public ServoEx clawServo;
     public WebcamName camera;
     public WEncoder extensionEncoder;
@@ -58,6 +59,9 @@ public class RobotHardware {
     public MecanumDrivetrain drivetrain;
     public IMU imu;
     private double imuAngle = 0;
+    public SimpleServo hang1;
+    public SimpleServo hang2;
+    public DcMotorEx hang3;
 
 
     public static RobotHardware getInstance() {
@@ -120,10 +124,16 @@ public class RobotHardware {
         //clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
 
         // Airplane Launch
-        //airplaneLaunch = new SimpleServo(hardwareMap, "airplane_launch", 0, 270);
-        //airplaneHold = new SimpleServo(hardwareMap, "airplane_hold", 0, 270);
+        airplaneLaunch = hardwareMap.get(Servo.class, "airplane_launch");
+        airplaneHold = hardwareMap.get(Servo.class, "airplane_hold");
+        airplaneHold.setDirection(Servo.Direction.FORWARD);
+        airplaneLaunch.setDirection(Servo.Direction.REVERSE);
 
         // Hang
+        //hang1 = new SimpleServo(hardwareMap, "firstHang", 0, 270);
+        //hang2 = new SimpleServo(hardwareMap, "secondHang", 0, 270);
+        //hang3 = hardwareMap.get(DcMotorEx.class, "motorHang");
+
         modules = hardwareMap.getAll(LynxModule.class);
         modules.get(0).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
