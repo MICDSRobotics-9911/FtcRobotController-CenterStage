@@ -53,7 +53,6 @@ public class TeleOpMain extends LinearOpMode {
                 speedModifier = 1;
             }
             robot.drivetrain.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
-            robot.drivetrain.setDrivePowers();
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
             if (gamepad1.a) {
