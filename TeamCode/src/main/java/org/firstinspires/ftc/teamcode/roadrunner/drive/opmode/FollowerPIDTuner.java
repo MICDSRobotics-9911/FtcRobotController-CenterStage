@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 @Config
 @Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 5; // in
+    public static double DISTANCE = 30; // in
 
     @Override
     public void runOpMode() throws InterruptedException {

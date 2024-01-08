@@ -46,6 +46,9 @@ public class RobotHardware {
     public DcMotorEx intakeMotor;
     public Servo airplaneLaunch;
     public Servo airplaneHold;
+    public static double holdMin = 0.2;
+    public static double holdMax = 0.8;
+
     public ServoEx clawServo;
     public WebcamName camera;
     public WEncoder extensionEncoder;
@@ -59,8 +62,8 @@ public class RobotHardware {
     public MecanumDrivetrain drivetrain;
     public IMU imu;
     private double imuAngle = 0;
-    public SimpleServo hang1;
-    public SimpleServo hang2;
+    public Servo hang1;
+    public Servo hang2;
     public DcMotorEx hang3;
 
 
@@ -125,23 +128,24 @@ public class RobotHardware {
 
         // Airplane Launch
         airplaneLaunch = hardwareMap.get(Servo.class, "airplane_launch");
+        airplaneLaunch.setDirection(Servo.Direction.REVERSE);
         airplaneHold = hardwareMap.get(Servo.class, "airplane_hold");
         airplaneHold.setDirection(Servo.Direction.FORWARD);
-        airplaneLaunch.setDirection(Servo.Direction.REVERSE);
+        airplaneHold.scaleRange(holdMin, holdMax);
+
 
         // Hang
-        //hang1 = new SimpleServo(hardwareMap, "firstHang", 0, 270);
-        //hang2 = new SimpleServo(hardwareMap, "secondHang", 0, 270);
+        //hang1 = hardwareMap.get(Servo.class, "hang");
+        //hang2 = hardwareMap.get(Servo.class, "hang");
         //hang3 = hardwareMap.get(DcMotorEx.class, "motorHang");
-
         modules = hardwareMap.getAll(LynxModule.class);
-        modules.get(0).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
 
         this.subsystems = new ArrayList<>();
         if (Globals.IS_AUTO) {
             // some sort of localizer init
         } else {
+            modules.get(0).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+            modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             // drone = new DroneSubsystem();
             // hang = new HangSubsystem();
         }

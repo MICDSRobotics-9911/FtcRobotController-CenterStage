@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auton;
 import android.util.Size;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -72,43 +73,42 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.update();
         }
         //dashboard.startCameraStream(redPropThreshold, 30);
-        Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
+        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(32)
-                /*.back(10)
+                .forward(30)
+                .back(10)
                 .turn(Math.toRadians(-90))
-                .forward(40)
+                .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
-                .forward(5)*/
+                .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(0.4)
-                .waitSeconds(1)
-                .strafeLeft(0.01)
-                /*.back(10)
+                .strafeRight(20)
+                .forward(30)
+                .back(20)
                 .turn(Math.toRadians(-90))
-                .forward(28)
+                .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
-                .forward(5)*/
+                .forward(5)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(29)
-                /*.strafeLeft(11)
-                .strafeRight(14)
-                .turn(Math.toRadians(-90))
-                .forward(35)
+                .forward(40)
+                .turn(Math.toRadians(90))
+                .forward(10)
+                .back(10)
+                .splineToLinearHeading(new Pose2d(60.25f, -29.14f, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(30)
-                .forward(5)*/
+                .forward(5)
                 .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();

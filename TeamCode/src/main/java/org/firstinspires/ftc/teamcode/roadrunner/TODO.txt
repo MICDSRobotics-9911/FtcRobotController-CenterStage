@@ -1,0 +1,17 @@
+Things to Do Each Practice
+
+
+1. Run MotorDirectionDebugger(One time)
+2. MaxVelocityTuner(run it three times to tune MAX_VEL empirically)
+3. Then Run AutomaticFeedforwardTuner(One time)
+4. Tune feedforward constants through ManualFeedforwardTuner
+5. Run StraightTest
+6. Run StrafeTest
+7. Run MaxAngularVelTest
+8. Run TrackWidthTuner
+9. Run TurnTest
+10. Run LocalizationTest
+11. Run Back and Forth
+12. Run FollowerPIDTuner
+13. Run SplineTest
+14. Test Autonomous Paths

@@ -22,8 +22,6 @@ public class TeleOpMain extends LinearOpMode {
     private double loopTime = 0.0;
     ElapsedTime runtime = new ElapsedTime();
     private double speedModifier = 1;
-
-    public static double holdPosition = 0.1;
     public static double launchPosition = 1;
     public static double hangPosition = 1;
     public static double secondHangPosition = 0.5;
@@ -43,7 +41,7 @@ public class TeleOpMain extends LinearOpMode {
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
         // Manual reset
-        //robot.airplaneHold.setPosition(1);
+        robot.airplaneHold.setPosition(0);
         waitForStart();
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
@@ -59,8 +57,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
             if (gamepad1.a) {
-                telemetry.addLine("A button has been pressed");
-                robot.airplaneHold.setPosition(holdPosition);
+                robot.airplaneHold.setPosition(1);
                 telemetry.addData("Servo Pos: ", robot.airplaneHold.getPosition());
             }
             if (gamepad1.b) {
