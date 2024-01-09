@@ -55,22 +55,34 @@ public class TeleOpMain extends LinearOpMode {
             robot.drivetrain.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
-            if (gamepad1.a) {
+            if (gamepadEx.getButton(GamepadKeys.Button.A) || gamepadEx2.getButton(GamepadKeys.Button.A)) {
                 robot.airplaneHold.setPosition(0);
                 telemetry.addData("Servo Pos: ", robot.airplaneHold.getPosition());
             }
-            if (gamepad1.b) {
+            if (gamepadEx.getButton(GamepadKeys.Button.B) || gamepadEx2.getButton(GamepadKeys.Button.B)) {
                 robot.airplaneLaunch.setPosition(1);
             }
-            if (gamepad1.y) {
+            if (gamepadEx.getButton(GamepadKeys.Button.Y) || gamepadEx2.getButton(GamepadKeys.Button.Y)) {
                 robot.airplaneLaunch.setPosition(0);
             }
-            if (gamepadEx.isDown(GamepadKeys.Button.B)) {
+            if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_LEFT) || gamepadEx.isDown(GamepadKeys.Button.DPAD_LEFT)) {
+                robot.hangHolder.setPower(0.3);
+            } else if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_RIGHT) || gamepadEx.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
+                robot.hangHolder.setPower(0.3);
+            } else {
+                robot.hangHolder.setPower(0);
             }
-            if (gamepad2.a) {
+            if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_DOWN) || gamepadEx.isDown(GamepadKeys.Button.DPAD_DOWN)) {
+                robot.spoolHangMotor.setPower(1);
+            } else if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_UP) || gamepadEx.isDown(GamepadKeys.Button.DPAD_UP)) {
+                robot.spoolHangMotor.setPower(-1);
+            } else {
+                robot.spoolHangMotor.setPower(0);
+            }
+            /*if (gamepad2.a) {
                 robot.hangHolder.setPower(0.3);
             } else if (gamepad2.x) {
-                robot.hangHolder.setPower(0.5);
+                robot.hangHolder.setPower(0.3);
             } else {
                 robot.hangHolder.setPower(0);
             }
@@ -80,22 +92,18 @@ public class TeleOpMain extends LinearOpMode {
                 robot.spoolHangMotor.setPower(-1);
             } else {
                 robot.spoolHangMotor.setPower(0);
-            }
+            }*/
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
             telemetry.addData("Runtime: ", runtime.toString());
             telemetry.addData("Heading: ", robot.getAngle());
-            telemetry.addData("backLeftPos: ", robot.backLeftMotor.getCurrentPosition());
-            telemetry.addData("backrightPos: ", robot.backRightMotor.getCurrentPosition());
-            telemetry.addData("frontLeftPos: ", robot.frontLeftMotor.getCurrentPosition());
-            telemetry.addData("frontRightPos: ", robot.frontRightMotor.getCurrentPosition());
             loopTime = loop;
             robot.write();
             telemetry.update();
             robot.clearBulkCache();
-            if (isStopRequested()) {
-                robot.airplaneLaunch.setPosition(0);
-            }
+        }
+        if (isStopRequested()) {
+            robot.airplaneLaunch.setPosition(0);
         }
     }
 }

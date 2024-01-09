@@ -1,5 +1,11 @@
 package com.example.meepmeeptesting;
 
+import static com.example.meepmeeptesting.DriveConstants.MAX_ACCEL;
+import static com.example.meepmeeptesting.DriveConstants.MAX_ANG_ACCEL;
+import static com.example.meepmeeptesting.DriveConstants.MAX_ANG_VEL;
+import static com.example.meepmeeptesting.DriveConstants.MAX_VEL;
+import static com.example.meepmeeptesting.DriveConstants.TRACK_WIDTH;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
@@ -14,21 +20,22 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(800);
-        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-34, 60, Math.toRadians(-100));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
-                .setConstraints(DriveConstants.MAX_VEL, DriveConstants.MAX_ACCEL, DriveConstants.MAX_ANG_VEL, DriveConstants.MAX_ANG_ACCEL, DriveConstants.TRACK_WIDTH)
+                .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .forward(30)
-                                .back(20)
-                                .turn(Math.toRadians(90))
-                                .forward(40)
+                                .lineToLinearHeading(new Pose2d(-34, 34, Math.toRadians(0)))
+                                .lineToConstantHeading(new Vector2d(-28, 34))
+                                .lineToConstantHeading(new Vector2d(-32, 34))
+                                .lineToConstantHeading(new Vector2d(-32, 44))
+                                .splineToConstantHeading(new Vector2d(60.25f, 41.41f), Math.toRadians(0))
                                 .addDisplacementMarker(() -> {
                                     // Drop Yellow pixel on backboard
                                 })
-                                .strafeLeft(20)
+                                .strafeRight(25)
                                 .forward(5)
                                 .build()
                 );

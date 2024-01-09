@@ -73,10 +73,10 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.update();
         }
         //dashboard.startCameraStream(redPropThreshold, 30);
-        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(30)
+                .lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
                 .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
@@ -87,9 +87,8 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(20)
-                .forward(30)
-                .back(20)
+                .lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
+                .back(10)
                 .turn(Math.toRadians(-90))
                 .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
@@ -99,10 +98,9 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(5)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(40)
-                .turn(Math.toRadians(90))
-                .forward(10)
-                .back(10)
+                .lineToLinearHeading(new Pose2d(13, -34, Math.toRadians(-180)))
+                .lineTo(new Vector2d(1.5, -34))
+                .back(20)
                 .splineToLinearHeading(new Pose2d(60.25f, -29.14f, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
@@ -118,12 +116,24 @@ public class BackdropRedAuto extends LinearOpMode {
             location = redPropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
-            //drive.followTrajectorySequence(rightTraj);
+            switch (location) {
+                case CENTER:
+                    drive.followTrajectorySequence(centerTraj);
+                    break;
+                case LEFT:
+                    drive.followTrajectorySequence(leftTraj);
+                    break;
+                default:
+                    drive.followTrajectorySequence(rightTraj);
+                    break;
+            }
         }
-        robot.read();
-        robot.periodic();
-        robot.write();
-        robot.clearBulkCache();
-        portal.close();
+        if (isStopRequested()) {
+            robot.read();
+            robot.periodic();
+            robot.write();
+            robot.clearBulkCache();
+            portal.close();
+        }
     }
 }

@@ -5,6 +5,7 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -70,26 +71,38 @@ public class AudienceRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-36, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(0.385)
-                .waitSeconds(1)
-                .back(0.3)
-                /*.addDisplacementMarker(() -> {
+                .lineToLinearHeading(new Pose2d(-34, -28, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(-34, -35))
+                .turn(Math.toRadians(-90))
+                .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
+                .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
-                })*/
+                })
+                .strafeLeft(20)
+                .forward(5)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .strafeLeft(10)
-                /*.forward(30)
+                .lineToConstantHeading(new Vector2d(-46, -33))
+                .back(15)
+                .lineToLinearHeading(new Pose2d(-34, -35, Math.toRadians(0)))
+                .splineToConstantHeading(new Vector2d(60.25f, -29.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
-                })*/
+                })
+                .strafeLeft(10)
+                .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(26)
-                /*.strafeRight(12)
+                .lineToLinearHeading(new Pose2d(-34, -34, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(-30, -34))
+                .lineToLinearHeading(new Pose2d(-40, -34, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(-40, -42))
+                .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
-                })*/
+                })
+                .strafeLeft(25)
+                .forward(5)
                 .build();
 
         waitForStart();
