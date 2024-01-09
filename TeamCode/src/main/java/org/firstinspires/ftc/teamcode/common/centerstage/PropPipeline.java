@@ -97,10 +97,10 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         }
 
         // These lines are for tuning the rectangles
-        //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
-        //Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
+        Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+        Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
 
-        /*finalMat.copyTo(frame); This line should only be added in when you want to see your custom pipeline
+        finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
                                   on the driver station stream, do not use this permanently in your code as
                                   you use the "frame" mat for all of your pipelines, such as April Tags*/
         Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);

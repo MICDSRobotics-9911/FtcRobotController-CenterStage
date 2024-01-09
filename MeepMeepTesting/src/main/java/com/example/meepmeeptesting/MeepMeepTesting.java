@@ -7,6 +7,9 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
+
+
+
 public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
@@ -18,17 +21,16 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                            .forward(40)
-                            .turn(Math.toRadians(90))
-                            .forward(10)
-                            .back(10)
-                            .splineToLinearHeading(new Pose2d(60.25f, -29.14f, Math.toRadians(0)), Math.toRadians(0))
-                            .addDisplacementMarker(() -> {
-                                // Drop Yellow pixel on backboard
-                            })
-                            .strafeRight(30)
-                            .forward(5)
-                            .build()
+                                .forward(30)
+                                .back(20)
+                                .turn(Math.toRadians(90))
+                                .forward(40)
+                                .addDisplacementMarker(() -> {
+                                    // Drop Yellow pixel on backboard
+                                })
+                                .strafeLeft(20)
+                                .forward(5)
+                                .build()
                 );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_OFFICIAL)

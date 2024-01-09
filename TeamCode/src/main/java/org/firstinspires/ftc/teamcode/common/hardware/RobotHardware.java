@@ -46,7 +46,7 @@ public class RobotHardware {
     public DcMotorEx intakeMotor;
     public Servo airplaneLaunch;
     public Servo airplaneHold;
-    public static double holdMin = 0.2;
+    public static double holdMin = 0.3;
     public static double holdMax = 0.8;
 
     public ServoEx clawServo;
@@ -62,9 +62,8 @@ public class RobotHardware {
     public MecanumDrivetrain drivetrain;
     public IMU imu;
     private double imuAngle = 0;
-    public Servo hang1;
-    public Servo hang2;
-    public DcMotorEx hang3;
+    public DcMotorEx hangHolder;
+    public DcMotorEx spoolHangMotor;
 
 
     public static RobotHardware getInstance() {
@@ -135,9 +134,11 @@ public class RobotHardware {
 
 
         // Hang
-        //hang1 = hardwareMap.get(Servo.class, "hang");
-        //hang2 = hardwareMap.get(Servo.class, "hang");
-        //hang3 = hardwareMap.get(DcMotorEx.class, "motorHang");
+
+        hangHolder = hardwareMap.get(DcMotorEx.class, "hang_holder");
+        hangHolder.setDirection(DcMotorEx.Direction.FORWARD);
+        spoolHangMotor = hardwareMap.get(DcMotorEx.class, "spool_hang_motor");
+        spoolHangMotor.setDirection(DcMotorEx.Direction.FORWARD);
         modules = hardwareMap.getAll(LynxModule.class);
 
         this.subsystems = new ArrayList<>();

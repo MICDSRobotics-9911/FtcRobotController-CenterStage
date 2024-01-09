@@ -41,7 +41,7 @@ public class TeleOpMain extends LinearOpMode {
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
         // Manual reset
-        robot.airplaneHold.setPosition(0);
+        robot.airplaneHold.setPosition(1);
         waitForStart();
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
@@ -56,7 +56,7 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
             if (gamepad1.a) {
-                robot.airplaneHold.setPosition(1);
+                robot.airplaneHold.setPosition(0);
                 telemetry.addData("Servo Pos: ", robot.airplaneHold.getPosition());
             }
             if (gamepad1.b) {
@@ -66,6 +66,20 @@ public class TeleOpMain extends LinearOpMode {
                 robot.airplaneLaunch.setPosition(0);
             }
             if (gamepadEx.isDown(GamepadKeys.Button.B)) {
+            }
+            if (gamepad2.a) {
+                robot.hangHolder.setPower(0.3);
+            } else if (gamepad2.x) {
+                robot.hangHolder.setPower(0.5);
+            } else {
+                robot.hangHolder.setPower(0);
+            }
+            if (gamepad2.b) {
+                robot.spoolHangMotor.setPower(1);
+            } else if (gamepad2.y) {
+                robot.spoolHangMotor.setPower(-1);
+            } else {
+                robot.spoolHangMotor.setPower(0);
             }
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
@@ -79,6 +93,9 @@ public class TeleOpMain extends LinearOpMode {
             robot.write();
             telemetry.update();
             robot.clearBulkCache();
+            if (isStopRequested()) {
+                robot.airplaneLaunch.setPosition(0);
+            }
         }
     }
 }

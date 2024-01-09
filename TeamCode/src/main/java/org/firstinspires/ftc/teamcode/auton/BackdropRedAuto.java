@@ -114,8 +114,11 @@ public class BackdropRedAuto extends LinearOpMode {
         location = redPropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
-        if (!isStopRequested() && opModeIsActive()) {
-            drive.followTrajectorySequence(rightTraj);
+        while (!isStopRequested() && opModeIsActive()) {
+            location = redPropThreshold.getPropPosition();
+            telemetry.addData("Prop Location: ", location.toString());
+            telemetry.update();
+            //drive.followTrajectorySequence(rightTraj);
         }
         robot.read();
         robot.periodic();

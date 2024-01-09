@@ -74,7 +74,7 @@ public class BackdropBlueAuto extends LinearOpMode {
         }
         Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
-        TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(new Pose2d(15, 60, Math.toRadians(-90)))
+        TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .forward(DISTANCE)
                 /*.back(SECOND_DISTANCE)
                 .turn(Math.toRadians(90))
@@ -115,9 +115,11 @@ public class BackdropBlueAuto extends LinearOpMode {
         location = bluePropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
-        if (!isStopRequested() && opModeIsActive()) {
-            drive.followTrajectorySequence(leftTraj);
-
+        while (!isStopRequested() && opModeIsActive()) {
+            //drive.followTrajectorySequence(leftTraj);
+            location = bluePropThreshold.getPropPosition();
+            telemetry.addData("Prop Location: ", location.toString());
+            telemetry.update();
         }
         robot.read();
         robot.periodic();
