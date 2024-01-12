@@ -110,13 +110,27 @@ public class AudienceRedAuto extends LinearOpMode {
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            drive.followTrajectorySequence(centerTraj);
+            location = redPropThreshold.getPropPosition();
+            telemetry.addData("Prop Location: ", location.toString());
+            telemetry.update();
+            switch (location) {
+                case CENTER:
+                    drive.followTrajectorySequence(centerTraj);
+                    break;
+                case LEFT:
+                    drive.followTrajectorySequence(leftTraj);
+                    break;
+                default:
+                    drive.followTrajectorySequence(rightTraj);
+            }
         }
-        robot.read();
-        robot.periodic();
-        robot.write();
-        robot.clearBulkCache();
-        portal.close();
+        if (isStopRequested()) {
+            robot.read();
+            robot.periodic();
+            robot.write();
+            robot.clearBulkCache();
+            portal.close();
+        }
     }
 }
 

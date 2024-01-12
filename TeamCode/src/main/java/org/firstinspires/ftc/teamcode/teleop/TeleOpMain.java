@@ -61,16 +61,11 @@ public class TeleOpMain extends LinearOpMode {
             }
             if (gamepadEx.getButton(GamepadKeys.Button.B) || gamepadEx2.getButton(GamepadKeys.Button.B)) {
                 robot.airplaneLaunch.setPosition(1);
+                sleep(2000);
+                robot.airplaneLaunch.setPosition(0);
             }
             if (gamepadEx.getButton(GamepadKeys.Button.Y) || gamepadEx2.getButton(GamepadKeys.Button.Y)) {
                 robot.airplaneLaunch.setPosition(0);
-            }
-            if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_LEFT) || gamepadEx.isDown(GamepadKeys.Button.DPAD_LEFT)) {
-                robot.hangHolder.setPower(0.3);
-            } else if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_RIGHT) || gamepadEx.isDown(GamepadKeys.Button.DPAD_RIGHT)) {
-                robot.hangHolder.setPower(0.3);
-            } else {
-                robot.hangHolder.setPower(0);
             }
             if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_DOWN) || gamepadEx.isDown(GamepadKeys.Button.DPAD_DOWN)) {
                 robot.spoolHangMotor.setPower(1);
@@ -79,20 +74,14 @@ public class TeleOpMain extends LinearOpMode {
             } else {
                 robot.spoolHangMotor.setPower(0);
             }
-            /*if (gamepad2.a) {
-                robot.hangHolder.setPower(0.3);
-            } else if (gamepad2.x) {
-                robot.hangHolder.setPower(0.3);
+            if (gamepad2.dpad_right || gamepad1.dpad_right) {
+                robot.hangHolder.setPower(0.7);
+            } else if (gamepad2.dpad_left || gamepad1.dpad_left) {
+                robot.hangHolder.setPower(-0.7);
             } else {
                 robot.hangHolder.setPower(0);
             }
-            if (gamepad2.b) {
-                robot.spoolHangMotor.setPower(1);
-            } else if (gamepad2.y) {
-                robot.spoolHangMotor.setPower(-1);
-            } else {
-                robot.spoolHangMotor.setPower(0);
-            }*/
+
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
             telemetry.addData("Runtime: ", runtime.toString());
@@ -101,9 +90,6 @@ public class TeleOpMain extends LinearOpMode {
             robot.write();
             telemetry.update();
             robot.clearBulkCache();
-        }
-        if (isStopRequested()) {
-            robot.airplaneLaunch.setPosition(0);
         }
     }
 }

@@ -41,7 +41,7 @@ public class BackdropRedAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     private SampleMecanumDrive drive;
-    public static double DISTANCE = 3; // in
+    public static double DISTANCE = 13; // in
     public static double SECOND_DISTANCE = 0.5;
 
     @Override
@@ -76,7 +76,15 @@ public class BackdropRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
+                .turn(Math.toRadians(-10))
+                .forward(DISTANCE)
+                .back(DISTANCE)
+                .addDisplacementMarker(() -> {
+                    // Drop yellow pixel on backdrop
+                })
+                .turn(Math.toRadians(-90))
+                .forward(DISTANCE)
+                /*.lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
                 .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
@@ -84,10 +92,16 @@ public class BackdropRedAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
-                .forward(5)
+                .forward(5)*/
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
+                .turn(Math.toRadians(-10))
+                .strafeRight(DISTANCE)
+                .forward(SECOND_DISTANCE)
+                .back(SECOND_DISTANCE)
+                .turn(Math.toRadians(-90))
+                .forward(SECOND_DISTANCE)
+                /*.lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
                 .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))
@@ -95,10 +109,14 @@ public class BackdropRedAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
-                .forward(5)
+                .forward(5)*/
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(13, -34, Math.toRadians(-180)))
+                .turn(Math.toRadians(-10))
+                .forward(DISTANCE)
+                .strafeLeft(SECOND_DISTANCE)
+                .back(DISTANCE)
+                /*.lineToLinearHeading(new Pose2d(13, -34, Math.toRadians(-180)))
                 .lineTo(new Vector2d(1.5, -34))
                 .back(20)
                 .splineToLinearHeading(new Pose2d(60.25f, -29.14f, Math.toRadians(0)), Math.toRadians(0))
@@ -106,13 +124,13 @@ public class BackdropRedAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(30)
-                .forward(5)
+                .forward(5)*/
                 .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
-        while (!isStopRequested() && opModeIsActive()) {
+        if (!isStopRequested() && opModeIsActive()) {
             location = redPropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
@@ -125,7 +143,6 @@ public class BackdropRedAuto extends LinearOpMode {
                     break;
                 default:
                     drive.followTrajectorySequence(rightTraj);
-                    break;
             }
         }
         if (isStopRequested()) {

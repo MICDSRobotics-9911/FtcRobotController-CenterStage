@@ -43,8 +43,8 @@ public class BackdropBlueAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     SampleMecanumDrive drive;
-    public static double DISTANCE = 0.385; // in
-    public static double SECOND_DISTANCE = 0.1;
+    public static double DISTANCE = 13; // in
+    public static double SECOND_DISTANCE = 13;
 
 
     @Override
@@ -76,19 +76,23 @@ public class BackdropBlueAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(13, 35))
-                .back(20)
-                .splineToLinearHeading(new Pose2d(60.25f, 35.41, Math.toRadians(0)), Math.toRadians(0))
+                .forward(13)
+                .back(13)
+                .turn(Math.toRadians(90))
+                //.splineToLinearHeading(new Pose2d(60.25f, 35.41, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(30)
-                .forward(5)
+                .forward(13)
+                //.strafeLeft(13)
+                //.forward(4)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(22.5, 35))
-                .back(20)
-                .splineToLinearHeading(new Pose2d(60.25f, 41.41f, Math.toRadians(0)), Math.toRadians(0))
+                .strafeLeft(5.9)
+                .forward(11)
+                .back(11)
+                .turn(Math.toRadians(90))
+                //.splineToLinearHeading(new Pose2d(60.25f, 41.41f, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
@@ -96,31 +100,36 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(13, 34, Math.toRadians(180)))
-                .lineTo(new Vector2d(1.5, 34))
-                .back(20)
-                .splineToLinearHeading(new Pose2d(60.25f, 29.41f, Math.toRadians(0)), Math.toRadians(0))
-                .addDisplacementMarker(() -> {
-                    // Drop Yellow pixel on backboard
-                })
-                .strafeLeft(30)
-                .forward(5)
+                //I don't know what to do here. RYAN FIX THIS!!!
+                .forward(10)
+                .strafeRight(7)
+                .back(11)
                 .build();
         waitForStart();
         location = bluePropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
-        while (!isStopRequested() && opModeIsActive()) {
-            //drive.followTrajectorySequence(leftTraj);
+        if (!isStopRequested() && opModeIsActive()) {
             location = bluePropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
+            switch (location) {
+                case CENTER:
+                    drive.followTrajectorySequence(centerTraj);
+                    break;
+                case LEFT:
+                    drive.followTrajectorySequence(leftTraj);
+                    break;
+                default:
+                    drive.followTrajectorySequence(rightTraj);
+            }
         }
-        robot.read();
-        robot.periodic();
-        robot.write();
-        robot.clearBulkCache();
-        runtime.reset();
-        portal.close();
+        if (isStopRequested()) {
+            robot.read();
+            robot.periodic();
+            robot.write();
+            robot.clearBulkCache();
+            portal.close();
+        }
     }
 }

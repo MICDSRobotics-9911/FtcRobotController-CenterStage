@@ -19,7 +19,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(600);
         Pose2d startPose = new Pose2d(-34, 60, Math.toRadians(-100));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
