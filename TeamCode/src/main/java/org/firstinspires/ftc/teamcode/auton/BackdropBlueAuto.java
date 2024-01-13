@@ -43,8 +43,8 @@ public class BackdropBlueAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     SampleMecanumDrive drive;
-    public static double DISTANCE = 13; // in
-    public static double SECOND_DISTANCE = 13;
+    public static double DISTANCE = 10; // in
+    public static double SECOND_DISTANCE = 7;
 
 
     @Override
@@ -101,16 +101,15 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 //I don't know what to do here. RYAN FIX THIS!!!
-                .forward(10)
-                .strafeRight(7)
-                .back(11)
+                .forward(DISTANCE)
+                .strafeRight(SECOND_DISTANCE)
                 .build();
         waitForStart();
         location = bluePropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            location = bluePropThreshold.getPropPosition();
+            location = Side.CENTER;
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {

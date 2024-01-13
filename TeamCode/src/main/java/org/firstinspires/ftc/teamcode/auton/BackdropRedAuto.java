@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -21,7 +22,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.vision.VisionPortal;
 
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
-
+@Config
 @Autonomous(name="BackdropRedAuto", group="Auto")
 public class BackdropRedAuto extends LinearOpMode {
     private PropPipeline redPropThreshold;
@@ -77,6 +78,7 @@ public class BackdropRedAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .turn(Math.toRadians(-10))
+                .waitSeconds(2)
                 .forward(DISTANCE)
                 .back(DISTANCE)
                 .addDisplacementMarker(() -> {

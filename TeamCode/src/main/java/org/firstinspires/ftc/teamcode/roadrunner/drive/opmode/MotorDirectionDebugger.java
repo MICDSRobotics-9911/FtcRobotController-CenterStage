@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 
+import java.util.List;
+
 /**
  * This is a simple teleop routine for debugging your motor configuration.
  * Pressing each of the buttons will power its respective motor.
@@ -39,7 +41,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
  * Uncomment the @Disabled tag below to use this opmode.
  */
 @Config
-@TeleOp(group = "drive")
+@TeleOp(name="MotorDirectionDebugger", group = "drive")
 public class MotorDirectionDebugger extends LinearOpMode {
     public static double MOTOR_POWER = 0.7;
 
@@ -59,7 +61,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
         telemetry.clearAll();
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
 
-        while (!isStopRequested()) {
+        while (!isStopRequested() && opModeIsActive()) {
             telemetry.addLine("Press each button to turn on its respective motor");
             telemetry.addLine();
             telemetry.addLine("<font face=\"monospace\">Xbox/PS4 Button - Motor</font>");
@@ -85,6 +87,8 @@ public class MotorDirectionDebugger extends LinearOpMode {
                 drive.setMotorPowers(0, 0, 0, 0);
                 telemetry.addLine("Running Motor: None");
             }
+
+            drive.printEncoderValues(telemetry);
 
             telemetry.update();
         }
