@@ -57,7 +57,6 @@ public class TeleOpMain extends LinearOpMode {
             robot.periodic();
             if (gamepadEx.getButton(GamepadKeys.Button.A) || gamepadEx2.getButton(GamepadKeys.Button.A)) {
                 robot.airplaneHold.setPosition(0);
-                telemetry.addData("Servo Pos: ", robot.airplaneHold.getPosition());
             }
             if (gamepadEx.getButton(GamepadKeys.Button.B) || gamepadEx2.getButton(GamepadKeys.Button.B)) {
                 robot.airplaneLaunch.setPosition(1);

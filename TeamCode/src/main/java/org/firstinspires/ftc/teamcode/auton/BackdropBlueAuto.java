@@ -45,6 +45,7 @@ public class BackdropBlueAuto extends LinearOpMode {
     SampleMecanumDrive drive;
     public static double DISTANCE = 10; // in
     public static double SECOND_DISTANCE = 7;
+    public static int cases = 1;
 
 
     @Override
@@ -66,8 +67,9 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        Side location = bluePropThreshold.getPropPosition();
+        Side location;
         while (!isStarted()) {
+            location = bluePropThreshold.getPropPosition();
             telemetry.addLine("auto in init");
             telemetry.addData("camera: ", portal.getCameraState());
             telemetry.addData("Prop Location: ", location.toString());
@@ -78,7 +80,7 @@ public class BackdropBlueAuto extends LinearOpMode {
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .forward(13)
                 .back(13)
-                .turn(Math.toRadians(90))
+                .turn(Math.toRadians(20))
                 //.splineToLinearHeading(new Pose2d(60.25f, 35.41, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
@@ -91,7 +93,7 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .strafeLeft(5.9)
                 .forward(11)
                 .back(11)
-                .turn(Math.toRadians(90))
+                .turn(Math.toRadians(20))
                 //.splineToLinearHeading(new Pose2d(60.25f, 41.41f, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
@@ -101,15 +103,22 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 //I don't know what to do here. RYAN FIX THIS!!!
-                .forward(DISTANCE)
-                .strafeRight(SECOND_DISTANCE)
+                .forward(10)
+                .strafeRight(10)
                 .build();
         waitForStart();
-        location = bluePropThreshold.getPropPosition();
-        telemetry.addData("Prop Location: ", location.toString());
-        telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            location = Side.CENTER;
+            location = bluePropThreshold.getPropPosition();
+            switch (cases) {
+                case 1:
+                    location = Side.LEFT;
+                    break;
+                case 2:
+                    location = Side.CENTER;
+                    break;
+                default:
+                    location = Side.RIGHT;
+            }
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {

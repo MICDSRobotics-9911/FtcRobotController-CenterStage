@@ -88,8 +88,8 @@ public class DriveConstants {
 
      */
     //public static double MAX_VEL = ((MAX_RPM / 60) * GEAR_RATIO * WHEEL_RADIUS * 2 * Math.PI) * 0.85;
-    public static double MAX_VEL = 195.031609562;
-    public static double MAX_ACCEL = MAX_VEL / 2;
+    public static double MAX_VEL = 15;
+    public static double MAX_ACCEL = 10;
     //public static double MAX_ANG_VEL = MAX_VEL / TRACK_WIDTH * (180 / Math.PI);
     public static double MAX_ANG_VEL = Math.toRadians(15.685616855355661);
     //public static double MAX_ANG_ACCEL = MAX_ANG_VEL;
