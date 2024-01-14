@@ -43,8 +43,8 @@ public class BackdropRedAuto extends LinearOpMode {
     private RobotHardware robot;
     private SampleMecanumDrive drive;
     public static double TURN_VALUE = -3;
-    public static double DISTANCE = 13; // in
-    public static double SECOND_DISTANCE = 0.5;
+    public static double DISTANCE = 10; // in
+    public static double SECOND_DISTANCE = 0.4;
     public static int cases = 1;
 
     @Override
@@ -79,45 +79,52 @@ public class BackdropRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(TURN_VALUE))
-                .forward(DISTANCE)
-                .back(DISTANCE)
+                .turn(Math.toRadians(-1))
+                .forward(10)
+                .back(10)
                 .addDisplacementMarker(() -> {
                     // Drop yellow pixel on backdrop
                 })
                 .turn(Math.toRadians(-20))
-                .forward(DISTANCE)
+                .forward(10)
+                .strafeLeft(3)
+                .forward(2)
                 /*.lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))*/
                 .addDisplacementMarker(() -> {
+                    robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
-                .forward(5)*/
+                .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(TURN_VALUE))
-                .strafeRight(DISTANCE)
-                .forward(SECOND_DISTANCE)
-                .back(SECOND_DISTANCE)
+                .turn(Math.toRadians(-1))
+                .strafeRight(2)
+                .forward(7)
+                .back(7)
                 .turn(Math.toRadians(-20))
-                .forward(SECOND_DISTANCE)
+                .forward(7)
+                .strafeLeft(2)
+                .forward(2)
                 /*.lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))*/
                 .addDisplacementMarker(() -> {
+                    robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
-                .forward(5)*/
+                .forward(5)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(TURN_VALUE))
-                .forward(DISTANCE)
-                .strafeLeft(SECOND_DISTANCE)
+                .turn(Math.toRadians(-1))
+                .forward(7)
+                .strafeLeft(3)
+                .strafeRight(0.5)
                 /*.lineToLinearHeading(new Pose2d(13, -34, Math.toRadians(-180)))
                 .lineTo(new Vector2d(1.5, -34))
                 .back(20)
@@ -134,17 +141,16 @@ public class BackdropRedAuto extends LinearOpMode {
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
             location = redPropThreshold.getPropPosition();
-            switch (cases) {
+            /*switch (cases) {
                 case 1:
                     location = Side.CENTER;
                     break;
                 case 2:
-                    location = Side.RIGHT;
-                    break;
-                default:
                     location = Side.LEFT;
                     break;
-            }
+                case 3:
+                    location = Side.RIGHT;
+            }*/
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {

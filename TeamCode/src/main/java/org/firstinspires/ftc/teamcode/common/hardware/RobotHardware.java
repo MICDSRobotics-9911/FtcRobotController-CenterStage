@@ -47,7 +47,7 @@ public class RobotHardware {
     public Servo airplaneLaunch;
     public Servo airplaneHold;
     public static double holdMin = 0.3;
-    public static double holdMax = 0.8;
+    public static double holdMax = 1;
 
     public ServoEx clawServo;
     public WebcamName camera;
@@ -57,6 +57,7 @@ public class RobotHardware {
     private Telemetry telemetry;
     private static RobotHardware instance = null;
     public boolean enabled;
+    public Servo server;
     public List<LynxModule> modules;
     private ArrayList<WSubsystem> subsystems;
     public MecanumDrivetrain drivetrain;
@@ -129,7 +130,7 @@ public class RobotHardware {
         airplaneLaunch = hardwareMap.get(Servo.class, "airplane_launch");
         airplaneLaunch.setDirection(Servo.Direction.REVERSE);
         airplaneHold = hardwareMap.get(Servo.class, "airplane_hold");
-        airplaneHold.setDirection(Servo.Direction.FORWARD);
+        airplaneHold.setDirection(Servo.Direction.REVERSE);
         airplaneHold.scaleRange(holdMin, holdMax);
 
 
@@ -140,6 +141,9 @@ public class RobotHardware {
         spoolHangMotor = hardwareMap.get(DcMotorEx.class, "spool_hang_motor");
         spoolHangMotor.setDirection(DcMotorEx.Direction.FORWARD);
         modules = hardwareMap.getAll(LynxModule.class);
+
+        server = hardwareMap.get(Servo.class, "server");
+        server.setDirection(Servo.Direction.FORWARD);
 
         this.subsystems = new ArrayList<>();
         if (Globals.IS_AUTO) {

@@ -38,6 +38,7 @@ public class AudienceBlueAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     private SampleMecanumDrive drive;
+    public static int cases = 1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -71,7 +72,11 @@ public class AudienceBlueAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-34, 60, Math.toRadians(-100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-34, 28, Math.toRadians(-90)))
+                .turn(Math.toRadians(-1))
+                // turn right
+                .forward(11)
+                .back(10)
+                /*.lineToLinearHeading(new Pose2d(-34, 28, Math.toRadians(-90)))
                 .lineToConstantHeading(new Vector2d(-34, 37))
                 .turn(Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(60.25f, 35.41f), Math.toRadians(0))
@@ -79,10 +84,13 @@ public class AudienceBlueAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(25)
-                .forward(5)
+                .forward(5)*/
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-46, 35, Math.toRadians(-90)))
+                .turn(Math.toRadians(-1))
+                .strafeRight(3)
+                .forward(7)
+                /*.lineToLinearHeading(new Pose2d(-46, 35, Math.toRadians(-90)))
                 .lineToConstantHeading(new Vector2d(-46, 41))
                 .turn(Math.toRadians(90))
                 .splineToConstantHeading(new Vector2d(60.25f, 29.41f), Math.toRadians(0))
@@ -90,10 +98,14 @@ public class AudienceBlueAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(22)
-                .forward(5)
+                .forward(5)*/
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-34, 34, Math.toRadians(0)))
+                .turn(Math.toRadians(-1))
+                .forward(7)
+                .strafeLeft(3)
+                .strafeRight(0.5)
+                /*.lineToLinearHeading(new Pose2d(-34, 34, Math.toRadians(0)))
                 .lineToConstantHeading(new Vector2d(-28, 34))
                 .lineToConstantHeading(new Vector2d(-32, 34))
                 .lineToConstantHeading(new Vector2d(-32, 44))
@@ -102,7 +114,7 @@ public class AudienceBlueAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(25)
-                .forward(5)
+                .forward(5)*/
                 .build();
         waitForStart();
         location = bluePropThreshold.getPropPosition();
@@ -110,6 +122,16 @@ public class AudienceBlueAuto extends LinearOpMode {
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
             location = bluePropThreshold.getPropPosition();
+            /*switch (cases) {
+                case 1:
+                    location = Side.CENTER;
+                    break;
+                case 2:
+                    location = Side.LEFT;
+                    break;
+                case 3:
+                    location = Side.RIGHT;
+            }*/
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {

@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -18,7 +18,11 @@ import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.vision.VisionPortal;
+
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
+@Config
 @Autonomous(name="AudienceRedAuto", group="Auto")
 public class AudienceRedAuto extends LinearOpMode {
     private PropPipeline redPropThreshold;
@@ -38,6 +42,10 @@ public class AudienceRedAuto extends LinearOpMode {
     private int tolerance = 5;
     private RobotHardware robot;
     private SampleMecanumDrive drive;
+    public static double TURN_VALUE = -3;
+    public static double DISTANCE = 10; // in
+    public static double SECOND_DISTANCE = 0.4;
+    public static int cases = 1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -68,49 +76,74 @@ public class AudienceRedAuto extends LinearOpMode {
             telemetry.update();
         }
         //dashboard.startCameraStream(redPropThreshold, 30);
-        Pose2d startPose = new Pose2d(-36, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-34, -28, Math.toRadians(90)))
-                .lineToConstantHeading(new Vector2d(-34, -35))
+                //.turn(Math.toRadians(-1))
+                .forward(10)
+                /*.back(10)
+                .addDisplacementMarker(() -> {
+                    // Drop yellow pixel on backdrop
+                })
+                .turn(Math.toRadians(-20))
+                .forward(10)
+                /*.lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
+                .back(10)
                 .turn(Math.toRadians(-90))
                 .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(20)
-                .forward(5)
-                .build();
-        TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-46, -33))
-                .back(15)
-                .lineToLinearHeading(new Pose2d(-34, -35, Math.toRadians(0)))
-                .splineToConstantHeading(new Vector2d(60.25f, -29.41f), Math.toRadians(0))
-                .addDisplacementMarker(() -> {
-                    // Drop Yellow pixel on backboard
-                })
-                .strafeLeft(10)
-                .forward(5)
+                .strafeRight(20)
+                .forward(5)*/
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-34, -34, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(-30, -34))
-                .lineToLinearHeading(new Pose2d(-40, -34, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(-40, -42))
+                //.turn(Math.toRadians(-1))
+                .forward(7)
+                .strafeRight(3)
+                .strafeLeft(0.5)
+                /*.turn(Math.toRadians(-20))
+                .forward(SECOND_DISTANCE)
+                /*.lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
+                .back(10)
+                .turn(Math.toRadians(-90))
                 .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(25)
-                .forward(5)
+                .strafeRight(20)
+                .forward(5)*/
                 .build();
-
+        TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
+                //.turn(Math.toRadians(-1))
+                .strafeLeft(3)
+                .forward(7)
+                /*.lineToLinearHeading(new Pose2d(13, -34, Math.toRadians(-180)))
+                .lineTo(new Vector2d(1.5, -34))
+                .back(20)
+                .splineToLinearHeading(new Pose2d(60.25f, -29.14f, Math.toRadians(0)), Math.toRadians(0))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeRight(30)
+                .forward(5)*/
+                .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
             location = redPropThreshold.getPropPosition();
+            /*switch (cases) {
+                case 1:
+                    location = Side.CENTER;
+                    break;
+                case 2:
+                    location = Side.LEFT;
+                    break;
+                case 3:
+                    location = Side.RIGHT;
+            }*/
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {
@@ -133,4 +166,3 @@ public class AudienceRedAuto extends LinearOpMode {
         }
     }
 }
-

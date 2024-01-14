@@ -41,8 +41,8 @@ public class TeleOpMain extends LinearOpMode {
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
         // Manual reset
-        robot.airplaneHold.setPosition(1);
         waitForStart();
+        robot.airplaneHold.setPosition(0);
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
             robot.read();
@@ -55,15 +55,19 @@ public class TeleOpMain extends LinearOpMode {
             robot.drivetrain.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
-            if (gamepadEx.getButton(GamepadKeys.Button.A) || gamepadEx2.getButton(GamepadKeys.Button.A)) {
+            if (gamepad1.a || gamepad2.a) {
                 robot.airplaneHold.setPosition(0);
             }
-            if (gamepadEx.getButton(GamepadKeys.Button.B) || gamepadEx2.getButton(GamepadKeys.Button.B)) {
+            if (gamepad1.x || gamepad2.x) {
+                robot.airplaneHold.setPosition(1);
+            }
+            if (gamepad1.right_bumper || gamepad2.right_bumper) {
                 robot.airplaneLaunch.setPosition(1);
                 sleep(2000);
                 robot.airplaneLaunch.setPosition(0);
             }
-            if (gamepadEx.getButton(GamepadKeys.Button.Y) || gamepadEx2.getButton(GamepadKeys.Button.Y)) {
+            if (gamepad1.y || gamepad2.y) {
+                robot.airplaneLaunch.setPosition(0);
                 robot.airplaneLaunch.setPosition(0);
             }
             if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_DOWN) || gamepadEx.isDown(GamepadKeys.Button.DPAD_DOWN)) {
