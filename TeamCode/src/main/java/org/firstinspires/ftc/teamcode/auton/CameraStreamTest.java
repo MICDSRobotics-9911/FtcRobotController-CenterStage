@@ -22,6 +22,8 @@ import java.util.Locale;
 @Autonomous(name="CameraTest", group="Auto")
 public class CameraStreamTest extends LinearOpMode {
     private FtcDashboardProcessor dashboardProcessor;
+    private PropPipeline bluePropThreshold;
+    private PropPipeline redPropThreshold;
     private VisionPortal portal;
     private static int CAMERA_WIDTH = 640;
     private static int CAMERA_HEIGHT = 480;
@@ -41,11 +43,14 @@ public class CameraStreamTest extends LinearOpMode {
             FtcDashboard dashboard = FtcDashboard.getInstance();
             telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
             dashboardProcessor = new FtcDashboardProcessor(telemetry);
+            bluePropThreshold = new PropPipeline(telemetry);
+            redPropThreshold = new PropPipeline(telemetry);
+
             portal = new VisionPortal.Builder()
                     .setCamera(camera)
                     .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                     .setCamera(BuiltinCameraDirection.BACK)
-                    .addProcessor(dashboardProcessor)
+                    .addProcessors(bluePropThreshold, redPropThreshold, dashboardProcessor)
                     .enableLiveView(true)
                     .setAutoStopLiveView(true)
                     .build();

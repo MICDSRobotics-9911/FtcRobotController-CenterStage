@@ -20,31 +20,24 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(600);
-        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
+        Pose2d startPose = new Pose2d(-35, 60, Math.toRadians(-80));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .turn(Math.toRadians(-10))
-                                .waitSeconds(2)
-                                .forward(13)
-                                .back(13)
-                                .addDisplacementMarker(() -> {
-                                    // Drop yellow pixel on backdrop
-                                })
-                                .turn(Math.toRadians(-90))
-                                .forward(13)
-                                /*.lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
-                                .back(10)
-                                .turn(Math.toRadians(-90))
-                                .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))
+                                .lineToLinearHeading(new Pose2d(-34, 34, Math.toRadians(0)))
+                                .lineToConstantHeading(new Vector2d(-28, 34))
+                                .lineToConstantHeading(new Vector2d(-35, 34))
+                                .strafeRight(22)
+                                .forward(80)
+                                .lineToConstantHeading(new Vector2d(60.25f, 41.41f))
                                 .addDisplacementMarker(() -> {
                                     // Drop Yellow pixel on backboard
                                 })
-                                .strafeRight(20)
-                                .forward(5)*/
+                                .strafeRight(30)
+                                .forward(5)
                                 .build()
                 );
 

@@ -46,8 +46,8 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = 0.025; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 13; // in
+    public static double GEAR_RATIO = 0.025 * (114 / 108.15047920321808); // output (wheel) speed / input (motor) speed
+    public static double TRACK_WIDTH = 13.79; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -55,9 +55,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.05115;
-    public static double kA = 0.00141;
-    public static double kStatic = 0.34712;
+    public static double kV = 0.03339;
+    public static double kA = 0.004;
+    public static double kStatic = 0.04074;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -87,13 +87,14 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    //public static double MAX_VEL = ((MAX_RPM / 60) * GEAR_RATIO * WHEEL_RADIUS * 2 * Math.PI) * 0.85;
+    //public static double MAX_VEL = 19.212670212899926;
+    // Voltage compensated kF = 13.763390213717614;
     public static double MAX_VEL = 15;
     public static double MAX_ACCEL = 10;
-    //public static double MAX_ANG_VEL = MAX_VEL / TRACK_WIDTH * (180 / Math.PI);
-    public static double MAX_ANG_VEL = Math.toRadians(15.685616855355661);
-    //public static double MAX_ANG_ACCEL = MAX_ANG_VEL;
-    public static double MAX_ANG_ACCEL = Math.toRadians(15.685616855355661);
+
+    // This was empirically tuned(just keep increasing until accurate and fast enough)
+    public static double MAX_ANG_VEL = 0.454;
+    public static double MAX_ANG_ACCEL = 0.454;
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.

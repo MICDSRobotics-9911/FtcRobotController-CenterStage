@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auton;
 
 import android.util.Size;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -30,16 +31,6 @@ public class BackdropRedAuto extends LinearOpMode {
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private ElapsedTime runtime = new ElapsedTime();
-
-    // TODO: Encoder Ticks needs to be tuned for driving forward to spike mark
-    private int backLeftTarget = 0;
-    private int backRightTarget = 0;
-    private int frontLeftTarget = 0;
-    private int frontRightTarget = 0;
-
-
-    // TODO: This tolerance also needs to be empirically tuned
-    private int tolerance = 5;
     private RobotHardware robot;
     private SampleMecanumDrive drive;
     public static double TURN_VALUE = -3;
@@ -51,14 +42,12 @@ public class BackdropRedAuto extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         Globals.IS_AUTO = true;
-        Globals.IS_USING_IMU = false;
-        Globals.USING_DASHBOARD = false;
+        Globals.IS_USING_IMU = true;
+        Globals.USING_DASHBOARD = true;
         Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
         robot.enabled = true;
-        /*FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());*/
         redPropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
@@ -68,37 +57,34 @@ public class BackdropRedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        Side location = redPropThreshold.getPropPosition();
+        Side location;
         while (!isStarted()) {
-            telemetry.addLine("auto in init");
-            telemetry.addData("camera: ", portal.getCameraState());
-            telemetry.addData("Prop Location: ", location.toString());
+            location = redPropThreshold.getPropPosition();
+            robot.log("auto in init");
+            robot.log("camera: ", portal.getCameraState());
+            robot.log("Prop Location: ", location.toString());
             telemetry.update();
         }
-        //dashboard.startCameraStream(redPropThreshold, 30);
+        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .turn(Math.toRadians(-1))
                 .forward(10)
                 .back(10)
-                .addDisplacementMarker(() -> {
-                    // Drop yellow pixel on backdrop
-                })
                 .turn(Math.toRadians(-20))
                 .forward(10)
                 .strafeLeft(3)
                 .forward(2)
-                /*.lineToLinearHeading(new Pose2d(13, -28, Math.toRadians(90)))
-                .back(10)
-                .turn(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(60.25f, -35.41f), Math.toRadians(0))*/
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
                 .forward(5)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .turn(Math.toRadians(-1))
@@ -109,35 +95,25 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(7)
                 .strafeLeft(2)
                 .forward(2)
-                /*.lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
-                .back(10)
-                .turn(Math.toRadians(-90))
-                .splineToConstantHeading(new Vector2d(60.25f, -41.41f), Math.toRadians(0))*/
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
                 .strafeRight(20)
                 .forward(5)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .turn(Math.toRadians(-1))
                 .forward(7)
                 .strafeLeft(3)
                 .strafeRight(0.5)
-                /*.lineToLinearHeading(new Pose2d(13, -34, Math.toRadians(-180)))
-                .lineTo(new Vector2d(1.5, -34))
-                .back(20)
-                .splineToLinearHeading(new Pose2d(60.25f, -29.14f, Math.toRadians(0)), Math.toRadians(0))
-                .addDisplacementMarker(() -> {
-                    // Drop Yellow pixel on backboard
-                })
-                .strafeRight(30)
-                .forward(5)*/
                 .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();
-        telemetry.addData("Prop Location: ", location.toString());
+        robot.log("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
             location = redPropThreshold.getPropPosition();
@@ -151,7 +127,7 @@ public class BackdropRedAuto extends LinearOpMode {
                 case 3:
                     location = Side.RIGHT;
             }*/
-            telemetry.addData("Prop Location: ", location.toString());
+            robot.log("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {
                 case CENTER:

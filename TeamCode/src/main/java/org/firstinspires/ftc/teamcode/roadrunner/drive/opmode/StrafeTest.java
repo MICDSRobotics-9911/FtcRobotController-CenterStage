@@ -15,7 +15,6 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 /*
  * This is a simple routine to test translational drive capabilities.
  */
-@Disabled
 @Config
 @Autonomous(name="StrafeTest", group = "drive")
 public class StrafeTest extends LinearOpMode {
@@ -26,7 +25,6 @@ public class StrafeTest extends LinearOpMode {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d());
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(DISTANCE)
                 .build();

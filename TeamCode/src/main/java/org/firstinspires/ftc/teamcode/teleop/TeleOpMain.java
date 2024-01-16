@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,21 +25,19 @@ public class TeleOpMain extends LinearOpMode {
     private double loopTime = 0.0;
     ElapsedTime runtime = new ElapsedTime();
     private double speedModifier = 1;
-    public static double launchPosition = 1;
-    public static double hangPosition = 1;
-    public static double secondHangPosition = 0.5;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
         Globals.IS_USING_IMU = false;
         Globals.IS_AUTO = false;
-        Globals.USING_DASHBOARD = false;
+        Globals.USING_DASHBOARD = true;
 
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
         // robot.addSubsystem(extension, intake);
         robot.read();
-        telemetry.addLine("Robot Initialized");
+        robot.log("Robot Initialized");
         telemetry.update();
         gamepadEx = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
@@ -53,21 +54,20 @@ public class TeleOpMain extends LinearOpMode {
                 speedModifier = 1;
             }
             robot.drivetrain.driveRobotCentric(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX(), speedModifier);
-            telemetry.addLine(robot.drivetrain.toString());
+            robot.log(robot.drivetrain.toString());
             robot.periodic();
             if (gamepad1.a || gamepad2.a) {
                 robot.airplaneHold.setPosition(0);
             }
             if (gamepad1.x || gamepad2.x) {
                 robot.airplaneHold.setPosition(1);
-            }
-            if (gamepad1.right_bumper || gamepad2.right_bumper) {
+                sleep(1000);
                 robot.airplaneLaunch.setPosition(1);
                 sleep(2000);
                 robot.airplaneLaunch.setPosition(0);
             }
             if (gamepad1.y || gamepad2.y) {
-                robot.airplaneLaunch.setPosition(0);
+                robot.airplaneHold.setPosition(1);
                 robot.airplaneLaunch.setPosition(0);
             }
             if (gamepadEx2.isDown(GamepadKeys.Button.DPAD_DOWN) || gamepadEx.isDown(GamepadKeys.Button.DPAD_DOWN)) {
@@ -79,6 +79,7 @@ public class TeleOpMain extends LinearOpMode {
             }
             if (gamepad2.dpad_right || gamepad1.dpad_right) {
                 robot.hangHolder.setPower(0.7);
+
             } else if (gamepad2.dpad_left || gamepad1.dpad_left) {
                 robot.hangHolder.setPower(-0.7);
             } else {
@@ -86,9 +87,9 @@ public class TeleOpMain extends LinearOpMode {
             }
 
             double loop = System.nanoTime();
-            telemetry.addData("hz", 1000000000 / (loop - loopTime));
-            telemetry.addData("Runtime: ", runtime.toString());
-            telemetry.addData("Heading: ", robot.getAngle());
+            robot.log("hz", 1000000000 / (loop - loopTime));
+            robot.log("Runtime: ", runtime.toString());
+            robot.log("Heading: ", robot.getAngle());
             loopTime = loop;
             robot.write();
             telemetry.update();

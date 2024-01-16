@@ -4,13 +4,11 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -21,22 +19,24 @@ import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.vision.VisionPortal;
 
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 @Config
-@Autonomous(name="BackdropBlueAuto", group="Auto")
-public class BackdropBlueAuto extends LinearOpMode {
-    private PropPipeline bluePropThreshold;
+@Autonomous(name="ExperimentalAudienceRedAuto", group="Auto")
+public class ExperimentalAudienceRedAuto extends LinearOpMode {
+    private PropPipeline redPropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private ElapsedTime runtime = new ElapsedTime();
     private RobotHardware robot;
-    SampleMecanumDrive drive;
-    public static double DISTANCE = 5; // in
-    public static double SECOND_DISTANCE = 9;
+    private SampleMecanumDrive drive;
+    public static double TURN_VALUE = -3;
+    public static double DISTANCE = 10; // in
+    public static double SECOND_DISTANCE = 0.4;
     public static int cases = 1;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,74 +44,76 @@ public class BackdropBlueAuto extends LinearOpMode {
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = true;
         Globals.USING_DASHBOARD = true;
-        Globals.COLOR = Side.BLUE;
+        Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
         robot.enabled = true;
-        bluePropThreshold = new PropPipeline(telemetry);
+        redPropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .setCamera(BuiltinCameraDirection.BACK)
-                .addProcessor(bluePropThreshold)
+                .addProcessor(redPropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        FtcDashboard.getInstance().startCameraStream(bluePropThreshold, 30);
         Side location;
         while (!isStarted()) {
-            location = bluePropThreshold.getPropPosition();
+            location = redPropThreshold.getPropPosition();
             telemetry.addLine("auto in init");
             telemetry.addData("camera: ", portal.getCameraState());
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
+        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
+        Pose2d startPose = new Pose2d(-36, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(10)
-                .back(10)
-                .turn(Math.toRadians(20))
-                //.splineToLinearHeading(new Pose2d(60.25f, 35.41, Math.toRadians(0)), Math.toRadians(0))
-                .forward(12)
-                .strafeRight(3)
-                .forward(2)
+                .lineToLinearHeading(new Pose2d(-34, -28, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(-34, -35))
+                .strafeLeft(15)
+                .forward(25)
+                .turn(Math.toRadians(-90))
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(60.25f, -35.41f))
                 .addDisplacementMarker(() -> {
-                    robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(6)
+                .strafeLeft(20)
                 .forward(5)
-                .addDisplacementMarker(() -> {
-                    robot.server.setPosition(0);
-                })
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .strafeLeft(3)
-                .forward(7)
-                .back(7)
-                .turn(Math.toRadians(20))
-                .forward(9.5)
-                .strafeRight(3)
-                .forward(2)
+                .lineToConstantHeading(new Vector2d(-46, -33))
+                .back(15)
+                .lineToLinearHeading(new Pose2d(-34, -35, Math.toRadians(0)))
+                .strafeLeft(22)
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(60.25f, -29.41f))
                 .addDisplacementMarker(() -> {
-                    robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(4)
+                .strafeLeft(20)
                 .forward(5)
-                .addDisplacementMarker(() -> {
-                    robot.server.setPosition(0);
-                })
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                //I don't know what to do here. RYAN FIX THIS!!!
-                .forward(10)
-                .strafeRight(10)
+                .lineToLinearHeading(new Pose2d(-34, -34, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(-30, -34))
+                .lineToLinearHeading(new Pose2d(-40, -34, Math.toRadians(0)))
+                .strafeLeft(23)
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(60.25f, -41.41f))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeLeft(28)
+                .forward(5)
                 .build();
         waitForStart();
+        location = redPropThreshold.getPropPosition();
+        telemetry.addData("Prop Location: ", location.toString());
+        telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            location = bluePropThreshold.getPropPosition();
+            location = redPropThreshold.getPropPosition();
             /*switch (cases) {
                 case 1:
                     location = Side.CENTER;

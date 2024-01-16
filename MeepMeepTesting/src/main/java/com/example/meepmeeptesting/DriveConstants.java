@@ -13,6 +13,7 @@ package com.example.meepmeeptesting;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
+//@Config
 public class DriveConstants {
 
     /*
@@ -29,6 +30,8 @@ public class DriveConstants {
      * If using the built-in motor velocity PID, update MOTOR_VELO_PID with the tuned coefficients
      * from DriveVelocityPIDTuner.
      */
+    public static final boolean RUN_USING_ENCODER = false;
+    //public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(0, 0, 0, getMotorVelocityF(MAX_RPM / 60 * TICKS_PER_REV));
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -39,7 +42,7 @@ public class DriveConstants {
      * convenience. Make sure to exclude any gear ratio included in MOTOR_CONFIG from GEAR_RATIO.
      */
     public static double WHEEL_RADIUS = 1.8898; // in
-    public static double GEAR_RATIO = 0.025; // output (wheel) speed / input (motor) speed
+    public static double GEAR_RATIO = 0.025 * (114 / 108.15047920321808); // output (wheel) speed / input (motor) speed
     public static double TRACK_WIDTH = 13; // in
 
     /*
@@ -48,9 +51,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 21.99713;
-    public static double kA = 0.06486;
-    public static double kStatic = 0.21655;
+    public static double kV = 0.03539;
+    public static double kA = 0.004;
+    public static double kStatic = 0.04074;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -80,14 +83,20 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 35.868505803830;
-    public static double MAX_ACCEL = 30;
-    public static double MAX_ANG_VEL = Math.toRadians(180);
-    public static double MAX_ANG_ACCEL = Math.toRadians(180);
+    //public static double MAX_VEL = 19.212670212899926;
+    // Voltage compensated kF = 13.763390213717614;
+    public static double MAX_VEL = 15;
+    public static double MAX_ACCEL = 10;
+    //public static double MAX_ANG_VEL = MAX_VEL / TRACK_WIDTH * (180 / Math.PI);
+    public static double MAX_ANG_VEL = Math.toRadians(15.685616855355661);
+    //public static double MAX_ANG_ACCEL = MAX_ANG_VEL;
+    public static double MAX_ANG_ACCEL = Math.toRadians(15.685616855355661);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
      */
+    //public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+    //public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR = RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;

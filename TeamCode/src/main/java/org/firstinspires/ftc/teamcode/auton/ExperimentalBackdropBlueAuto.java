@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySe
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Config
-@Autonomous(name="BackdropBlueAuto", group="Auto")
-public class BackdropBlueAuto extends LinearOpMode {
+@Autonomous(name="ExperimentalBackdropBlueAuto", group="Auto")
+public class ExperimentalBackdropBlueAuto extends LinearOpMode {
     private PropPipeline bluePropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
@@ -61,68 +61,48 @@ public class BackdropBlueAuto extends LinearOpMode {
         Side location;
         while (!isStarted()) {
             location = bluePropThreshold.getPropPosition();
-            telemetry.addLine("auto in init");
-            telemetry.addData("camera: ", portal.getCameraState());
-            telemetry.addData("Prop Location: ", location.toString());
+            robot.log("auto in init");
+            robot.log("Camera: ", portal.getCameraState());
+            robot.log("Prop Location: ", location);
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
+        Pose2d startPose = new Pose2d(14, 60, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(10)
-                .back(10)
-                .turn(Math.toRadians(20))
-                //.splineToLinearHeading(new Pose2d(60.25f, 35.41, Math.toRadians(0)), Math.toRadians(0))
-                .forward(12)
-                .strafeRight(3)
-                .forward(2)
+                .lineToConstantHeading(new Vector2d(13, 30))
+                .back(20)
+                .splineToLinearHeading(new Pose2d(60.25f, 35.41, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
-                    robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(6)
+                .strafeLeft(30)
                 .forward(5)
-                .addDisplacementMarker(() -> {
-                    robot.server.setPosition(0);
-                })
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .strafeLeft(3)
-                .forward(7)
-                .back(7)
-                .turn(Math.toRadians(20))
-                .forward(9.5)
-                .strafeRight(3)
-                .forward(2)
+                .lineToConstantHeading(new Vector2d(22.5, 35))
+                .back(20)
+                .splineToLinearHeading(new Pose2d(60.25f, 41.41f, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
-                    robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
-                .strafeLeft(4)
+                .strafeLeft(15)
                 .forward(5)
-                .addDisplacementMarker(() -> {
-                    robot.server.setPosition(0);
-                })
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                //I don't know what to do here. RYAN FIX THIS!!!
-                .forward(10)
-                .strafeRight(10)
+                .lineToLinearHeading(new Pose2d(13, 34, Math.toRadians(180)))
+                .lineTo(new Vector2d(1.5, 34))
+                .back(20)
+                .splineToLinearHeading(new Pose2d(60.25f, 29.41f, Math.toRadians(0)), Math.toRadians(0))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                })
+                .strafeLeft(30)
+                .forward(5)
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
             location = bluePropThreshold.getPropPosition();
-            /*switch (cases) {
-                case 1:
-                    location = Side.CENTER;
-                    break;
-                case 2:
-                    location = Side.LEFT;
-                    break;
-                case 3:
-                    location = Side.RIGHT;
-            }*/
-            telemetry.addData("Prop Location: ", location.toString());
+            robot.log("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {
                 case CENTER:

@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.common.centerstage;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
@@ -9,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
+import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -29,9 +33,9 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private Mat highMat = new Mat();
     private Mat lowMat = new Mat();
     private Mat finalMat = new Mat();
-    public static double redThreshold = 0.11;
-    public static double blueThreshold = 0.1;
-    double threshold = 0;
+    public static double redThreshold = 0.07;
+    public static double blueThreshold = 0.06;
+    public static double threshold = 0;
     private Side location = Side.LEFT;
 
     private final Scalar lowHSVRedLower = new Scalar(0, 100, 20);  //Beginning of Color Wheel
@@ -39,13 +43,16 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
     private final Scalar highHSVRedLower = new Scalar(160, 100, 20); //Wraps around Color Wheel
     private final Scalar highHSVRedUpper = new Scalar(180, 255, 255);
+
     private final Scalar lowHSVBlueLower = new Scalar(80, 100, 100);
-    private final Scalar highHSVBlueUpper = new Scalar(170, 255, 255);
-    static final Rect LEFT_RECTANGLE = new Rect(0, 151, 180, 179);
-    static final Rect CENTER_RECTANGLE = new Rect(200, 120, 340, 240);
+    private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
+
+    public static Rect LEFT_RECTANGLE = new Rect(0, 30, 180, 200);
+    public static Rect CENTER_RECTANGLE = new Rect(200, 30, 320, 200);
     Telemetry telemetry;
+    private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public PropPipeline(Telemetry telemetry) {
-        this.telemetry = telemetry;
+        this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
     }
 
     @Override
@@ -53,10 +60,12 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         if (Globals.COLOR == Side.RED) {
             // RED
             threshold = redThreshold;
+            fieldColor = Imgproc.COLOR_RGB2HSV;
         }
         else {
             // BLUE
             threshold = blueThreshold;
+            //fieldColor = Imgproc.COLOR_RGB2HSV_FULL;
         }
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565));
     }
@@ -64,7 +73,7 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     @Override
     public Object processFrame(Mat frame, long captureTimeNanos) {
         // Convert Image from RGB to HSV
-        Imgproc.cvtColor(frame, testMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(frame, testMat, fieldColor);
 
         if (Globals.COLOR == Side.RED) {
             Core.inRange(testMat, lowHSVRedLower, lowHSVRedUpper, lowMat);
@@ -85,7 +94,6 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
         telemetry.addData("Left Box: ", averagedLeftBox);
         telemetry.addData("Right Box: ", averagedRightBox);
-        telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
             Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(0, 255, 0));

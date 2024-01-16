@@ -57,10 +57,10 @@ import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
-
-    public static double LATERAL_MULTIPLIER = 1;
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0.1, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1.3, 0, 0);
+    
+    public static double LATERAL_MULTIPLIER = 3.1869992232431534 / 150;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -141,10 +141,10 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void printEncoderValues(Telemetry telemetry) {
-        telemetry.addData("FrontLeftPos: ", lastEncPositions.get(0));
-        telemetry.addData("FrontRightPos: ", lastEncPositions.get(3));
-        telemetry.addData("BackLeftPos: ", lastEncPositions.get(1));
-        telemetry.addData("BackRightPos: ", lastEncPositions.get(2));
+        telemetry.addData("FrontLeftPos: ", leftFront.getCurrentPosition());
+        telemetry.addData("FrontRightPos: ", rightFront.getCurrentPosition());
+        telemetry.addData("BackLeftPos: ", leftRear.getCurrentPosition());
+        telemetry.addData("BackRightPos: ", rightRear.getCurrentPosition());
     }
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);

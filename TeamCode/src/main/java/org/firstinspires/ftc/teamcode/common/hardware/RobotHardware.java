@@ -47,7 +47,7 @@ public class RobotHardware {
     public Servo airplaneLaunch;
     public Servo airplaneHold;
     public static double holdMin = 0.3;
-    public static double holdMax = 1;
+    public static double holdMax = 0.45;
 
     public ServoEx clawServo;
     public WebcamName camera;
@@ -78,7 +78,11 @@ public class RobotHardware {
     public void init(final HardwareMap hardwareMap, final Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         // Add an if else detecting whether dashboard is running for telemetry
-        this.telemetry = telemetry;
+        if (Globals.USING_DASHBOARD) {
+            this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
+        } else  {
+            this.telemetry = telemetry;
+        }
 
         // DRIVETRAIN
         this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
@@ -170,7 +174,7 @@ public class RobotHardware {
 
     public void write() {
         for (WSubsystem subsystem : subsystems) {
-            subsystem.read();
+            subsystem.write();
         }
     }
 
