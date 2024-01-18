@@ -20,19 +20,34 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(600);
-        Pose2d startPose = new Pose2d(-36, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .lineToLinearHeading(new Pose2d(13, 30, Math.toRadians(180)))
-                                .lineTo(new Vector2d(1.5, 34))
+                                .turn(Math.toRadians(-10))
+                                .forward(27)
+                                .turn(Math.toRadians(90))
+                                .forward(8)
                                 .back(20)
                                 .turn(Math.toRadians(180))
-                                .splineToLinearHeading(new Pose2d(60, 29, Math.toRadians(0)), Math.toRadians(0))
-                                .strafeLeft(30)
+                                .forward(26)
+                                .strafeLeft(3)
+                                .addDisplacementMarker(() -> {
+                                    //drive.resetHeadingPID();
+                                })
+                                .strafeLeft(2)
+                                .addDisplacementMarker(() -> {
+                                    // Drop Yellow Pixel on backdrop
+                                    //robot.server.setPosition(1);
+                                })
+                                .strafeRight(30)
+                                .addDisplacementMarker(() -> {
+                                    // Reset Yellow Pixel on backdrop
+                                    //robot.server.setPosition(0);
+                                })
                                 .forward(5)
                                 .build()
                 );

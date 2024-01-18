@@ -63,12 +63,13 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(13, 24))
                 .back(20)
-                .splineToLinearHeading(new Pose2d(60, 35, Math.toRadians(0)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(50, 35, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
+                    drive.resetHeadingPID();
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
-                .waitSeconds(SECONDS)
+                .waitSeconds(1)
                 .back(5)
                 .strafeLeft(30)
                 .forward(5)
@@ -79,12 +80,13 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(24, 35))
                 .back(20)
-                .splineToLinearHeading(new Pose2d(60, 39, Math.toRadians(0)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(50, 39, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
+                    drive.resetHeadingPID();
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
-                .waitSeconds(SECONDS)
+                .waitSeconds(1)
                 .back(5)
                 .strafeLeft(15)
                 .forward(15)
@@ -98,17 +100,17 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
                 .forward(35)
                 .strafeRight(4)
                 .addDisplacementMarker(() -> {
+                    drive.resetHeadingPID();
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
-                .waitSeconds(SECONDS)
-                .strafeLeft(30)
-                .forward(15)
+                .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     // Reset Yellow Pixel Holder
                     robot.server.setPosition(0);
                 })
-
+                .strafeLeft(30)
+                .forward(15)
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {

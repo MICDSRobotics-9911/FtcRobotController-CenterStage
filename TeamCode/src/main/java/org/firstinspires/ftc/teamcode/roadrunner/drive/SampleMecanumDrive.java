@@ -140,6 +140,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         );
     }
 
+    public void resetHeadingPID() {
+        HEADING_PID = new PIDCoefficients(0, 0, 0);
+    }
+
     public void printEncoderValues(Telemetry telemetry) {
         telemetry.addData("FrontLeftPos: ", leftFront.getCurrentPosition());
         telemetry.addData("FrontRightPos: ", rightFront.getCurrentPosition());
