@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auton;
+package org.firstinspires.ftc.teamcode.auton.experimental;
 
 import android.util.Size;
 
@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.vision.VisionPortal;
 
-import java.util.Locale;
 @Disabled
 @Autonomous(name="CameraTest", group="Auto")
 public class CameraStreamTest extends LinearOpMode {

@@ -1,14 +1,13 @@
-package org.firstinspires.ftc.teamcode.auton;
+package org.firstinspires.ftc.teamcode.auton.experimental;
 
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -19,94 +18,107 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-@Autonomous(name="ExperimentalAudienceBlueAuto", group="Auto")
-public class ExperimentalAudienceBlueAuto extends LinearOpMode {
-    private PropPipeline bluePropThreshold;
+
+@Config
+@Autonomous(name="ExperimentalBackdropRedAuto", group="Auto")
+public class ExperimentalBackdropRedAuto extends LinearOpMode {
+    public static int SECONDS = 5;
+    private PropPipeline redPropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private ElapsedTime runtime = new ElapsedTime();
     private RobotHardware robot;
     private SampleMecanumDrive drive;
-    public static int cases = 1;
-
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = true;
         Globals.USING_DASHBOARD = true;
-        Globals.COLOR = Side.BLUE;
+        Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
-        robot.enabled = true;
-        bluePropThreshold = new PropPipeline(telemetry);
+        redPropThreshold = new PropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .setCamera(BuiltinCameraDirection.BACK)
-                .addProcessor(bluePropThreshold)
+                .addProcessor(redPropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
+        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Side location;
         while (!isStarted()) {
-            location = bluePropThreshold.getPropPosition();
+            location = redPropThreshold.getPropPosition();
             telemetry.addLine("auto in init");
             telemetry.addData("camera: ", portal.getCameraState());
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        FtcDashboard.getInstance().startCameraStream(bluePropThreshold, 30);
-        Pose2d startPose = new Pose2d(-34, 60, Math.toRadians(-100));
+        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-34, 28, Math.toRadians(-90)))
-                .lineToConstantHeading(new Vector2d(-34, 37))
-                .turn(Math.toRadians(90))
+                .lineToLinearHeading(new Pose2d(13, -27, Math.toRadians(90)))
                 .back(20)
-                .strafeRight(25)
-                .forward(80)
-                .lineToConstantHeading(new Vector2d(60.25f, 35.41f))
+                .turn(Math.toRadians(-90))
+                .lineToConstantHeading(new Vector2d(60, -35))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
+                    robot.server.setPosition(1);
                 })
-                .strafeRight(25)
-                .forward(5)
+                .waitSeconds(SECONDS)
+                .back(5)
+                .strafeRight(30)
+                .forward(10)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-46, 36, Math.toRadians(-90)))
-                .lineToConstantHeading(new Vector2d(-46, 40))
-                .strafeLeft(10)
-                .forward(27)
-                .turn(Math.toRadians(90))
-                .forward(80)
-                .lineToConstantHeading(new Vector2d(60.25f, 29.41f))
+                .lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
+                .back(10)
+                .turn(Math.toRadians(-90))
+                .lineToConstantHeading(new Vector2d(92, -41))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
+                    robot.server.setPosition(1);
                 })
-                .strafeRight(22)
-                .forward(5)
+                .waitSeconds(SECONDS)
+                .back(5)
+                .strafeRight(20)
+                .forward(10)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-34, 34, Math.toRadians(0)))
-                .lineToConstantHeading(new Vector2d(-28, 34))
-                .lineToConstantHeading(new Vector2d(-35, 34))
-                .strafeRight(22)
-                .forward(80)
-                .lineToConstantHeading(new Vector2d(60.25f, 41.41f))
+                .turn(Math.toRadians(-10))
+                .forward(27)
+                .turn(Math.toRadians(90))
+                .forward(8)
+                .back(20)
+                .turn(Math.toRadians(180))
+                .forward(32)
+                .strafeLeft(2)
                 .addDisplacementMarker(() -> {
-                    // Drop Yellow pixel on backboard
+                    // Drop Yellow Pixel on backdrop
+                    robot.server.setPosition(1);
                 })
                 .strafeRight(30)
                 .forward(5)
+                .addDisplacementMarker(() -> {
+                    // Reset Yellow Pixel on backdrop
+                    robot.server.setPosition(0);
+                })
                 .build();
         waitForStart();
-        location = bluePropThreshold.getPropPosition();
+        location = redPropThreshold.getPropPosition();
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
-            location = bluePropThreshold.getPropPosition();
+            location = redPropThreshold.getPropPosition();
             /*switch (cases) {
                 case 1:
                     location = Side.CENTER;
@@ -130,11 +142,12 @@ public class ExperimentalAudienceBlueAuto extends LinearOpMode {
                     drive.followTrajectorySequence(rightTraj);
             }
         }
-        robot.read();
-        robot.periodic();
-        robot.write();
-        robot.clearBulkCache();
-        runtime.reset();
-        portal.close();
+        if (isStopRequested()) {
+            robot.read();
+            robot.periodic();
+            robot.write();
+            robot.clearBulkCache();
+            portal.close();
+        }
     }
 }

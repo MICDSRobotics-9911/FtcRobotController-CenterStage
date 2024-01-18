@@ -33,9 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 @Config
 public class RobotHardware {
-    private static double p = 0.0, i = 0.0, d = 0.0;
-    private double errorTolerance = 0.0;
-    private int drivePosTolerance = 50;
     private ElapsedTime voltageTimer = new ElapsedTime();
     private double voltage = 12.0;
     public DcMotorEx frontLeftMotor;
@@ -48,10 +45,14 @@ public class RobotHardware {
     public Servo airplaneHold;
     public static double holdMin = 0.3;
     public static double holdMax = 0.45;
+    public static double launchMin = 0;
+    public static double launchMax = 0.8;
 
     public ServoEx clawServo;
     public WebcamName camera;
     public WEncoder extensionEncoder;
+    public static double serverMin = 0;
+    public static double serverMax = 1;
     public WActuatorGroup extensionActuator;
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
@@ -78,11 +79,7 @@ public class RobotHardware {
     public void init(final HardwareMap hardwareMap, final Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
         // Add an if else detecting whether dashboard is running for telemetry
-        if (Globals.USING_DASHBOARD) {
-            this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
-        } else  {
-            this.telemetry = telemetry;
-        }
+        this.telemetry = telemetry;
 
         // DRIVETRAIN
         this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
@@ -133,6 +130,8 @@ public class RobotHardware {
         // Airplane Launch
         airplaneLaunch = hardwareMap.get(Servo.class, "airplane_launch");
         airplaneLaunch.setDirection(Servo.Direction.REVERSE);
+        airplaneLaunch.scaleRange(launchMin, launchMax);
+
         airplaneHold = hardwareMap.get(Servo.class, "airplane_hold");
         airplaneHold.setDirection(Servo.Direction.REVERSE);
         airplaneHold.scaleRange(holdMin, holdMax);
@@ -141,13 +140,16 @@ public class RobotHardware {
         // Hang
 
         hangHolder = hardwareMap.get(DcMotorEx.class, "hang_holder");
-        hangHolder.setDirection(DcMotorEx.Direction.FORWARD);
+        hangHolder.setDirection(DcMotorEx.Direction.REVERSE);
+        hangHolder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hangHolder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         spoolHangMotor = hardwareMap.get(DcMotorEx.class, "spool_hang_motor");
         spoolHangMotor.setDirection(DcMotorEx.Direction.FORWARD);
         modules = hardwareMap.getAll(LynxModule.class);
 
         server = hardwareMap.get(Servo.class, "server");
-        server.setDirection(Servo.Direction.FORWARD);
+        server.setDirection(Servo.Direction.REVERSE);
+        server.scaleRange(serverMin, serverMax);
 
         this.subsystems = new ArrayList<>();
         if (Globals.IS_AUTO) {

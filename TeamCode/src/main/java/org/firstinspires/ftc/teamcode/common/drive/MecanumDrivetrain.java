@@ -13,19 +13,12 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 @Config
 public class MecanumDrivetrain extends WSubsystem {
     private final RobotHardware robot = RobotHardware.getInstance();
-    // TODO: tune this using the robot
-    private final double ticksPerInch = 0.0;
 
     double[] ws = new double[4];
     public double backLeftPos = 0.0;
     public double backRightPos = 0.0;
     public double frontLeftPos = 0.0;
     public double frontRightPos = 0.0;
-    private int backLeftTarget = 0;
-    private int backRightTarget = 0;
-    private int frontLeftTarget = 0;
-    private int frontRightTarget = 0;
-    private int multiplier = 20;
 
 
     private PIDController controller;

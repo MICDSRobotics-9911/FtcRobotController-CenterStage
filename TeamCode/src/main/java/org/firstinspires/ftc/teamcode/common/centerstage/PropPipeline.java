@@ -48,11 +48,11 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
 
     public static Rect LEFT_RECTANGLE = new Rect(0, 30, 180, 200);
-    public static Rect CENTER_RECTANGLE = new Rect(200, 30, 320, 200);
+    public static Rect CENTER_RECTANGLE = new Rect(170, 0, 320, 180);
     Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public PropPipeline(Telemetry telemetry) {
-        this.telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+        this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
     @Override
@@ -94,22 +94,26 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
         telemetry.addData("Left Box: ", averagedLeftBox);
         telemetry.addData("Right Box: ", averagedRightBox);
+        telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
-            Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 255, 255));
         } else if (averagedRightBox > threshold) {
             location = Side.CENTER;
-            Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
         } else {
             location = Side.RIGHT;
-            Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(75, 0, 130));
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 0, 0));
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 0, 0));
         }
 
         // These lines are for tuning the rectangles
-        Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
-        Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
+        //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+        //Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
 
-        finalMat.copyTo(frame); /*This line should only be added in when you want to see your custom pipeline
+        /*finalMat.copyTo(frame); This line should only be added in when you want to see your custom pipeline
                                   on the driver station stream, do not use this permanently in your code as
                                   you use the "frame" mat for all of your pipelines, such as April Tags*/
         Bitmap b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565);
@@ -129,7 +133,7 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         return this.location;
     }
 
-    @Override
+    @Override   
     public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
         continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
     }
