@@ -51,8 +51,8 @@ public class RobotHardware {
     public ServoEx clawServo;
     public WebcamName camera;
     public WEncoder extensionEncoder;
-    public static double serverMin = 0;
-    public static double serverMax = 1;
+    public static double serverMin = 0.2;
+    public static double serverMax = 0.5;
     public WActuatorGroup extensionActuator;
     private HardwareMap hardwareMap;
     private Telemetry telemetry;

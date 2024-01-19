@@ -140,8 +140,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         );
     }
 
-    public void resetHeadingPID() {
-        HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public void resetHeadingPID(Telemetry telemetry) {
+        this.HEADING_PID = new PIDCoefficients(0, 0, 0);
+        telemetry.addData("HEADING PID: ", this.HEADING_PID.toString());
     }
 
     public void printEncoderValues(Telemetry telemetry) {

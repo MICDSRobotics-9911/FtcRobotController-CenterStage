@@ -47,8 +47,8 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar lowHSVBlueLower = new Scalar(80, 100, 100);
     private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
 
-    public static Rect LEFT_RECTANGLE = new Rect(0, 30, 180, 200);
-    public static Rect CENTER_RECTANGLE = new Rect(170, 0, 320, 180);
+    public static Rect LEFT_RECTANGLE = new Rect(0, 80, 180, 200);
+    public static Rect CENTER_RECTANGLE = new Rect(240, 30, 320, 180);
     Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public PropPipeline(Telemetry telemetry) {

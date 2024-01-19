@@ -61,55 +61,60 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(14, 60, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(13, 24))
+                .lineToConstantHeading(new Vector2d(13, 26))
                 .back(20)
-                .splineToLinearHeading(new Pose2d(50, 35, Math.toRadians(0)), Math.toRadians(0))
+                .turn(Math.toRadians(90))
+                .lineToConstantHeading(new Vector2d(52, 37))
                 .addDisplacementMarker(() -> {
-                    drive.resetHeadingPID();
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
                 })
+                .forward(0.5)
                 .waitSeconds(1)
-                .back(5)
-                .strafeLeft(30)
-                .forward(5)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
+                .back(5)
+                .strafeLeft(25)
+                .forward(5)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(24, 35))
                 .back(20)
-                .splineToLinearHeading(new Pose2d(50, 39, Math.toRadians(0)), Math.toRadians(0))
+                .turn(Math.toRadians(90))
+                .lineToConstantHeading(new Vector2d(52, 39))
                 .addDisplacementMarker(() -> {
-                    drive.resetHeadingPID();
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
+                .forward(0.5)
                 .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
                 .back(5)
-                .strafeLeft(15)
-                .forward(15)
+                .strafeLeft(20)
+                .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .forward(27)
                 .turn(Math.toRadians(-90))
-                .forward(10)
+                .forward(14)
                 .back(10)
                 .turn(Math.toRadians(180))
-                .forward(35)
-                .strafeRight(4)
+                .lineToConstantHeading(new Vector2d(52, 31))
                 .addDisplacementMarker(() -> {
-                    drive.resetHeadingPID();
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
+                .forward(0.5)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     // Reset Yellow Pixel Holder
                     robot.server.setPosition(0);
                 })
-                .strafeLeft(30)
+                .back(5)
+                .strafeLeft(29)
                 .forward(15)
                 .build();
         waitForStart();
