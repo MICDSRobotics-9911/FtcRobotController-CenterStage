@@ -20,7 +20,7 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(600);
-        Pose2d startPose = new Pose2d(-36, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-38, -60, Math.toRadians(90));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
@@ -29,7 +29,7 @@ public class MeepMeepTesting {
                         drive.trajectorySequenceBuilder(startPose)
                                 .forward(26)
                                 .turn(Math.toRadians(-90))
-                                .forward(8)
+                                .forward(10)
                                 .back(10)
                                 .strafeLeft(25)
                                 .forward(70)

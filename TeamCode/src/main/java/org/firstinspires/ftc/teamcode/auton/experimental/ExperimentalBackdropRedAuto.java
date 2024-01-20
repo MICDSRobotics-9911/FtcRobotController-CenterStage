@@ -60,7 +60,7 @@ public class ExperimentalBackdropRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(13, -27, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(13, -26, Math.toRadians(90)))
                 .back(20)
                 .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(52, -33))
@@ -68,17 +68,17 @@ public class ExperimentalBackdropRedAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(1)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .back(5)
-                .strafeRight(25)
-                .forward(10)
+                .back(10)
+                .strafeRight(28)
+                .forward(15)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(24, -35, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(30, -35, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
                 .lineToConstantHeading(new Vector2d(52, -39))
@@ -90,9 +90,9 @@ public class ExperimentalBackdropRedAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .back(5)
-                .strafeRight(20)
-                .forward(10)
+                .back(10)
+                .strafeRight(25)
+                .forward(15)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .turn(Math.toRadians(-10))
@@ -101,20 +101,20 @@ public class ExperimentalBackdropRedAuto extends LinearOpMode {
                 .forward(8)
                 .back(20)
                 .turn(Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(52, -27))
+                .lineToConstantHeading(new Vector2d(52, -18))
                 .addDisplacementMarker(() -> {
                     //drive.resetHeadingPID(telemetry);
-                    //robot.server.setPosition(1);
+                    robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(0.7)
                 .addDisplacementMarker(() -> {
                     // Reset Yellow Pixel on backdrop
-                    //robot.server.setPosition(0);
+                    robot.server.setPosition(0);
                 })
                 .waitSeconds(1)
-                .back(5)
+                .back(10)
                 .strafeRight(32)
-                .forward(10)
+                .forward(15)
                 .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();

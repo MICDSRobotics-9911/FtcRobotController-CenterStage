@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,13 +25,15 @@ public class TeleOpMain extends LinearOpMode {
         Globals.USING_DASHBOARD = false;
 
         robot = RobotHardware.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot.init(hardwareMap, telemetry);
         // robot.addSubsystem(extension, intake);
         robot.read();
         telemetry.addLine("Robot Initialized");
         telemetry.update();
         // Manual reset
-        robot.airplaneHold.setPosition(1);
+        robot.airplaneHold.setPosition(0);
+        robot.server.setPosition(0);
         waitForStart();
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
@@ -39,7 +43,7 @@ public class TeleOpMain extends LinearOpMode {
             } else {
                 speedModifier = 1;
             }
-            robot.drivetrain.driveRobotCentric(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, speedModifier);
+            robot.drivetrain.driveRobotCentric(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speedModifier);
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
             if (gamepad1.a || gamepad2.a) {
@@ -65,12 +69,6 @@ public class TeleOpMain extends LinearOpMode {
                 robot.spoolHangMotor.setPower(-1);
             } else {
                 robot.spoolHangMotor.setPower(0);
-            }
-            if (gamepad1.right_bumper) {
-                robot.server.setPosition(1);
-            }
-            if (gamepad1.right_stick_button) {
-                robot.server.setPosition(0);
             }
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));

@@ -61,7 +61,7 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(14, 60, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(13, 26))
+                .lineToConstantHeading(new Vector2d(13, 28))
                 .back(20)
                 .turn(Math.toRadians(90))
                 .lineToConstantHeading(new Vector2d(52, 37))
@@ -99,7 +99,7 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .forward(27)
                 .turn(Math.toRadians(-90))
-                .forward(14)
+                .forward(12)
                 .back(10)
                 .turn(Math.toRadians(180))
                 .lineToConstantHeading(new Vector2d(52, 31))
