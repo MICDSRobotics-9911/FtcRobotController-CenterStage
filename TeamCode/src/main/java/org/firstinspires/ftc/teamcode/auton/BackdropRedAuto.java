@@ -5,6 +5,7 @@ import android.util.Size;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -25,10 +26,8 @@ public class BackdropRedAuto extends LinearOpMode {
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
-    private ElapsedTime runtime = new ElapsedTime();
     private RobotHardware robot;
     private SampleMecanumDrive drive;
-
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
@@ -47,6 +46,7 @@ public class BackdropRedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
+        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Side location;
         while (!isStarted()) {
             location = redPropThreshold.getPropPosition();
@@ -55,22 +55,42 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(13, -27, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(13, -26, Math.toRadians(90)))
                 .back(20)
                 .turn(Math.toRadians(-90))
-                .strafeRight(20)
-                .forward(30)
+                .lineToConstantHeading(new Vector2d(52, -33))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                    robot.server.setPosition(1);
+                })
+                .forward(1)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(10)
+                .strafeRight(28)
+                .forward(15)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(22.5, -35, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(30, -35, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
-                .strafeRight(20)
-                .forward(30)
+                .lineToConstantHeading(new Vector2d(52, -39))
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(1);
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(10)
+                .strafeRight(25)
+                .forward(15)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .turn(Math.toRadians(-10))
@@ -79,8 +99,20 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(8)
                 .back(20)
                 .turn(Math.toRadians(180))
-                .strafeRight(20)
-                .forward(32)
+                .lineToConstantHeading(new Vector2d(52, -18))
+                .addDisplacementMarker(() -> {
+                    //drive.resetHeadingPID(telemetry);
+                    robot.server.setPosition(1);
+                })
+                .forward(0.7)
+                .addDisplacementMarker(() -> {
+                    // Reset Yellow Pixel on backdrop
+                    robot.server.setPosition(0);
+                })
+                .waitSeconds(1)
+                .back(10)
+                .strafeRight(32)
+                .forward(15)
                 .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();
@@ -100,16 +132,11 @@ public class BackdropRedAuto extends LinearOpMode {
                 default:
                     drive.followTrajectorySequence(rightTraj);
             }
-            robot.server.setPosition(1);
-            sleep(1000);
-            robot.server.setPosition(0);
         }
-        if (isStopRequested()) {
-            robot.read();
-            robot.periodic();
-            robot.write();
-            robot.clearBulkCache();
-            portal.close();
-        }
+        robot.read();
+        robot.periodic();
+        robot.write();
+        robot.clearBulkCache();
+        portal.close();
     }
 }

@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,7 +19,7 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-
+@Disabled
 @Config
 @Autonomous(name="ExperimentalAudienceRedAuto", group="Auto")
 public class ExperimentalAudienceRedAuto extends LinearOpMode {
@@ -62,11 +63,12 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(-34, -24))
                 .back(10)
                 .strafeLeft(15)
-                .forward(29)
+                .forward(25)
                 .turn(Math.toRadians(-95))
-                .forward(40)
+                .forward(50)
                 .turn(Math.toRadians(-5))
                 .forward(30)
+                .turn(Math.toRadians(10))
                 .lineToConstantHeading(new Vector2d(59, -38))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
@@ -81,11 +83,14 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(-48, -33))
                 .back(15)
-                .turn(Math.toRadians(-95))
+                .turn(Math.toRadians(-90))
                 .back(10)
-                .strafeLeft(40)
-                .forward(80)
-                .lineToConstantHeading(new Vector2d(58, -27))
+                .strafeLeft(38)
+                .forward(50)
+                .turn(Math.toRadians(-5))
+                .forward(30)
+                .turn(Math.toRadians(5))
+                .lineToConstantHeading(new Vector2d(59, -27))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -101,20 +106,20 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .turn(Math.toRadians(-90))
                 .forward(11)
                 .back(13)
+                .strafeLeft(25)
                 .turn(Math.toRadians(-5))
-                .strafeLeft(28)
                 .forward(40)
-                .turn(Math.toRadians(-15))
+                .turn(Math.toRadians(-5))
                 .forward(30)
-                .turn(Math.toRadians(15))
-                .lineToConstantHeading(new Vector2d(57, -39))
+                .turn(Math.toRadians(10))
+                .lineToConstantHeading(new Vector2d(59, -39))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
-                    //robot.server.setPosition(1);
+                    robot.server.setPosition(1);
                 })
                 .forward(0.5)
                 .addDisplacementMarker(() -> {
-                    //robot.server.setPosition(0);
+                    robot.server.setPosition(0);
                 })
                 .waitSeconds(1)
                 .build();

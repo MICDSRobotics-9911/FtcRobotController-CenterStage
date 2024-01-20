@@ -7,7 +7,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,6 +18,7 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
+
 @Config
 @Autonomous(name="BackdropBlueAuto", group="Auto")
 public class BackdropBlueAuto extends LinearOpMode {
@@ -26,10 +26,8 @@ public class BackdropBlueAuto extends LinearOpMode {
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
-    private ElapsedTime runtime = new ElapsedTime();
     private RobotHardware robot;
     private SampleMecanumDrive drive;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -54,42 +52,72 @@ public class BackdropBlueAuto extends LinearOpMode {
         while (!isStarted()) {
             location = bluePropThreshold.getPropPosition();
             telemetry.addLine("auto in init");
-            telemetry.addData("camera: ", portal.getCameraState());
-            telemetry.addData("Prop Location: ", location.toString());
+            telemetry.addData("Camera: ", portal.getCameraState());
+            telemetry.addData("Prop Location: ", location);
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(15, 60, Math.toRadians(-90));
+        Pose2d startPose = new Pose2d(14, 60, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(13, 24))
+                .lineToConstantHeading(new Vector2d(13, 28))
                 .back(20)
+                .turn(Math.toRadians(90))
+                .lineToConstantHeading(new Vector2d(52, 37))
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(1);
+                    // Drop Yellow pixel on backboard
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(5)
+                .strafeLeft(25)
+                .forward(5)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(24, 35))
                 .back(20)
+                .turn(Math.toRadians(90))
+                .lineToConstantHeading(new Vector2d(52, 39))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow pixel on backboard
+                    robot.server.setPosition(1);
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(5)
+                .strafeLeft(20)
+                .forward(5)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .forward(27)
                 .turn(Math.toRadians(-90))
-                .forward(10)
+                .forward(12)
                 .back(10)
                 .turn(Math.toRadians(180))
-                .strafeLeft(20)
-                .forward(40)
+                .lineToConstantHeading(new Vector2d(52, 31))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow Pixel
+                    robot.server.setPosition(1);
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    // Reset Yellow Pixel Holder
+                    robot.server.setPosition(0);
+                })
+                .back(5)
+                .strafeLeft(29)
+                .forward(15)
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
             location = bluePropThreshold.getPropPosition();
-            /*switch (cases) {
-                case 1:
-                    location = Side.CENTER;
-                    break;
-                case 2:
-                    location = Side.LEFT;
-                    break;
-                case 3:
-                    location = Side.RIGHT;
-            }*/
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
             switch (location) {

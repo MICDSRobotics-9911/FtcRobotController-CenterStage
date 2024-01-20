@@ -27,13 +27,17 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .forward(26)
+                                .forward(29)
                                 .turn(Math.toRadians(-90))
-                                .forward(10)
-                                .back(10)
+                                .forward(11)
+                                .back(13)
                                 .strafeLeft(25)
-                                .forward(70)
-                                .lineToConstantHeading(new Vector2d(52, -39))
+                                .turn(Math.toRadians(-5))
+                                .forward(40)
+                                .turn(Math.toRadians(-5))
+                                .forward(30)
+                                .turn(Math.toRadians(10))
+                                .lineToConstantHeading(new Vector2d(59, -39))
                                 .addDisplacementMarker(() -> {
                                     // Drop Yellow pixel on backboard
                                     //robot.server.setPosition(1);
