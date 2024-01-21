@@ -59,16 +59,16 @@ public class AudienceRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-38, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(-34, -24))
+                .lineToConstantHeading(new Vector2d(-34, -25))
                 .back(10)
-                .strafeLeft(15)
+                /*.strafeLeft(15)
                 .forward(25)
                 .turn(Math.toRadians(-95))
                 .forward(50)
                 .turn(Math.toRadians(-5))
                 .forward(30)
                 .turn(Math.toRadians(10))
-                .lineToConstantHeading(new Vector2d(59, -38))
+                .lineToConstantHeading(new Vector2d(60, -41))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -77,12 +77,12 @@ public class AudienceRedAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .waitSeconds(1)
+                .waitSeconds(1)*/
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(-48, -33))
                 .back(15)
-                .turn(Math.toRadians(-90))
+                /*.turn(Math.toRadians(-90))
                 .back(10)
                 .strafeLeft(38)
                 .forward(50)
@@ -98,14 +98,14 @@ public class AudienceRedAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .waitSeconds(1)
+                .waitSeconds(1)*/
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .forward(29)
-                .turn(Math.toRadians(-90))
-                .forward(11)
-                .back(13)
-                .strafeLeft(25)
+                .turn(Math.toRadians(-110))
+                .forward(15)
+                .back(10)
+                /*.strafeLeft(25)
                 .turn(Math.toRadians(-5))
                 .forward(40)
                 .turn(Math.toRadians(-5))
@@ -120,7 +120,7 @@ public class AudienceRedAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .waitSeconds(1)
+                .waitSeconds(1)*/
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {

@@ -43,15 +43,15 @@ public class RobotHardware {
     public DcMotorEx intakeMotor;
     public Servo airplaneLaunch;
     public Servo airplaneHold;
-    public static double holdMin = 0.3;
-    public static double holdMax = 0.45;
+    public static double holdMin = 0.35;
+    public static double holdMax = 0.4;
     public static double launchMin = 0;
     public static double launchMax = 0.8;
 
     public ServoEx clawServo;
     public WebcamName camera;
     public WEncoder extensionEncoder;
-    public static double serverMin = 0.2;
+    public static double serverMin = 0.1;
     public static double serverMax = 0.5;
     public WActuatorGroup extensionActuator;
     private HardwareMap hardwareMap;

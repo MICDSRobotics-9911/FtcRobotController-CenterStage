@@ -70,6 +70,13 @@ public class TeleOpMain extends LinearOpMode {
             } else {
                 robot.spoolHangMotor.setPower(0);
             }
+
+            if (gamepad1.right_bumper) {
+                robot.server.setPosition(1);
+            }
+            if (gamepad1.right_stick_button) {
+                robot.server.setPosition(0);
+            }
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
             telemetry.addData("Runtime: ", runtime.toString());

@@ -61,7 +61,7 @@ public class BackdropRedAuto extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(13, -26, Math.toRadians(90)))
                 .back(20)
                 .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(52, -33))
+                .lineToConstantHeading(new Vector2d(52, -31))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -76,10 +76,10 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(15)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(30, -35, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(27, -35, Math.toRadians(90)))
                 .back(10)
                 .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(52, -39))
+                .lineToConstantHeading(new Vector2d(52, -37))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                 })

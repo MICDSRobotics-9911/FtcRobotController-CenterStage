@@ -57,8 +57,8 @@ import static org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0.1, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1.3, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -138,11 +138,6 @@ public class SampleMecanumDrive extends MecanumDrive {
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
         );
-    }
-
-    public void resetHeadingPID(Telemetry telemetry) {
-        this.HEADING_PID = new PIDCoefficients(0, 0, 0);
-        telemetry.addData("HEADING PID: ", this.HEADING_PID.toString());
     }
 
     public void printEncoderValues(Telemetry telemetry) {
