@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.common.centerstage.FtcDashboardProcessor;
-import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
+import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -21,8 +21,8 @@ import org.firstinspires.ftc.vision.VisionPortal;
 @Autonomous(name="CameraTest", group="Auto")
 public class CameraStreamTest extends LinearOpMode {
     private FtcDashboardProcessor dashboardProcessor;
-    private PropPipeline bluePropThreshold;
-    private PropPipeline redPropThreshold;
+    private LeftPropPipeline bluePropThreshold;
+    private LeftPropPipeline redPropThreshold;
     private VisionPortal portal;
     private static int CAMERA_WIDTH = 640;
     private static int CAMERA_HEIGHT = 480;
@@ -42,8 +42,8 @@ public class CameraStreamTest extends LinearOpMode {
             FtcDashboard dashboard = FtcDashboard.getInstance();
             telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
             dashboardProcessor = new FtcDashboardProcessor(telemetry);
-            bluePropThreshold = new PropPipeline(telemetry);
-            redPropThreshold = new PropPipeline(telemetry);
+            bluePropThreshold = new LeftPropPipeline(telemetry);
+            redPropThreshold = new LeftPropPipeline(telemetry);
 
             portal = new VisionPortal.Builder()
                     .setCamera(camera)

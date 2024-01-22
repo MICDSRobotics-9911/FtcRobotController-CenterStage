@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
+import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
@@ -22,7 +22,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 @Config
 @Autonomous(name="HardCodeAudienceRedAuto", group="Auto")
 public class HardCodeAudienceRedAuto extends LinearOpMode {
-    private PropPipeline redPropThreshold;
+    private LeftPropPipeline redPropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
@@ -38,7 +38,7 @@ public class HardCodeAudienceRedAuto extends LinearOpMode {
         Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
-        redPropThreshold = new PropPipeline(telemetry);
+        redPropThreshold = new LeftPropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))

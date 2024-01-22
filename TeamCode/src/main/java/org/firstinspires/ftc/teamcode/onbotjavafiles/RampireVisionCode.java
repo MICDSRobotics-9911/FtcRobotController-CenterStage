@@ -9,13 +9,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.common.centerstage.PropPipeline;
+import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.vision.VisionPortal;
 @Disabled
 @Autonomous(name="RampireVision", group="Auto")
 public class RampireVisionCode extends LinearOpMode {
-    private PropPipeline bluePropThreshold;
+    private LeftPropPipeline bluePropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
@@ -23,7 +23,7 @@ public class RampireVisionCode extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        bluePropThreshold = new PropPipeline(telemetry);
+        bluePropThreshold = new LeftPropPipeline(telemetry);
         WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
         portal = new VisionPortal.Builder()
                 .setCamera(camera)

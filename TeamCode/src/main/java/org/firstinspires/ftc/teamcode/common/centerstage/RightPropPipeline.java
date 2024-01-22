@@ -12,21 +12,18 @@ import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
-import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
 @Config
-public class PropPipeline implements VisionProcessor, CameraStreamSource {
+public class RightPropPipeline implements VisionProcessor, CameraStreamSource {
     private final AtomicReference<Bitmap> lastFrame =
             new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
     private Mat testMat = new Mat();
@@ -46,12 +43,13 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
     private final Scalar lowHSVBlueLower = new Scalar(80, 100, 100);
     private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
+    // TODO: This needs to be done for the RightPropPipeline
 
     public static Rect LEFT_RECTANGLE = new Rect(0, 80, 180, 200);
     public static Rect CENTER_RECTANGLE = new Rect(240, 30, 320, 180);
-    Telemetry telemetry;
+    private Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
-    public PropPipeline(Telemetry telemetry) {
+    public RightPropPipeline(Telemetry telemetry) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     }
 
@@ -95,16 +93,16 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
         telemetry.addData("Left Box: ", averagedLeftBox);
         telemetry.addData("Right Box: ", averagedRightBox);
         telemetry.update();
-        if (averagedLeftBox > threshold) {        //Must Tune Threshold
-            location = Side.LEFT;
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
-            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 255, 255));
-        } else if (averagedRightBox > threshold) {
+        if (averagedRightBox > threshold) {        //Must Tune Threshold
+            location = Side.RIGHT;
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
+            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+        } else if (averagedLeftBox > threshold) {
             location = Side.CENTER;
             Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
             Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
         } else {
-            location = Side.RIGHT;
+            location = Side.LEFT;
             Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 0, 0));
             Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 0, 0));
         }
