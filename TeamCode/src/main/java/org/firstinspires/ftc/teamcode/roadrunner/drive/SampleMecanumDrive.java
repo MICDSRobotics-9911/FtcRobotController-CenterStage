@@ -21,7 +21,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -33,7 +32,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.roadrunner.util.Encoder;
 import org.firstinspires.ftc.teamcode.roadrunner.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -141,11 +139,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void printEncoderValues(Telemetry telemetry) {
-        telemetry.addData("FrontLeftPos: ", leftFront.getCurrentPosition());
-        telemetry.addData("FrontRightPos: ", rightFront.getCurrentPosition());
-        telemetry.addData("BackLeftPos: ", leftRear.getCurrentPosition());
-        telemetry.addData("BackRightPos: ", rightRear.getCurrentPosition());
+        telemetry.addData("LeftFrontPos: ", leftFront.getCurrentPosition());
+        telemetry.addData("RightFrontPos: ", rightFront.getCurrentPosition());
+        telemetry.addData("LeftRearPos: ", leftRear.getCurrentPosition());
+        telemetry.addData("RightBackPos: ", rightRear.getCurrentPosition());
     }
+
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
@@ -274,15 +273,6 @@ public class SampleMecanumDrive extends MecanumDrive {
             lastEncPositions.add(position);
             wheelPositions.add(encoderTicksToInches(position));
         }
-        Integer tmp = lastEncPositions.get(3);
-        lastEncPositions.set(3, lastEncPositions.get(2));
-        lastEncPositions.set(2, tmp);
-
-        double temp = wheelPositions.get(3);
-        wheelPositions.set(3, wheelPositions.get(2));
-        wheelPositions.set(2, temp);
-
-
         return wheelPositions;
     }
 

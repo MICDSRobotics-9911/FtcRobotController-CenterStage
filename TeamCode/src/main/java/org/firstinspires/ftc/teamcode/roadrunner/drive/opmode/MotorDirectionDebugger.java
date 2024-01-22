@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.roadrunner.drive.opmode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
@@ -39,7 +39,7 @@ import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
  * Uncomment the @Disabled tag below to use this opmode.
  */
 @Config
-@TeleOp(name="MotorDirectionDebugger", group = "drive")
+@TeleOp(group = "drive")
 public class MotorDirectionDebugger extends LinearOpMode {
     public static double MOTOR_POWER = 0.7;
 
@@ -48,9 +48,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        
+
         telemetry.addLine("Press play to begin the debugging opmode");
         telemetry.update();
 
@@ -61,7 +59,7 @@ public class MotorDirectionDebugger extends LinearOpMode {
         telemetry.clearAll();
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.HTML);
 
-        while (!isStopRequested() && opModeIsActive()) {
+        while (!isStopRequested()) {
             telemetry.addLine("Press each button to turn on its respective motor");
             telemetry.addLine();
             telemetry.addLine("<font face=\"monospace\">Xbox/PS4 Button - Motor</font>");
