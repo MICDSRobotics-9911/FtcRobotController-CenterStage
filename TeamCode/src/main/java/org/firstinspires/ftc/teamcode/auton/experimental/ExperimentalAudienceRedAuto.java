@@ -18,7 +18,6 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-@Disabled
 @Config
 @Autonomous(name="ExperimentalAudienceRedAuto", group="Auto")
 public class ExperimentalAudienceRedAuto extends LinearOpMode {

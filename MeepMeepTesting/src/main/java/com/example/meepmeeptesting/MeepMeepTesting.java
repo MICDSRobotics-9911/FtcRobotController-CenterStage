@@ -20,37 +20,32 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(600);
-        Pose2d startPose = new Pose2d(-38, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(14, -61.5, Math.toRadians(90));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .forward(29)
-                                .turn(Math.toRadians(-90))
-                                .forward(11)
-                                .back(13)
-                                .strafeLeft(25)
-                                .turn(Math.toRadians(-5))
-                                .forward(40)
-                                .turn(Math.toRadians(-5))
-                                .forward(30)
-                                .turn(Math.toRadians(10))
-                                .lineToConstantHeading(new Vector2d(59, -39))
+                                .lineToConstantHeading(new Vector2d(11, -26))
+                                .back(10)
+                                .lineToLinearHeading(new Pose2d(52, -31, Math.toRadians(0)))
                                 .addDisplacementMarker(() -> {
                                     // Drop Yellow pixel on backboard
                                     //robot.server.setPosition(1);
                                 })
                                 .forward(0.5)
+                                .waitSeconds(1)
                                 .addDisplacementMarker(() -> {
                                     //robot.server.setPosition(0);
                                 })
-                                .waitSeconds(1)
+                                .back(10)
+                                .strafeRight(30)
+                                .forward(15)
                                 .build()
                 );
 
-        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_OFFICIAL)
+        meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
                 .setDarkMode(true)
                 .setBackgroundAlpha(0.95f)
                 .addEntity(myBot)

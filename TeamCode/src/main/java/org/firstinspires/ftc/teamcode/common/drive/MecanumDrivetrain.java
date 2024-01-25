@@ -129,68 +129,6 @@ public class MecanumDrivetrain extends WSubsystem {
         return robot.backLeftMotor.isBusy() && robot.backRightMotor.isBusy() && robot.frontLeftMotor.isBusy() && robot.frontRightMotor.isBusy();
     }
 
-    public void driveForward(double speed, double inches) {
-        encoderDrive(speed, inches, inches, inches, inches);
-    }
-    public void driveBackwards(double speed, double inches) {
-        encoderDrive(speed, -inches, -inches, -inches, -inches);
-    }
-    public void strafeRight(double speed, double inches) {
-        encoderDrive(speed, inches, -inches, -inches, inches);
-    }
-
-    public void strafeLeft(double speed, double inches) {
-        encoderDrive(speed, -inches, inches, inches, -inches);
-    }
-
-    public void turnRight(double speed) {
-        // TODO: NEED TO TUNE TURN VALUES
-        encoderDrive(speed, 10, -10, 10, -10);
-    }
-
-    public void turnLeft(double speed) {
-        encoderDrive(speed, -10, 10, -10, 10);
-    }
-    public void encoderDrive(double speed,
-                             double leftFrontInches, double rightFrontInches, double leftBackInches, double rightBackInches) {
-        int newLFTarget;
-        int newRFTarget;
-        int newLBTarget;
-        int newRBTarget;
-
-        // Ensure that the opmode is still active
-
-        // Determine new target position, and pass to motor controller
-        newLFTarget = robot.frontLeftMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(leftFrontInches));
-        newRFTarget = robot.frontRightMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(rightFrontInches));
-        newLBTarget = robot.backLeftMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(leftBackInches));
-        newRBTarget = robot.backRightMotor.getCurrentPosition() + (int) (DriveConstants.inchesToEncoderTicks(rightBackInches));
-
-        robot.drivetrain.setDrivetrainTarget(newLBTarget * 20, newRBTarget, newLFTarget * 20, newRFTarget);
-
-        // Turn On RUN_TO_POSITION
-        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-        // reset the timeout time and start motion.
-        robot.drivetrain.setDrivePowers(Math.abs(speed), Math.abs(speed), Math.abs(speed), Math.abs(speed));
-
-        // keep looping while we are still active, and there is time left, and both motors are running.
-        // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-        // its target position, the motion will stop.  This is "safer" in the event that the robot will
-        // always end the motion as soon as possible.
-        // However, if you require that BOTH motors have finished their moves before the robot continues
-        // onto the next step, use (isBusy() || isBusy()) in the loop test.
-        while (isBusy()) {
-        }
-
-        // Stop all motion;
-        robot.drivetrain.stopDrive();
-
-        // Turn off RUN_TO_POSITION
-        robot.drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-    }
-
 
     @Override
     public void periodic() {

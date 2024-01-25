@@ -30,8 +30,8 @@ public class RightPropPipeline implements VisionProcessor, CameraStreamSource {
     private Mat highMat = new Mat();
     private Mat lowMat = new Mat();
     private Mat finalMat = new Mat();
-    public static double redThreshold = 0.07;
-    public static double blueThreshold = 0.06;
+    public static double redThreshold = 0.38;
+    public static double blueThreshold = 0.08;
     public static double threshold = 0;
     private Side location = Side.LEFT;
 
@@ -45,8 +45,8 @@ public class RightPropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
     // TODO: This needs to be done for the RightPropPipeline
 
-    public static Rect LEFT_RECTANGLE = new Rect(0, 80, 180, 200);
-    public static Rect CENTER_RECTANGLE = new Rect(240, 30, 320, 180);
+    public static Rect CENTER_RECTANGLE = new Rect(40, 10, 240, 130);
+    public static Rect RIGHT_RECTANGLE = new Rect(380, 20, 190, 180);
     private Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public RightPropPipeline(Telemetry telemetry) {
@@ -85,30 +85,30 @@ public class RightPropPipeline implements VisionProcessor, CameraStreamSource {
         lowMat.release();
         highMat.release();
 
-        double leftBox = Core.sumElems(finalMat.submat(LEFT_RECTANGLE)).val[0];
+        double leftBox = Core.sumElems(finalMat.submat(RIGHT_RECTANGLE)).val[0];
         double rightBox = Core.sumElems(finalMat.submat(CENTER_RECTANGLE)).val[0];
 
-        double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
-        double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
-        telemetry.addData("Left Box: ", averagedLeftBox);
+        double averagedRightBox = leftBox / RIGHT_RECTANGLE.area() / 255;
+        double averagedCenterBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
         telemetry.addData("Right Box: ", averagedRightBox);
+        telemetry.addData("Center Box: ", averagedCenterBox);
         telemetry.update();
         if (averagedRightBox > threshold) {        //Must Tune Threshold
             location = Side.RIGHT;
-            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
-        } else if (averagedLeftBox > threshold) {
+            Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 255, 255));
+            Imgproc.rectangle(frame, RIGHT_RECTANGLE, new Scalar(0, 255, 0));
+        } else if (averagedCenterBox > threshold) {
             location = Side.CENTER;
             Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+            Imgproc.rectangle(frame, RIGHT_RECTANGLE, new Scalar(255, 255, 255));
         } else {
             location = Side.LEFT;
             Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 0, 0));
-            Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 0, 0));
+            Imgproc.rectangle(frame, RIGHT_RECTANGLE, new Scalar(255, 0, 0));
         }
 
         // These lines are for tuning the rectangles
-        //Imgproc.rectangle(finalMat, LEFT_RECTANGLE, new Scalar(255, 255, 255));
+        //Imgproc.rectangle(finalMat, RIGHT_RECTANGLE, new Scalar(255, 255, 255));
         //Imgproc.rectangle(finalMat, CENTER_RECTANGLE, new Scalar(255, 255, 255));
 
         /*finalMat.copyTo(frame); This line should only be added in when you want to see your custom pipeline

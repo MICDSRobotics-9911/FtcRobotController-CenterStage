@@ -19,7 +19,6 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-@Disabled
 @Autonomous(name="ExperimentalAudienceBlueAuto", group="Auto")
 public class ExperimentalAudienceBlueAuto extends LinearOpMode {
     private LeftPropPipeline bluePropThreshold;

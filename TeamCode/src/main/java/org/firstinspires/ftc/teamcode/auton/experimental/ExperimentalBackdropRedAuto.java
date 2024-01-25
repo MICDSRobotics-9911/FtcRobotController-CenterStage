@@ -19,12 +19,9 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-
-@Disabled
 @Config
 @Autonomous(name="ExperimentalBackdropRedAuto", group="Auto")
 public class ExperimentalBackdropRedAuto extends LinearOpMode {
-    public static int SECONDS = 5;
     private LeftPropPipeline redPropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
@@ -59,7 +56,7 @@ public class ExperimentalBackdropRedAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
+        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(13, -26, Math.toRadians(90)))

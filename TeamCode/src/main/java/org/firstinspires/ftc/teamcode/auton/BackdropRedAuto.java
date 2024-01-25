@@ -55,31 +55,30 @@ public class BackdropRedAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(12, -60, Math.toRadians(100));
+        Pose2d startPose = new Pose2d(14, -61.5, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
+        drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(13, -26, Math.toRadians(90)))
-                .back(20)
-                .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(52, -31))
+                .lineToConstantHeading(new Vector2d(11, -29))
+                .back(10)
+                .lineToLinearHeading(new Pose2d(52, -31, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
-                .forward(1)
+                .forward(0.5)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
                 .back(10)
-                .strafeRight(28)
+                .strafeRight(30)
                 .forward(15)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(27, -35, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(18, -35))
                 .back(10)
-                .turn(Math.toRadians(-90))
-                .lineToConstantHeading(new Vector2d(52, -37))
+                .lineToLinearHeading(new Pose2d(52, -37, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                 })
@@ -104,7 +103,7 @@ public class BackdropRedAuto extends LinearOpMode {
                     //drive.resetHeadingPID(telemetry);
                     robot.server.setPosition(1);
                 })
-                .forward(0.7)
+                .forward(0.5)
                 .addDisplacementMarker(() -> {
                     // Reset Yellow Pixel on backdrop
                     robot.server.setPosition(0);

@@ -29,8 +29,8 @@ public class LeftPropPipeline implements VisionProcessor, CameraStreamSource {
     private Mat highMat = new Mat();
     private Mat lowMat = new Mat();
     private Mat finalMat = new Mat();
-    public static double redThreshold = 0.07;
-    public static double blueThreshold = 0.06;
+    public static double redThreshold = 0.21;
+    public static double blueThreshold = 0.21;
     public static double threshold = 0;
     private Side location = Side.RIGHT;
 

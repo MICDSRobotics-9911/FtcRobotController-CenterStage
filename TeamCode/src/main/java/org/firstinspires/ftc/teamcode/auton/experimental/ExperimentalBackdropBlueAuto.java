@@ -19,11 +19,9 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
-@Disabled
 @Config
 @Autonomous(name="ExperimentalBackdropBlueAuto", group="Auto")
 public class ExperimentalBackdropBlueAuto extends LinearOpMode {
-    public static int SECONDS = 5;
     private LeftPropPipeline bluePropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
