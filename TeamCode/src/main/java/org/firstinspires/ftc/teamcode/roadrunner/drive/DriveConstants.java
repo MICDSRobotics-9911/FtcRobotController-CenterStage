@@ -46,7 +46,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.8898; // in
     public static double GEAR_RATIO = (1 / 37.662769) * (59 / 59.468858733252176); // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 15.23; // in
+    public static double TRACK_WIDTH = 14.96; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -67,8 +67,8 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 23.963274162070704;
     public static double MAX_ACCEL = 23.963274162070704;
-    public static double MAX_ANG_VEL = Math.toRadians(60);
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_ANG_VEL = Math.toRadians(90);
+    public static double MAX_ANG_ACCEL = Math.toRadians(90);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.

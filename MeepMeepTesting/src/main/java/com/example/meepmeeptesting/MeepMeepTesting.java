@@ -20,28 +20,31 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(600);
-        Pose2d startPose = new Pose2d(14, -61.5, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-38, -61.5, Math.toRadians(90));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .lineToConstantHeading(new Vector2d(11, -26))
+                                .lineToLinearHeading(new Pose2d(-35, -33, Math.toRadians(0)))
+                                .forward(10)
                                 .back(10)
-                                .lineToLinearHeading(new Pose2d(52, -31, Math.toRadians(0)))
+                                .strafeLeft(20)
+                                .forward(50)
+                                .lineToConstantHeading(new Vector2d(52, -37))
                                 .addDisplacementMarker(() -> {
-                                    // Drop Yellow pixel on backboard
-                                    //robot.server.setPosition(1);
+                                    // Drop Yellow Pixel
+                                    // robot.server.setPosition(1);
                                 })
                                 .forward(0.5)
                                 .waitSeconds(1)
                                 .addDisplacementMarker(() -> {
-                                    //robot.server.setPosition(0);
+                                    // Reset Yellow Pixel
+                                    // robot.server.setPosition(0);
                                 })
-                                .back(10)
-                                .strafeRight(30)
-                                .forward(15)
+                                .strafeLeft(26)
+                                .forward(8)
                                 .build()
                 );
 

@@ -7,9 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
@@ -19,6 +17,7 @@ import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
+
 @Config
 @Autonomous(name="ExperimentalBackdropBlueAuto", group="Auto")
 public class ExperimentalBackdropBlueAuto extends LinearOpMode {
@@ -26,7 +25,6 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
-    private ElapsedTime runtime = new ElapsedTime();
     private RobotHardware robot;
     private SampleMecanumDrive drive;
 
@@ -57,13 +55,13 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location);
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(14, 60, Math.toRadians(-90));
+        Pose2d startPose = new Pose2d(14, 61.5, Math.toRadians(-90));
         drive.setPoseEstimate(startPose);
+        drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(13, 28))
-                .back(20)
-                .turn(Math.toRadians(90))
-                .lineToConstantHeading(new Vector2d(52, 37))
+                .splineToConstantHeading(new Vector2d(13, 29), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(13, 39), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(52, 40, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
@@ -74,14 +72,13 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(25)
-                .forward(5)
+                .strafeLeft(21)
+                .forward(10)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(24, 35))
-                .back(20)
-                .turn(Math.toRadians(90))
-                .lineToConstantHeading(new Vector2d(52, 39))
+                .splineToConstantHeading(new Vector2d(23, 35), Math.toRadians(0))
+                .splineToConstantHeading(new Vector2d(23, 43), Math.toRadians(0))
+                .splineToSplineHeading(new Pose2d(52, 43, Math.toRadians(0)), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -92,13 +89,12 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(20)
-                .forward(5)
+                .strafeLeft(19)
+                .forward(10)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .forward(27)
-                .turn(Math.toRadians(-90))
-                .forward(12)
+                .lineToLinearHeading(new Pose2d(14, 33, Math.toRadians(180)))
+                .forward(10)
                 .back(10)
                 .turn(Math.toRadians(180))
                 .lineToConstantHeading(new Vector2d(52, 31))
@@ -114,7 +110,7 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
                 })
                 .back(5)
                 .strafeLeft(29)
-                .forward(15)
+                .forward(10)
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {

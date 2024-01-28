@@ -78,7 +78,7 @@ public class BackdropRedAuto extends LinearOpMode {
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(18, -35))
                 .back(10)
-                .lineToLinearHeading(new Pose2d(52, -37, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(53, -37, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                 })
@@ -92,26 +92,23 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(15)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(-10))
-                .forward(27)
-                .turn(Math.toRadians(90))
-                .forward(8)
-                .back(20)
-                .turn(Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(52, -18))
+                .lineToLinearHeading(new Pose2d(14, -31, Math.toRadians(180)))
+                .forward(10)
+                .back(10)
+                .lineToLinearHeading(new Pose2d(52, -26, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
-                    //drive.resetHeadingPID(telemetry);
+                    // Drop yellow pixel
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
+                .waitSeconds(1)
                 .addDisplacementMarker(() -> {
-                    // Reset Yellow Pixel on backdrop
+                    // Reset yellow pixel
                     robot.server.setPosition(0);
                 })
-                .waitSeconds(1)
-                .back(10)
-                .strafeRight(32)
-                .forward(15)
+                .back(5)
+                .strafeRight(38)
+                .forward(12)
                 .build();
         waitForStart();
         location = redPropThreshold.getPropPosition();
@@ -125,11 +122,11 @@ public class BackdropRedAuto extends LinearOpMode {
                 case CENTER:
                     drive.followTrajectorySequence(centerTraj);
                     break;
-                case LEFT:
-                    drive.followTrajectorySequence(leftTraj);
+                case RIGHT:
+                    drive.followTrajectorySequence(rightTraj);
                     break;
                 default:
-                    drive.followTrajectorySequence(rightTraj);
+                    drive.followTrajectorySequence(leftTraj);
             }
         }
         robot.read();
