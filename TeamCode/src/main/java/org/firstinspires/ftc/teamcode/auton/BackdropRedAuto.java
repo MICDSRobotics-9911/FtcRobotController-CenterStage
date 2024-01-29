@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.RightPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
@@ -61,7 +60,7 @@ public class BackdropRedAuto extends LinearOpMode {
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(11, -29))
                 .back(10)
-                .lineToLinearHeading(new Pose2d(52, -31, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, -31, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -78,7 +77,7 @@ public class BackdropRedAuto extends LinearOpMode {
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(18, -35))
                 .back(10)
-                .lineToLinearHeading(new Pose2d(53, -37, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(53, -37, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                 })
@@ -95,7 +94,7 @@ public class BackdropRedAuto extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(14, -31, Math.toRadians(180)))
                 .forward(10)
                 .back(10)
-                .lineToLinearHeading(new Pose2d(52, -26, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, -26, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop yellow pixel
                     robot.server.setPosition(1);

@@ -13,7 +13,7 @@ import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-
+import java.util.List;
 
 
 public class MeepMeepTesting {
@@ -27,24 +27,30 @@ public class MeepMeepTesting {
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .lineToLinearHeading(new Pose2d(-35, -33, Math.toRadians(0)))
-                                .forward(10)
+                                .lineToSplineHeading(new Pose2d(-36, -20, Math.toRadians(0)))
                                 .back(10)
-                                .strafeLeft(20)
-                                .forward(50)
-                                .lineToConstantHeading(new Vector2d(52, -37))
+                                .strafeLeft(10)
+                                .forward(70)
+                                .lineToConstantHeading(new Vector2d(43, -34))
                                 .addDisplacementMarker(() -> {
-                                    // Drop Yellow Pixel
-                                    // robot.server.setPosition(1);
+                                    /*List<AprilTagDetection> aprilTagDetections = aprilTagProcessor.getFreshDetections();
+                                    drive.setPoseEstimate(getFCPosition(aprilTagDetections, drive.getRawExternalHeading()));
+                                    drive.update();*/
+                                })
+                                .waitSeconds(1)
+                                .lineToConstantHeading(new Vector2d(52, -31))
+                                .addDisplacementMarker(() -> {
+                                    // Drop Yellow pixel on backboard
+                                    //robot.server.setPosition(1);
                                 })
                                 .forward(0.5)
                                 .waitSeconds(1)
                                 .addDisplacementMarker(() -> {
-                                    // Reset Yellow Pixel
-                                    // robot.server.setPosition(0);
+                                    //robot.server.setPosition(0);
                                 })
-                                .strafeLeft(26)
-                                .forward(8)
+                                .back(3)
+                                .strafeLeft(20)
+                                .forward(11)
                                 .build()
                 );
 

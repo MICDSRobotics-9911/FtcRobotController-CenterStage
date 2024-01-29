@@ -61,7 +61,7 @@ public class BackdropBlueAuto extends LinearOpMode {
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(13, 29))
                 .back(10)
-                .lineToLinearHeading(new Pose2d(52, 40, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, 40, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
@@ -78,7 +78,7 @@ public class BackdropBlueAuto extends LinearOpMode {
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToConstantHeading(new Vector2d(23, 35))
                 .back(10)
-                .lineToLinearHeading(new Pose2d(52, 43, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, 43, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -93,12 +93,10 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .forward(10)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-
-                .lineToLinearHeading(new Pose2d(14, 33, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(14, 33, Math.toRadians(180)))
                 .forward(10)
                 .back(10)
-                .turn(Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(52, 31))
+                .lineToSplineHeading(new Pose2d(52, 31, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);

@@ -4,6 +4,7 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -55,24 +56,66 @@ public class AudienceBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(-34, 60, Math.toRadians(-100));
+        Pose2d startPose = new Pose2d(-38, 60, Math.toRadians(-100));
         drive.setPoseEstimate(startPose);
+        drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(-1))
-                .forward(11)
-                .back(10)
+                .lineToSplineHeading(new Pose2d(-36, 20, Math.toRadians(0)))
+                .back(5)
+                .strafeRight(10)
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(55, 37))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow Pixel
+                    robot.server.setPosition(1);
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(5)
+                .strafeRight(25)
+                .forward(10)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(-1))
-                .strafeRight(3)
-                .forward(7)
-                .back(7)
+                .lineToSplineHeading(new Pose2d(-48, 33, Math.toRadians(0)))
+                .back(5)
+                .strafeRight(20)
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(55, 31))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow Pixel
+                    robot.server.setPosition(1);
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(5)
+                .strafeRight(17)
+                .forward(10)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .turn(Math.toRadians(-1))
-                .forward(7)
-                .strafeLeft(3)
-                .strafeRight(0.5)
+                .lineToSplineHeading(new Pose2d(-35, 33, Math.toRadians(0)))
+                .forward(10)
+                .back(10)
+                .strafeRight(20)
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(55, 43))
+                .addDisplacementMarker(() -> {
+                    // Drop Yellow Pixel
+                    robot.server.setPosition(1);
+                })
+                .forward(0.5)
+                .waitSeconds(1)
+                .addDisplacementMarker(() -> {
+                    robot.server.setPosition(0);
+                })
+                .back(5)
+                .strafeRight(30)
+                .forward(10)
                 .build();
         waitForStart();
         location = bluePropThreshold.getPropPosition();
@@ -86,11 +129,11 @@ public class AudienceBlueAuto extends LinearOpMode {
                 case CENTER:
                     drive.followTrajectorySequence(centerTraj);
                     break;
-                case LEFT:
-                    drive.followTrajectorySequence(leftTraj);
+                case RIGHT:
+                    drive.followTrajectorySequence(rightTraj);
                     break;
                 default:
-                    drive.followTrajectorySequence(rightTraj);
+                    drive.followTrajectorySequence(leftTraj);
             }
         }
         robot.read();

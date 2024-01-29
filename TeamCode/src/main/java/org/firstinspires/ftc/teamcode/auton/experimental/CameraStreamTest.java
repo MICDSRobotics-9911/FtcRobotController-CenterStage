@@ -16,50 +16,36 @@ import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Disabled
 @Autonomous(name="CameraTest", group="Auto")
 public class CameraStreamTest extends LinearOpMode {
-    private FtcDashboardProcessor dashboardProcessor;
-    private LeftPropPipeline bluePropThreshold;
-    private LeftPropPipeline redPropThreshold;
+    private AprilTagProcessor aprilTag;
     private VisionPortal portal;
     private static int CAMERA_WIDTH = 640;
     private static int CAMERA_HEIGHT = 480;
-    private String output = "";
-    private ElapsedTime runtime = new ElapsedTime();
 
         @Override
         public void runOpMode() throws InterruptedException {
             Globals.IS_AUTO = true;
-            Globals.IS_USING_IMU = false;
+            Globals.IS_USING_IMU = true;
             Globals.USING_DASHBOARD = true;
             Globals.COLOR = Side.RED;
             WebcamName camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-            // robot.init(hardwareMap, telemetry);
-            // robot.enabled = true;
-            FtcDashboard dashboard = FtcDashboard.getInstance();
-            telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-            dashboardProcessor = new FtcDashboardProcessor(telemetry);
-            bluePropThreshold = new LeftPropPipeline(telemetry);
-            redPropThreshold = new LeftPropPipeline(telemetry);
+            aprilTag = new AprilTagProcessor.Builder().build();
 
             portal = new VisionPortal.Builder()
                     .setCamera(camera)
                     .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                     .setCamera(BuiltinCameraDirection.BACK)
-                    .addProcessors(bluePropThreshold, redPropThreshold, dashboardProcessor)
+                    .addProcessors(aprilTag)
                     .enableLiveView(true)
                     .setAutoStopLiveView(true)
                     .build();
-            //portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d"));
             while (!isStarted()) {
-                /*telemetry.addLine("camera test in init");
-                telemetry.addData("camera: ", portal.getCameraState());
-                telemetry.update();*/
             }
-            dashboard.startCameraStream(dashboardProcessor, 30);
             waitForStart();
 
             while (opModeIsActive()) {

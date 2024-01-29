@@ -27,19 +27,12 @@ import java.util.concurrent.TimeUnit;
 @Config
 @Autonomous(name="AudienceRedAuto", group="Auto")
 public class AudienceRedAuto extends LinearOpMode {
-    private int myExposure;
-    private int minExposure;
-    private int maxExposure;
-    private int myGain;
-    private int minGain;
-    private int maxGain;
     private LeftPropPipeline redPropThreshold;
     private VisionPortal portal;
     private static final int CAMERA_WIDTH = 640; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 480; // height of wanted camera resolution
     private RobotHardware robot;
     private SampleMecanumDrive drive;
-    private AprilTagProcessor aprilTagProcessor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,17 +44,15 @@ public class AudienceRedAuto extends LinearOpMode {
         Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
-        aprilTagProcessor = new AprilTagProcessor.Builder().build();
         redPropThreshold = new LeftPropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
                 .setCameraResolution(new Size(CAMERA_WIDTH, CAMERA_HEIGHT))
                 .setCamera(BuiltinCameraDirection.BACK)
-                .addProcessors(redPropThreshold, aprilTagProcessor)
+                .addProcessors(redPropThreshold)
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        getCameraSetting();
         FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Side location;
         while (!isStarted()) {
@@ -71,14 +62,15 @@ public class AudienceRedAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(-38, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-38, -61.5, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
+        drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-36, -20, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-36, -20, Math.toRadians(0)))
                 .back(10)
                 .strafeLeft(10)
                 .forward(60)
-                .lineToLinearHeading(new Pose2d(54, -31, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(55, -31))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -93,11 +85,11 @@ public class AudienceRedAuto extends LinearOpMode {
                 .forward(11)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-48, -33, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-48, -33, Math.toRadians(0)))
                 .back(5)
                 .strafeLeft(20)
-                .forward(50)
-                .lineToConstantHeading(new Vector2d(52, -18))
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(55, -26))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -105,21 +97,21 @@ public class AudienceRedAuto extends LinearOpMode {
                 .forward(0.5)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
+                    // Reset yellow pixel
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(5)
+                .strafeLeft(12)
                 .forward(12)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-35, -33, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(0)))
                 .forward(10)
                 .back(10)
                 .strafeLeft(20)
-                .forward(50)
-                .lineToConstantHeading(new Vector2d(52, -37))
+                .forward(60)
+                .lineToConstantHeading(new Vector2d(55, -37))
                 .addDisplacementMarker(() -> {
-
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
@@ -131,7 +123,7 @@ public class AudienceRedAuto extends LinearOpMode {
                 })
                 .back(5)
                 .strafeLeft(26)
-                .forward(13)
+                .forward(10)
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
@@ -156,34 +148,6 @@ public class AudienceRedAuto extends LinearOpMode {
             robot.write();
             robot.clearBulkCache();
             portal.close();
-        }
-    }
-    private void getCameraSetting() {
-        // Ensure Vision Portal has been setup.
-        if (portal == null) {
-            return;
-        }
-
-        // Wait for the camera to be open
-        if (portal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Camera", "Waiting");
-            telemetry.update();
-            while (!isStopRequested() && (portal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
-                sleep(20);
-            }
-            telemetry.addData("Camera", "Ready");
-            telemetry.update();
-        }
-
-        // Get camera control values unless we are stopping.
-        if (!isStopRequested()) {
-            ExposureControl exposureControl = portal.getCameraControl(ExposureControl.class);
-            minExposure = (int)exposureControl.getMinExposure(TimeUnit.MILLISECONDS) + 1;
-            maxExposure = (int)exposureControl.getMaxExposure(TimeUnit.MILLISECONDS);
-
-            GainControl gainControl = portal.getCameraControl(GainControl.class);
-            minGain = gainControl.getMinGain();
-            maxGain = gainControl.getMaxGain();
         }
     }
 }

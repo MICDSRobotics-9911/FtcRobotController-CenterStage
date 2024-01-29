@@ -85,11 +85,11 @@ public class RightPropPipeline implements VisionProcessor, CameraStreamSource {
         lowMat.release();
         highMat.release();
 
-        double leftBox = Core.sumElems(finalMat.submat(RIGHT_RECTANGLE)).val[0];
-        double rightBox = Core.sumElems(finalMat.submat(CENTER_RECTANGLE)).val[0];
+        double rightBox = Core.sumElems(finalMat.submat(RIGHT_RECTANGLE)).val[0];
+        double centerBox = Core.sumElems(finalMat.submat(CENTER_RECTANGLE)).val[0];
 
-        double averagedRightBox = leftBox / RIGHT_RECTANGLE.area() / 255;
-        double averagedCenterBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
+        double averagedRightBox = rightBox / RIGHT_RECTANGLE.area() / 255;
+        double averagedCenterBox = centerBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
         telemetry.addData("Right Box: ", averagedRightBox);
         telemetry.addData("Center Box: ", averagedCenterBox);
         telemetry.update();

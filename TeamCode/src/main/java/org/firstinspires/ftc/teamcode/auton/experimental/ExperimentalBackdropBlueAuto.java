@@ -59,9 +59,9 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .splineToConstantHeading(new Vector2d(13, 29), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(13, 39), Math.toRadians(0))
-                .splineToSplineHeading(new Pose2d(52, 40, Math.toRadians(0)), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(13, 29))
+                .back(10)
+                .lineToSplineHeading(new Pose2d(52, 40, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
@@ -72,13 +72,13 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(21)
-                .forward(10)
+                .strafeLeft(23)
+                .forward(8)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .splineToConstantHeading(new Vector2d(23, 35), Math.toRadians(0))
-                .splineToConstantHeading(new Vector2d(23, 43), Math.toRadians(0))
-                .splineToSplineHeading(new Pose2d(52, 43, Math.toRadians(0)), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(23, 35))
+                .back(10)
+                .lineToSplineHeading(new Pose2d(52, 43, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -93,11 +93,10 @@ public class ExperimentalBackdropBlueAuto extends LinearOpMode {
                 .forward(10)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(14, 33, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(14, 33, Math.toRadians(180)))
                 .forward(10)
                 .back(10)
-                .turn(Math.toRadians(180))
-                .lineToConstantHeading(new Vector2d(52, 31))
+                .lineToSplineHeading(new Pose2d(52, 31, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);

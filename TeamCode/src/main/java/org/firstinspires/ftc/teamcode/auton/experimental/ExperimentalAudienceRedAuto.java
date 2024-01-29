@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.auton.experimental;
 
-import static org.firstinspires.ftc.teamcode.common.centerstage.HelpfulAprilTagDetection.getCameraSetting;
 import static org.firstinspires.ftc.teamcode.common.centerstage.HelpfulAprilTagDetection.setManualExposure;
 import static org.firstinspires.ftc.teamcode.common.util.MathUtils.getFCPosition;
 
@@ -20,13 +19,12 @@ import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
-import org.firstinspires.ftc.teamcode.common.util.MathUtils;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.teamcode.common.centerstage.HelpfulAprilTagDetection;
+import org.firstinspires.ftc.teamcode.common.util.MathUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,7 +48,6 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         drive = new SampleMecanumDrive(hardwareMap);
         Globals.IS_AUTO = true;
         Globals.IS_USING_IMU = true;
@@ -68,6 +65,7 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
+        getCameraSetting();
         FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Side location;
         while (!isStarted()) {
@@ -77,21 +75,24 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-
-        Pose2d startPose = new Pose2d(-38, -60, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-38, -61.5, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
+        drive.update();
+        setManualExposure(portal, 6, 250);
+        aprilTagProcessor.setDecimation(2);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-36, -20, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-36, -20, Math.toRadians(0)))
                 .back(10)
                 .strafeLeft(10)
-                .forward(60)
+                .forward(70)
+                .lineToConstantHeading(new Vector2d(43, -34))
                 .addDisplacementMarker(() -> {
-                    drive.setPoseEstimate(getFCPosition(aprilTagProcessor.getFreshDetections(), drive.getRawExternalHeading()));
+                    List<AprilTagDetection> aprilTagDetections = aprilTagProcessor.getFreshDetections();
+                    drive.setPoseEstimate(getFCPosition(aprilTagDetections, drive.getRawExternalHeading()));
                     drive.update();
                 })
-                .forward(0.1)
                 .waitSeconds(1)
-                .lineToLinearHeading(new Pose2d(54, -31, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(52, -31))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -106,11 +107,18 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .forward(11)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-48, -33, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-48, -33, Math.toRadians(0)))
                 .back(5)
                 .strafeLeft(20)
-                .forward(50)
-                .lineToConstantHeading(new Vector2d(52, -18))
+                .forward(70)
+                .lineToConstantHeading(new Vector2d(43, -34))
+                .addDisplacementMarker(() -> {
+                    List<AprilTagDetection> aprilTagDetections = aprilTagProcessor.getFreshDetections();
+                    drive.setPoseEstimate(getFCPosition(aprilTagDetections, drive.getRawExternalHeading()));
+                    drive.update();
+                })
+                .waitSeconds(1)
+                .lineToConstantHeading(new Vector2d(52, -26))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -118,21 +126,28 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .forward(0.5)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
+                    // Reset yellow pixel
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(5)
+                .strafeLeft(12)
                 .forward(12)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToLinearHeading(new Pose2d(-35, -33, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(0)))
                 .forward(10)
                 .back(10)
                 .strafeLeft(20)
-                .forward(50)
+                .forward(70)
+                .lineToConstantHeading(new Vector2d(43, -34))
+                .addDisplacementMarker(() -> {
+                    List<AprilTagDetection> aprilTagDetections = aprilTagProcessor.getFreshDetections();
+                    drive.setPoseEstimate(getFCPosition(aprilTagDetections, drive.getRawExternalHeading()));
+                    drive.update();
+                })
+                .waitSeconds(1)
                 .lineToConstantHeading(new Vector2d(52, -37))
                 .addDisplacementMarker(() -> {
-
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
@@ -144,12 +159,8 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 })
                 .back(5)
                 .strafeLeft(26)
-                .forward(13)
+                .forward(10)
                 .build();
-        getCameraSetting(portal);
-        myExposure = Math.min(5, minExposure);
-        myGain = maxGain;
-        setManualExposure(portal, myExposure, myGain);
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
             location = redPropThreshold.getPropPosition();
@@ -173,6 +184,34 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
             robot.write();
             robot.clearBulkCache();
             portal.close();
+        }
+    }
+    private void getCameraSetting() {
+        // Ensure Vision Portal has been setup.
+        if (portal == null) {
+            return;
+        }
+
+        // Wait for the camera to be open
+        if (portal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            telemetry.addData("Camera", "Waiting");
+            telemetry.update();
+            while (!isStopRequested() && (portal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                sleep(20);
+            }
+            telemetry.addData("Camera", "Ready");
+            telemetry.update();
+        }
+
+        // Get camera control values unless we are stopping.
+        if (!isStopRequested()) {
+            ExposureControl exposureControl = portal.getCameraControl(ExposureControl.class);
+            minExposure = (int)exposureControl.getMinExposure(TimeUnit.MILLISECONDS) + 1;
+            maxExposure = (int)exposureControl.getMaxExposure(TimeUnit.MILLISECONDS);
+
+            GainControl gainControl = portal.getCameraControl(GainControl.class);
+            minGain = gainControl.getMinGain();
+            maxGain = gainControl.getMaxGain();
         }
     }
 }

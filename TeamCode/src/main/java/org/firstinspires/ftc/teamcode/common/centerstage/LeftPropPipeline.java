@@ -45,7 +45,7 @@ public class LeftPropPipeline implements VisionProcessor, CameraStreamSource {
 
     public static Rect LEFT_RECTANGLE = new Rect(0, 80, 180, 200);
     public static Rect CENTER_RECTANGLE = new Rect(240, 30, 320, 180);
-    Telemetry telemetry;
+    private Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public LeftPropPipeline(Telemetry telemetry) {
         this.telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -84,18 +84,18 @@ public class LeftPropPipeline implements VisionProcessor, CameraStreamSource {
         highMat.release();
 
         double leftBox = Core.sumElems(finalMat.submat(LEFT_RECTANGLE)).val[0];
-        double rightBox = Core.sumElems(finalMat.submat(CENTER_RECTANGLE)).val[0];
+        double centerBox = Core.sumElems(finalMat.submat(CENTER_RECTANGLE)).val[0];
 
         double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
-        double averagedRightBox = rightBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
+        double averagedCenterBox = centerBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
         telemetry.addData("Left Box: ", averagedLeftBox);
-        telemetry.addData("Right Box: ", averagedRightBox);
+        telemetry.addData("Right Box: ", averagedCenterBox);
         telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;
             Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(0, 255, 0));
             Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(255, 255, 255));
-        } else if (averagedRightBox > threshold) {
+        } else if (averagedCenterBox > threshold) {
             location = Side.CENTER;
             Imgproc.rectangle(frame, CENTER_RECTANGLE, new Scalar(0, 255, 0));
             Imgproc.rectangle(frame, LEFT_RECTANGLE, new Scalar(255, 255, 255));
