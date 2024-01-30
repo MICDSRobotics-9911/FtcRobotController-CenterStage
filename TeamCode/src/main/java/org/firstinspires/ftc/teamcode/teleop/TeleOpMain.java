@@ -65,9 +65,9 @@ public class TeleOpMain extends LinearOpMode {
                 robot.hangHolder.setPower(0);
             }
             if (gamepad2.dpad_down || gamepad1.dpad_down) {
-                robot.spoolHangMotor.setPower(1);
-            } else if (gamepad2.dpad_up || gamepad1.dpad_up) {
                 robot.spoolHangMotor.setPower(-1);
+            } else if (gamepad2.dpad_up || gamepad1.dpad_up) {
+                robot.spoolHangMotor.setPower(1);
             } else {
                 robot.spoolHangMotor.setPower(0);
             }

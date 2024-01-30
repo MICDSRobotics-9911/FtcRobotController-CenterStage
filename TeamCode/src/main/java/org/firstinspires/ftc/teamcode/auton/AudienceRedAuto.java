@@ -66,17 +66,17 @@ public class AudienceRedAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-36, -20, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-36, -21, Math.toRadians(0)))
                 .back(10)
-                .strafeLeft(10)
+                .strafeRight(13)
                 .forward(60)
-                .lineToConstantHeading(new Vector2d(55, -31))
+                .lineToConstantHeading(new Vector2d(55, -29.3))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
-                .waitSeconds(1)
+                .waitSeconds(1.2)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
@@ -85,11 +85,11 @@ public class AudienceRedAuto extends LinearOpMode {
                 .forward(11)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-48, -33, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-55, -30, Math.toRadians(0)))
                 .back(5)
                 .strafeLeft(20)
                 .forward(60)
-                .lineToConstantHeading(new Vector2d(55, -26))
+                .lineToConstantHeading(new Vector2d(55, -25))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -101,21 +101,21 @@ public class AudienceRedAuto extends LinearOpMode {
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(12)
+                .strafeLeft(14)
                 .forward(12)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(0)))
-                .forward(10)
+                .lineToSplineHeading(new Pose2d(-35, -30.5, Math.toRadians(0)))
+                .forward(7)
                 .back(10)
-                .strafeLeft(20)
+                .strafeLeft(22)
                 .forward(60)
-                .lineToConstantHeading(new Vector2d(55, -37))
+                .lineToConstantHeading(new Vector2d(56, -37))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(1)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     // Reset Yellow Pixel
@@ -127,6 +127,9 @@ public class AudienceRedAuto extends LinearOpMode {
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
+            if (portal.getCameraState() == VisionPortal.CameraState.STREAMING) {
+                portal.stopLiveView();
+            }
             location = redPropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();

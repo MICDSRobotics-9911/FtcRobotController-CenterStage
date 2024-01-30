@@ -81,38 +81,38 @@ public class RobotHardware {
         // Add an if else detecting whether dashboard is running for telemetry
         this.telemetry = telemetry;
 
+
+        if (!Globals.IS_AUTO) {
+            this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
+            //backLeftMotor.resetDeviceConfigurationForOpMode();
+            backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            this.backRightMotor = hardwareMap.get(DcMotorEx.class, "back_right_drive");
+            //backRightMotor.resetDeviceConfigurationForOpMode();
+            backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            this.frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front_left_drive");
+            //frontLeftMotor.resetDeviceConfigurationForOpMode();
+            frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            this.frontRightMotor = hardwareMap.get(DcMotorEx.class, "front_right_drive");
+            //frontRightMotor.resetDeviceConfigurationForOpMode();
+            frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            drivetrain = new MecanumDrivetrain(this.telemetry);
+        }
         // DRIVETRAIN
-        this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
-        //backLeftMotor.resetDeviceConfigurationForOpMode();
-        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        this.backRightMotor = hardwareMap.get(DcMotorEx.class, "back_right_drive");
-        //backRightMotor.resetDeviceConfigurationForOpMode();
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        this.frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front_left_drive");
-        //frontLeftMotor.resetDeviceConfigurationForOpMode();
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        this.frontRightMotor = hardwareMap.get(DcMotorEx.class, "front_right_drive");
-        //frontRightMotor.resetDeviceConfigurationForOpMode();
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        drivetrain = new MecanumDrivetrain(this.telemetry);
-
-        /*if (Globals.IS_AUTO) {
-            drivetrain.setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            drivetrain.setDrivetrainMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        }*/
-
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT, RevHubOrientationOnRobot.UsbFacingDirection.UP));
-        imu = hardwareMap.get(IMU.class, "imu");
-        imu.initialize(parameters);
-        imu.resetYaw();
+        if (Globals.IS_USING_IMU) {
+            IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.UP));
+            imu = hardwareMap.get(IMU.class, "imu 1");
+            imu.initialize(parameters);
+            imu.resetYaw();
+        }
 
         // Extension
         /*extensionMotor = hardwareMap.get(DcMotorEx.class, "extension_motor");

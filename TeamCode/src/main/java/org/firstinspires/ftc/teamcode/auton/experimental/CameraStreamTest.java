@@ -44,6 +44,7 @@ public class CameraStreamTest extends LinearOpMode {
                     .enableLiveView(true)
                     .setAutoStopLiveView(true)
                     .build();
+
             while (!isStarted()) {
             }
             waitForStart();

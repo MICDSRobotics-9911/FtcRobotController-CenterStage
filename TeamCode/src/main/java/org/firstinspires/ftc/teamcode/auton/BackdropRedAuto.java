@@ -58,7 +58,7 @@ public class BackdropRedAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(11, -29))
+                .lineToConstantHeading(new Vector2d(14, -27))
                 .back(10)
                 .lineToSplineHeading(new Pose2d(52, -31, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
@@ -66,7 +66,7 @@ public class BackdropRedAuto extends LinearOpMode {
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
-                .waitSeconds(1)
+                .waitSeconds(1.2)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
@@ -75,38 +75,38 @@ public class BackdropRedAuto extends LinearOpMode {
                 .forward(15)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(18, -35))
+                .lineToConstantHeading(new Vector2d(20, -35))
                 .back(10)
-                .lineToSplineHeading(new Pose2d(53, -37, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(56, -37, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
-                .waitSeconds(1)
+                .waitSeconds(1.2)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .back(10)
-                .strafeRight(25)
-                .forward(15)
+                .back(5)
+                .strafeRight(23)
+                .forward(10)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(14, -31, Math.toRadians(180)))
                 .forward(10)
                 .back(10)
-                .lineToSplineHeading(new Pose2d(52, -26, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, -24, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop yellow pixel
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
-                .waitSeconds(1)
+                .waitSeconds(1.5)
                 .addDisplacementMarker(() -> {
                     // Reset yellow pixel
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeRight(38)
+                .strafeRight(36)
                 .forward(12)
                 .build();
         waitForStart();
@@ -114,6 +114,9 @@ public class BackdropRedAuto extends LinearOpMode {
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
+            if (portal.getCameraState() == VisionPortal.CameraState.STREAMING) {
+                portal.stopLiveView();
+            }
             location = redPropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();

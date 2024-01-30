@@ -65,7 +65,6 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .enableLiveView(true)
                 .setAutoStopLiveView(true)
                 .build();
-        getCameraSetting();
         FtcDashboard.getInstance().startCameraStream(redPropThreshold, 30);
         Side location;
         while (!isStarted()) {
@@ -78,6 +77,7 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-38, -61.5, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
         drive.update();
+        getCameraSetting();
         setManualExposure(portal, 6, 250);
         aprilTagProcessor.setDecimation(2);
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
@@ -107,7 +107,7 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .forward(11)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-48, -33, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-44, -30, Math.toRadians(0)))
                 .back(5)
                 .strafeLeft(20)
                 .forward(70)
@@ -135,7 +135,7 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(-35, -33, Math.toRadians(0)))
-                .forward(10)
+                .forward(7)
                 .back(10)
                 .strafeLeft(20)
                 .forward(70)

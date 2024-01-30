@@ -56,7 +56,7 @@ public class ExperimentalAudienceBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(-38, 60, Math.toRadians(-100));
+        Pose2d startPose = new Pose2d(-38, 61.5, Math.toRadians(-100));
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)

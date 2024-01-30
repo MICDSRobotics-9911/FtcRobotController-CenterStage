@@ -113,6 +113,9 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
+            if (portal.getCameraState() == VisionPortal.CameraState.STREAMING) {
+                portal.stopLiveView();
+            }
             location = bluePropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();

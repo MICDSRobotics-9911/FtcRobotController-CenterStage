@@ -56,13 +56,13 @@ public class AudienceBlueAuto extends LinearOpMode {
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
         }
-        Pose2d startPose = new Pose2d(-38, 60, Math.toRadians(-100));
+        Pose2d startPose = new Pose2d(-38, 61.5, Math.toRadians(-100));
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-36, 20, Math.toRadians(0)))
-                .back(5)
-                .strafeRight(10)
+                .lineToSplineHeading(new Pose2d(-40, 21, Math.toRadians(0)))
+                .back(10)
+                .strafeLeft(13)
                 .forward(60)
                 .lineToConstantHeading(new Vector2d(55, 37))
                 .addDisplacementMarker(() -> {
@@ -122,6 +122,9 @@ public class AudienceBlueAuto extends LinearOpMode {
         telemetry.addData("Prop Location: ", location.toString());
         telemetry.update();
         if (!isStopRequested() && opModeIsActive()) {
+            if (portal.getCameraState() == VisionPortal.CameraState.STREAMING) {
+                portal.stopLiveView();
+            }
             location = bluePropThreshold.getPropPosition();
             telemetry.addData("Prop Location: ", location.toString());
             telemetry.update();
