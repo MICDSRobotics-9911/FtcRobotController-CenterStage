@@ -1,4 +1,7 @@
 package com.example.meepmeeptesting;
+
+
+
 /*
  * Constants shared between multiple drive types.
  *
@@ -10,6 +13,7 @@ package com.example.meepmeeptesting;
  * These are not the only parameters; some are located in the localizer classes, drive base classes,
  * and op modes themselves.
  */
+
 public class DriveConstants {
 
     /*
@@ -28,6 +32,7 @@ public class DriveConstants {
      */
     public static final boolean RUN_USING_ENCODER = false;
 
+
     /*
      * These are physical constants that can be determined from your robot (including the track
      * width; it will be tune empirically later although a rough estimate is important). Users are
@@ -38,7 +43,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.8898; // in
     public static double GEAR_RATIO = (1 / 37.662769) * (59 / 59.468858733252176); // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 15.23; // in
+    public static double TRACK_WIDTH = 14.96; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -59,12 +64,13 @@ public class DriveConstants {
      */
     public static double MAX_VEL = 23.963274162070704;
     public static double MAX_ACCEL = 23.963274162070704;
-    public static double MAX_ANG_VEL = Math.toRadians(60);
-    public static double MAX_ANG_ACCEL = Math.toRadians(60);
+    public static double MAX_ANG_VEL = Math.toRadians(90);
+    public static double MAX_ANG_ACCEL = Math.toRadians(90);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
      */
+
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;

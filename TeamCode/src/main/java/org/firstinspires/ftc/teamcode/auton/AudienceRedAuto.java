@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.common.centerstage.LeftPropPipeline;
 import org.firstinspires.ftc.teamcode.common.centerstage.Side;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -68,7 +69,9 @@ public class AudienceRedAuto extends LinearOpMode {
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(-36, -21, Math.toRadians(0)))
                 .back(10)
-                .strafeRight(13)
+                .strafeRight(13,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(10))
                 .forward(60)
                 .lineToConstantHeading(new Vector2d(55, -29.3))
                 .addDisplacementMarker(() -> {
@@ -87,7 +90,9 @@ public class AudienceRedAuto extends LinearOpMode {
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToSplineHeading(new Pose2d(-55, -30, Math.toRadians(0)))
                 .back(5)
-                .strafeLeft(20)
+                .strafeLeft(20,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(10))
                 .forward(60)
                 .lineToConstantHeading(new Vector2d(55, -25))
                 .addDisplacementMarker(() -> {
@@ -108,7 +113,9 @@ public class AudienceRedAuto extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(-35, -30.5, Math.toRadians(0)))
                 .forward(7)
                 .back(10)
-                .strafeLeft(22)
+                .strafeLeft(22,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(10))
                 .forward(60)
                 .lineToConstantHeading(new Vector2d(56, -37))
                 .addDisplacementMarker(() -> {

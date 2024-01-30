@@ -20,27 +20,20 @@ public class MeepMeepTesting {
     public static void main(String[] args) {
         System.setProperty("sun.java2d.opengl", "true");
         MeepMeep meepMeep = new MeepMeep(600);
-        Pose2d startPose = new Pose2d(-38, -61.5, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-38, 61.5, Math.toRadians(-90));
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 .setConstraints(MAX_VEL, MAX_ACCEL, MAX_ANG_VEL, MAX_ANG_ACCEL, TRACK_WIDTH)
                 .setColorScheme(new ColorSchemeRedDark())
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(startPose)
-                                .lineToSplineHeading(new Pose2d(-36, -20, Math.toRadians(0)))
-                                .back(10)
-                                .strafeLeft(10)
-                                .forward(70)
-                                .lineToConstantHeading(new Vector2d(43, -34))
+                                .lineToSplineHeading(new Pose2d(-48, 33, Math.toRadians(0)))
+                                .back(5)
+                                .strafeRight(20)
+                                .forward(60,)
+                                .lineToConstantHeading(new Vector2d(55, 31))
                                 .addDisplacementMarker(() -> {
-                                    /*List<AprilTagDetection> aprilTagDetections = aprilTagProcessor.getFreshDetections();
-                                    drive.setPoseEstimate(getFCPosition(aprilTagDetections, drive.getRawExternalHeading()));
-                                    drive.update();*/
-                                })
-                                .waitSeconds(1)
-                                .lineToConstantHeading(new Vector2d(52, -31))
-                                .addDisplacementMarker(() -> {
-                                    // Drop Yellow pixel on backboard
+                                    // Drop Yellow Pixel
                                     //robot.server.setPosition(1);
                                 })
                                 .forward(0.5)
@@ -48,9 +41,9 @@ public class MeepMeepTesting {
                                 .addDisplacementMarker(() -> {
                                     //robot.server.setPosition(0);
                                 })
-                                .back(3)
-                                .strafeLeft(20)
-                                .forward(11)
+                                .back(5)
+                                .strafeRight(17)
+                                .forward(10)
                                 .build()
                 );
 
