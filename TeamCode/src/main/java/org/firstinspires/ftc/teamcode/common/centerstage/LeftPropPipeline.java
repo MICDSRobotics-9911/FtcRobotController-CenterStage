@@ -43,8 +43,8 @@ public class LeftPropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar lowHSVBlueLower = new Scalar(80, 100, 100);
     private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
 
-    public static Rect LEFT_RECTANGLE = new Rect(0, 80, 180, 200);
-    public static Rect CENTER_RECTANGLE = new Rect(240, 30, 320, 180);
+    public static Rect LEFT_RECTANGLE = new Rect(0, 80, 160, 200);
+    public static Rect CENTER_RECTANGLE = new Rect(270, 60, 200, 140);
     private Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public LeftPropPipeline(Telemetry telemetry) {
@@ -89,7 +89,7 @@ public class LeftPropPipeline implements VisionProcessor, CameraStreamSource {
         double averagedLeftBox = leftBox / LEFT_RECTANGLE.area() / 255;
         double averagedCenterBox = centerBox / CENTER_RECTANGLE.area() / 255; //Makes value [0,1]
         telemetry.addData("Left Box: ", averagedLeftBox);
-        telemetry.addData("Right Box: ", averagedCenterBox);
+        telemetry.addData("Center Box: ", averagedCenterBox);
         telemetry.update();
         if (averagedLeftBox > threshold) {        //Must Tune Threshold
             location = Side.LEFT;

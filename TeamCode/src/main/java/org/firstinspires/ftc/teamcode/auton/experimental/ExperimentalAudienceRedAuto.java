@@ -10,6 +10,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -28,7 +29,7 @@ import org.firstinspires.ftc.teamcode.common.util.MathUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
+@Disabled
 @Config
 @Autonomous(name="ExperimentalAudienceRedAuto", group="Auto")
 public class ExperimentalAudienceRedAuto extends LinearOpMode {

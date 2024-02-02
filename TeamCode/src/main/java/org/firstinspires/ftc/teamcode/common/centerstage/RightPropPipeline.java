@@ -45,8 +45,8 @@ public class RightPropPipeline implements VisionProcessor, CameraStreamSource {
     private final Scalar highHSVBlueUpper = new Scalar(140, 255, 255);
     // TODO: This needs to be done for the RightPropPipeline
 
-    public static Rect CENTER_RECTANGLE = new Rect(40, 10, 240, 130);
-    public static Rect RIGHT_RECTANGLE = new Rect(380, 20, 190, 180);
+    public static Rect CENTER_RECTANGLE = new Rect(40, 40, 240, 130);
+    public static Rect RIGHT_RECTANGLE = new Rect(380, 50, 190, 180);
     private Telemetry telemetry;
     private int fieldColor = Imgproc.COLOR_RGB2HSV;
     public RightPropPipeline(Telemetry telemetry) {

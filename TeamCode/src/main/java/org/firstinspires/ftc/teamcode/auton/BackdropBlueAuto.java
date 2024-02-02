@@ -72,7 +72,7 @@ public class BackdropBlueAuto extends LinearOpMode {
                     robot.server.setPosition(0);
                 })
                 .back(5)
-                .strafeLeft(23)
+                .strafeLeft(21)
                 .forward(8)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
@@ -96,13 +96,14 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(14, 33, Math.toRadians(180)))
                 .forward(10)
                 .back(10)
-                .lineToSplineHeading(new Pose2d(52, 31, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, 34.5, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
                 .waitSeconds(1)
+                .forward(0.5)
                 .addDisplacementMarker(() -> {
                     // Reset Yellow Pixel Holder
                     robot.server.setPosition(0);

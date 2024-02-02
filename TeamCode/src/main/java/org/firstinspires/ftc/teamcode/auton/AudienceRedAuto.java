@@ -67,34 +67,36 @@ public class AudienceRedAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-36, -21, Math.toRadians(0)))
-                .back(10)
-                .strafeRight(13,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(10))
-                .forward(60)
-                .lineToConstantHeading(new Vector2d(55, -29.3))
+                .lineToSplineHeading(new Pose2d(-36, -20.7, Math.toRadians(0)))
+                .back(5)
+                .strafeRight(37)
+                .waitSeconds(5)
+                .forward(70)
+                .strafeLeft(20)
+                .lineToConstantHeading(new Vector2d(54, -27),
+                        SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
                 .forward(0.5)
-                .waitSeconds(1.2)
+                .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
                 })
-                .back(3)
-                .strafeLeft(20)
-                .forward(11)
+                .strafeLeft(0.1)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-55, -30, Math.toRadians(0)))
-                .back(5)
-                .strafeLeft(20,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(10))
-                .forward(60)
-                .lineToConstantHeading(new Vector2d(55, -25))
+                .lineToSplineHeading(new Pose2d(-53, -30, Math.toRadians(0)))
+                .back(3)
+                .strafeRight(29)
+                .waitSeconds(5)
+                .forward(80)
+                .strafeLeft(10)
+                .lineToConstantHeading(new Vector2d(54, -21),
+                        SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -105,19 +107,19 @@ public class AudienceRedAuto extends LinearOpMode {
                     // Reset yellow pixel
                     robot.server.setPosition(0);
                 })
-                .back(5)
-                .strafeLeft(14)
-                .forward(12)
+                .strafeLeft(0.1)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-35, -30.5, Math.toRadians(0)))
-                .forward(7)
+                .lineToSplineHeading(new Pose2d(-35, -31, Math.toRadians(0)))
+                .forward(7.2)
                 .back(10)
-                .strafeLeft(22,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(10))
-                .forward(60)
-                .lineToConstantHeading(new Vector2d(56, -37))
+                .strafeRight(28)
+                .waitSeconds(5)
+                .forward(70)
+                .strafeLeft(10)
+                .lineToConstantHeading(new Vector2d(55, -34.5),
+                        SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
@@ -128,9 +130,7 @@ public class AudienceRedAuto extends LinearOpMode {
                     // Reset Yellow Pixel
                     robot.server.setPosition(0);
                 })
-                .back(5)
-                .strafeLeft(26)
-                .forward(10)
+                .strafeLeft(0.1)
                 .build();
         waitForStart();
         if (!isStopRequested() && opModeIsActive()) {
