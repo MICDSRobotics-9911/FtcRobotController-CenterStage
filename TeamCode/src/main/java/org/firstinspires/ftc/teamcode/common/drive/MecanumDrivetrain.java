@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WSubsystem;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
@@ -15,21 +16,11 @@ public class MecanumDrivetrain extends WSubsystem {
     private final RobotHardware robot = RobotHardware.getInstance();
 
     double[] ws = new double[4];
-    public double backLeftPos = 0.0;
-    public double backRightPos = 0.0;
-    public double frontLeftPos = 0.0;
-    public double frontRightPos = 0.0;
-
-
-    private PIDController controller;
     private Telemetry telemetry;
-    public static double p = 0, i = 0, d = 0;
 
 
     public MecanumDrivetrain(Telemetry telemetry) {
         this.telemetry = telemetry;
-        controller = new PIDController(p, i, d);
-        controller.setTolerance(100);
     }
 
 
@@ -111,13 +102,6 @@ public class MecanumDrivetrain extends WSubsystem {
         setDrivePowers();
     }
 
-    public void setDrivetrainTarget(int backLeftTarget, int backRightTarget, int frontLeftTarget, int frontRightTarget) {
-        robot.backLeftMotor.setTargetPosition(backLeftTarget);
-        robot.backRightMotor.setTargetPosition(backRightTarget);
-        robot.frontLeftMotor.setTargetPosition(frontLeftTarget);
-        robot.frontRightMotor.setTargetPosition(frontRightTarget);
-    }
-
     public void setDrivetrainMode(DcMotorEx.RunMode mode) {
         robot.backLeftMotor.setMode(mode);
         robot.backRightMotor.setMode(mode);
@@ -137,10 +121,7 @@ public class MecanumDrivetrain extends WSubsystem {
 
     @Override
     public void read() {
-        backLeftPos = robot.backLeftMotor.getCurrentPosition();
-        backRightPos = robot.backRightMotor.getCurrentPosition();
-        frontLeftPos = robot.frontLeftMotor.getCurrentPosition();
-        frontRightPos = robot.frontRightMotor.getCurrentPosition();
+
     }
 
     @Override
@@ -150,7 +131,9 @@ public class MecanumDrivetrain extends WSubsystem {
 
     @Override
     public void reset() {
-        robot.imu.resetYaw();
+        if (Globals.IS_USING_IMU) {
+            robot.imu.resetYaw();
+        }
         setDrivetrainMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         stopDrive();
     }

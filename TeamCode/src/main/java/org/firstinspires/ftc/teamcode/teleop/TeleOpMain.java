@@ -10,6 +10,7 @@ import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
@@ -25,8 +26,10 @@ public class TeleOpMain extends LinearOpMode {
     private double loopTime = 0.0;
     ElapsedTime runtime = new ElapsedTime();
     private double speedModifier = 1;
-    Deadline rightBumperRateLimit = new Deadline(500, TimeUnit.MILLISECONDS);
-    Deadline aToggleRateLimit = new Deadline(500, TimeUnit.MILLISECONDS);
+    private boolean holderToggle = false;
+    private boolean serverToggle = false;
+    private Gamepad previousGamepad1;
+    private Gamepad previousGamepad2;
 
 
     @Override
@@ -42,34 +45,33 @@ public class TeleOpMain extends LinearOpMode {
         robot.read();
         telemetry.addLine("Robot Initialized");
         telemetry.update();
+        previousGamepad1 = new Gamepad();
+        previousGamepad2 = new Gamepad();
         // Manual reset
         robot.airplaneHold.setPosition(1);
         robot.server.setPosition(0);
-        int serverPos = 0;
-        int airplanePos = 1;
 
         waitForStart();
         robot.airplaneHold.setPosition(0);
         runtime.reset();
         while (opModeIsActive() && !isStopRequested()) {
+            previousGamepad1.copy(gamepad1);
+            previousGamepad2.copy(gamepad2);
             robot.read();
             speedModifier = (gamepad1.left_bumper || gamepad1.left_trigger > 0 || gamepad2.left_bumper || gamepad2.left_trigger > 0)  ? 0.3 : 1;
             robot.drivetrain.driveRobotCentric(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speedModifier);
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
-            if (aToggleRateLimit.hasExpired() && gamepad1.a || gamepad2.a) {
-                telemetry.addLine("A has been pressed");
-                telemetry.addData("airplaneHoldPos: ", robot.airplaneHold.getPosition());
-                if (airplanePos == 1) {
-                    robot.airplaneHold.setPosition(0);
-                    airplanePos = 0;
-                }
-                else {
-                    robot.airplaneHold.setPosition(1);
-                    airplanePos = 1;
-                }
-                aToggleRateLimit.reset();
+            if ((gamepad1.a && !previousGamepad1.a) || (gamepad2.a && !previousGamepad2.a)) {
+                holderToggle = !holderToggle;
             }
+            if (holderToggle) {
+                robot.airplaneHold.setPosition(1);
+            } else {
+                robot.airplaneHold.setPosition(0);
+            }
+
+
             if (gamepad1.x || gamepad2.x) {
                 robot.airplaneHold.setPosition(1);
                 sleep(1000);
@@ -92,17 +94,14 @@ public class TeleOpMain extends LinearOpMode {
                 robot.spoolHangMotor.setPower(0);
             }
 
-            if (rightBumperRateLimit.hasExpired() &&
-                    gamepad1.right_bumper ||
-                    gamepad2.right_bumper) {
-                if (serverPos == 1) {
-                    robot.server.setPosition(0);
-                    serverPos = 0;
-                } else {
-                    robot.server.setPosition(1);
-                    serverPos = 1;
-                }
-                rightBumperRateLimit.reset();
+            if (gamepad1.right_bumper && !previousGamepad1.right_bumper) {
+                serverToggle = !serverToggle;
+            }
+
+            if (serverToggle) {
+                robot.server.setPosition(1);
+            } else {
+                robot.server.setPosition(0);
             }
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
