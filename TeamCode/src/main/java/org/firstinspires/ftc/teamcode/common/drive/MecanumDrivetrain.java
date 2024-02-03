@@ -1,26 +1,21 @@
 package org.firstinspires.ftc.teamcode.common.drive;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WSubsystem;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.DriveConstants;
 
 @Config
 public class MecanumDrivetrain extends WSubsystem {
     private final RobotHardware robot = RobotHardware.getInstance();
 
     double[] ws = new double[4];
-    private Telemetry telemetry;
 
 
-    public MecanumDrivetrain(Telemetry telemetry) {
-        this.telemetry = telemetry;
+    public MecanumDrivetrain() {
+
     }
 
 
@@ -77,7 +72,7 @@ public class MecanumDrivetrain extends WSubsystem {
     }
 
     public void driveFieldCentric(double x, double y, double rx, double speedModifier) {
-        double power, theta, botHeading, rotX, rotY;
+        double botHeading, rotX, rotY;
         if (speedModifier < 0) {
             speedModifier *= -1;
         }
