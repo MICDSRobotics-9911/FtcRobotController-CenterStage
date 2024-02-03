@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.common.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,8 +15,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.common.drive.MecanumDrivetrain;
-import org.firstinspires.ftc.teamcode.common.util.wrappers.WActuatorGroup;
-import org.firstinspires.ftc.teamcode.common.util.wrappers.WEncoder;
 import org.firstinspires.ftc.teamcode.common.util.wrappers.WSubsystem;
 
 import java.util.ArrayList;
@@ -31,21 +28,15 @@ public class RobotHardware {
     public DcMotorEx frontRightMotor;
     public DcMotorEx backLeftMotor;
     public DcMotorEx backRightMotor;
-    public DcMotorEx extensionMotor;
-    public DcMotorEx intakeMotor;
     public Servo airplaneLaunch;
     public Servo airplaneHold;
     public static double holdMin = 0.25;
     public static double holdMax = 0.4;
     public static double launchMin = 0;
     public static double launchMax = 0.8;
-
-    public ServoEx clawServo;
     public WebcamName camera;
-    public WEncoder extensionEncoder;
     public static double serverMin = 0.1;
     public static double serverMax = 0.4;
-    public WActuatorGroup extensionActuator;
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     private static RobotHardware instance = null;
@@ -76,22 +67,18 @@ public class RobotHardware {
 
         if (!Globals.IS_AUTO) {
             this.backLeftMotor = hardwareMap.get(DcMotorEx.class, "back_left_drive");
-            //backLeftMotor.resetDeviceConfigurationForOpMode();
             backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             this.backRightMotor = hardwareMap.get(DcMotorEx.class, "back_right_drive");
-            //backRightMotor.resetDeviceConfigurationForOpMode();
             backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             this.frontLeftMotor = hardwareMap.get(DcMotorEx.class, "front_left_drive");
-            //frontLeftMotor.resetDeviceConfigurationForOpMode();
             frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontLeftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
             this.frontRightMotor = hardwareMap.get(DcMotorEx.class, "front_right_drive");
-            //frontRightMotor.resetDeviceConfigurationForOpMode();
             frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             drivetrain = new MecanumDrivetrain();
@@ -105,19 +92,6 @@ public class RobotHardware {
             imu.initialize(parameters);
             imu.resetYaw();
         }
-
-        // Extension
-        /*extensionMotor = hardwareMap.get(DcMotorEx.class, "extension_motor");
-        extensionEncoder = new WEncoder(new MotorEx(hardwareMap, "front_left_drive").encoder);
-        this.extensionActuator = new WActuatorGroup(extensionMotor, extensionEncoder)
-                .setPIDController(new PIDController(p, i, d))
-                .setErrorTolerance(errorTolerance);*/
-
-        // Intake
-        //intakeMotor = hardwareMap.get(DcMotorEx.class, "intake_motor");
-
-        // Outtake
-        //clawServo = new SimpleServo(hardwareMap, "claw_servo", 0, 360);
 
         // Airplane Launch
         airplaneLaunch = hardwareMap.get(Servo.class, "airplane_launch");
@@ -144,13 +118,9 @@ public class RobotHardware {
         server.scaleRange(serverMin, serverMax);
 
         this.subsystems = new ArrayList<>();
-        if (Globals.IS_AUTO) {
-            // some sort of localizer init
-        } else {
+        if (!Globals.IS_AUTO) {
             modules.get(0).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
             modules.get(1).setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-            // drone = new DroneSubsystem();
-            // hang = new HangSubsystem();
         }
         camera = hardwareMap.get(WebcamName.class, "Webcam 1");
 
