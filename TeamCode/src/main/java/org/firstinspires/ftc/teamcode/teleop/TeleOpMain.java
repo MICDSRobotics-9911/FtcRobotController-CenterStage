@@ -10,19 +10,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.common.hardware.Globals;
 import org.firstinspires.ftc.teamcode.common.hardware.RobotHardware;
 
-import java.util.concurrent.TimeUnit;
-
 @TeleOp(name="MainTeleOp", group="LinearOpMode")
 public class TeleOpMain extends LinearOpMode {
 
     private RobotHardware robot;
     private double loopTime = 0.0;
     ElapsedTime runtime = new ElapsedTime();
-    private double speedModifier = 1;
     private boolean holderToggle = false;
     private boolean serverToggle = false;
-    private Gamepad previousGamepad1;
-    private Gamepad previousGamepad2;
 
 
     @Override
@@ -38,8 +33,8 @@ public class TeleOpMain extends LinearOpMode {
         robot.read();
         telemetry.addLine("Robot Initialized");
         telemetry.update();
-        previousGamepad1 = new Gamepad();
-        previousGamepad2 = new Gamepad();
+        Gamepad previousGamepad1 = new Gamepad();
+        Gamepad previousGamepad2 = new Gamepad();
         // Manual reset
         robot.airplaneHold.setPosition(1);
         robot.server.setPosition(0);
@@ -51,7 +46,7 @@ public class TeleOpMain extends LinearOpMode {
             previousGamepad1.copy(gamepad1);
             previousGamepad2.copy(gamepad2);
             robot.read();
-            speedModifier = (gamepad1.left_bumper || gamepad1.left_trigger > 0 || gamepad2.left_bumper || gamepad2.left_trigger > 0)  ? 0.3 : 1;
+            double speedModifier = (gamepad1.left_bumper || gamepad1.left_trigger > 0 || gamepad2.left_bumper || gamepad2.left_trigger > 0) ? 0.3 : 1;
             robot.drivetrain.driveRobotCentric(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, speedModifier);
             telemetry.addLine(robot.drivetrain.toString());
             robot.periodic();
