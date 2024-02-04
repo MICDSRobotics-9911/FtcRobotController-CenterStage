@@ -59,9 +59,9 @@ public class BackdropBlueAuto extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         drive.update();
         TrajectorySequence centerTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(13, 29))
+                .lineToConstantHeading(new Vector2d(11, 29))
                 .back(10)
-                .lineToSplineHeading(new Pose2d(52, 40, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, 37.5, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(1);
                     // Drop Yellow pixel on backboard
@@ -76,9 +76,9 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .forward(8)
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToConstantHeading(new Vector2d(23, 35))
+                .lineToConstantHeading(new Vector2d(22.5, 35))
                 .back(10)
-                .lineToSplineHeading(new Pose2d(52, 43, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, 44, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -93,10 +93,10 @@ public class BackdropBlueAuto extends LinearOpMode {
                 .forward(10)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(14, 33, Math.toRadians(180)))
-                .forward(10)
+                .lineToSplineHeading(new Pose2d(12, 33, Math.toRadians(180)))
+                .forward(9)
                 .back(10)
-                .lineToSplineHeading(new Pose2d(52, 34.5, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52, 32, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);

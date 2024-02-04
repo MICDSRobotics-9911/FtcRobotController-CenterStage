@@ -67,7 +67,10 @@ public class AudienceBlueAuto extends LinearOpMode {
                 .waitSeconds(5)
                 .forward(70)
                 .strafeRight(20)
-                .lineToConstantHeading(new Vector2d(54, 38),
+                .lineToConstantHeading(new Vector2d(56, 33),
+                        SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(11))
+                .lineToConstantHeading(new Vector2d(55, 35),
                         SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
@@ -82,20 +85,20 @@ public class AudienceBlueAuto extends LinearOpMode {
                 .strafeRight(0.1)
                 .build();
         TrajectorySequence rightTraj = drive.trajectorySequenceBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-52, 28, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-53.5, 28, Math.toRadians(0)))
                 .back(3)
                 .strafeLeft(31)
                 .waitSeconds(5)
                 .forward(70)
                 .strafeRight(10)
-                .lineToConstantHeading(new Vector2d(54, 31),
+                .lineToConstantHeading(new Vector2d(56, 28),
                         SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(1)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
@@ -110,14 +113,14 @@ public class AudienceBlueAuto extends LinearOpMode {
                 .waitSeconds(5)
                 .forward(70)
                 .strafeRight(10)
-                .lineToConstantHeading(new Vector2d(54, 43.5),
+                .lineToConstantHeading(new Vector2d(56, 40),
                         SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow Pixel
                     robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(1)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);

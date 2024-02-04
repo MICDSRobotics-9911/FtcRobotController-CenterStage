@@ -73,9 +73,11 @@ public class AudienceRedAuto extends LinearOpMode {
                 .waitSeconds(5)
                 .forward(70)
                 .strafeLeft(20)
-                .lineToConstantHeading(new Vector2d(54, -27),
+                .lineToConstantHeading(new Vector2d(55, -35),
                         SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(11))
+                .forward(3)
+                .strafeLeft(5.5)
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
@@ -94,14 +96,14 @@ public class AudienceRedAuto extends LinearOpMode {
                 .waitSeconds(5)
                 .forward(80)
                 .strafeLeft(10)
-                .lineToConstantHeading(new Vector2d(54, -21),
+                .lineToConstantHeading(new Vector2d(56, -23),
                         SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(1)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     // Reset yellow pixel
@@ -117,7 +119,7 @@ public class AudienceRedAuto extends LinearOpMode {
                 .waitSeconds(5)
                 .forward(70)
                 .strafeLeft(10)
-                .lineToConstantHeading(new Vector2d(55, -34.5),
+                .lineToConstantHeading(new Vector2d(56, -36.5),
                         SampleMecanumDrive.getVelocityConstraint(11, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(11))
                 .addDisplacementMarker(() -> {

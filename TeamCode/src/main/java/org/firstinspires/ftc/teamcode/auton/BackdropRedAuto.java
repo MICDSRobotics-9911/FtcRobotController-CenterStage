@@ -65,7 +65,7 @@ public class BackdropRedAuto extends LinearOpMode {
                     // Drop Yellow pixel on backboard
                     robot.server.setPosition(1);
                 })
-                .forward(0.5)
+                .forward(1)
                 .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     robot.server.setPosition(0);
@@ -92,7 +92,7 @@ public class BackdropRedAuto extends LinearOpMode {
                 .build();
         TrajectorySequence leftTraj = drive.trajectorySequenceBuilder(startPose)
                 .lineToLinearHeading(new Pose2d(14, -31, Math.toRadians(180)))
-                .forward(10)
+                .forward(9.5)
                 .back(10)
                 .lineToSplineHeading(new Pose2d(52, -25, Math.toRadians(0)))
                 .addDisplacementMarker(() -> {

@@ -55,8 +55,10 @@ public class TeleOpMain extends LinearOpMode {
             }
             if (holderToggle) {
                 robot.airplaneHold.setPosition(1);
+                telemetry.addLine("Drone Holder: UP");
             } else {
                 robot.airplaneHold.setPosition(0);
+                telemetry.addLine("Drone Holder: DOWN");
             }
 
 
@@ -75,21 +77,22 @@ public class TeleOpMain extends LinearOpMode {
                 robot.hangHolder.setPower(0);
             }
             if (gamepad1.dpad_down || gamepad2.dpad_down) {
-                robot.spoolHangMotor.setPower(-1);
-            } else if (gamepad1.dpad_up || gamepad2.dpad_up) {
                 robot.spoolHangMotor.setPower(1);
+            } else if (gamepad1.dpad_up || gamepad2.dpad_up) {
+                robot.spoolHangMotor.setPower(-1);
             } else {
                 robot.spoolHangMotor.setPower(0);
             }
 
-            if (gamepad1.right_bumper && !previousGamepad1.right_bumper) {
+            if ((gamepad1.right_bumper && !previousGamepad1.right_bumper) || (gamepad2.right_bumper && !previousGamepad2.right_bumper)) {
                 serverToggle = !serverToggle;
             }
-
             if (serverToggle) {
                 robot.server.setPosition(1);
+                telemetry.addLine("Pixel Dropper: DOWN");
             } else {
                 robot.server.setPosition(0);
+                telemetry.addLine("Pixel Dropper: UP");
             }
             double loop = System.nanoTime();
             telemetry.addData("hz", 1000000000 / (loop - loopTime));
