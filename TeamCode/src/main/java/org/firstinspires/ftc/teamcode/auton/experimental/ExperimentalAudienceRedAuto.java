@@ -56,7 +56,9 @@ public class ExperimentalAudienceRedAuto extends LinearOpMode {
         Globals.COLOR = Side.RED;
         robot = RobotHardware.getInstance();
         robot.init(hardwareMap, telemetry);
-        aprilTagProcessor = new AprilTagProcessor.Builder().build();
+        aprilTagProcessor = new AprilTagProcessor.Builder()
+                .setLensIntrinsics(822.317f, 822.317f, 319.495f, 242.502f)
+                .build();
         redPropThreshold = new LeftPropPipeline(telemetry);
         portal = new VisionPortal.Builder()
                 .setCamera(robot.camera)
